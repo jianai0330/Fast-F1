@@ -265,11 +265,18 @@
   min-width: 0;
 }
 
-.circuit-track-image {
+.circuit-track-slot {
   width: 132rpx;
   min-width: 132rpx;
   height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+}
+
+.circuit-track-image {
+  width: 118rpx;
+  height: 56rpx;
   opacity: 1;
-  align-self: center;
 }

@@ -83,12 +83,13 @@
           </view>
           <view class="event-bottom-row">
             <text class="event-meta">{{item.location}} · {{item.date}}</text>
-            <image
-              wx:if="{{item.circuitSvg}}"
-              class="circuit-track-image"
-              src="{{item.circuitSvg}}"
-              mode="aspectFit"
-            ></image>
+            <view wx:if="{{item.circuitSvg}}" class="circuit-track-slot">
+              <image
+                class="circuit-track-image"
+                src="{{item.circuitSvg}}"
+                mode="aspectFit"
+              ></image>
+            </view>
           </view>
         </view>
       </view>
