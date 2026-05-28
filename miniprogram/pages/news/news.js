@@ -63,6 +63,13 @@ Page({
     }
   },
 
+  onUnload() {
+    if (this._searchTimer) {
+      clearTimeout(this._searchTimer)
+      this._searchTimer = null
+    }
+  },
+
   async _syncAnalyzed() {
     try {
       const language = this.data.activeLanguage

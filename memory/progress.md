@@ -5,6 +5,7 @@
 ---
 
 ### 优化审查记录（2026-05-28）
+- [x] Phase 1 第二批第二步已落地：术语链路新增 `getTermsCatalog()` 轻缓存，`glossary` 改为优先复用全量术语目录缓存；`term` 详情页改为基于目录缓存本地拼装当前术语、相关术语与面包屑，显著减少碎片化详情请求。顺手补了 `news` 页搜索防抖定时器的 `onUnload` 清理，避免页面退出后残留触发刷新。
 - [x] Phase 1 第二批第一步已落地：`telemetry` 页面新增图表数据降采样（默认压到约 420 点）以减轻 ECharts 渲染压力；术语查词从“页面进入即加载”改为“点击悬浮按钮后按需加载”，进一步缩短首屏初始化路径。
 - [ ] 开始 Phase 1 第二批流畅度优化：优先处理 telemetry 图表数据降采样、术语页更轻量加载路径，并继续坚持 path-limited commit，避免把工作区内其他历史改动带入提交。
 - [x] Git 提交事故补救：第二次本地 commit `Update project progress log` 因仓库已有大量 staged 文件，被意外带入 `.env`、缓存、数据库和运行态文件；已通过后续 commit `Remove runtime and sensitive files from tracking` 将这些文件从版本库索引移除，并保留本地文件不删除。

@@ -39,6 +39,14 @@ function cacheSet(key, data) {
   } catch (e) {}
 }
 
+function getMemoryCache(key) {
+  return app.globalData[key] || null
+}
+
+function setMemoryCache(key, data) {
+  app.globalData[key] = data
+}
+
 /**
  * 封装 wx.request，返回 Promise（GET），超时 20s，失败自动重试一次
  */
@@ -115,6 +123,31 @@ function cachedRequest(cacheKeyStr, ttlKey, path, params = {}) {
 
   return request(path, params).then(res => {
     cacheSet(key, res)
+    return res
+  })
+}
+
+function cachedCatalogRequest(memoryKey, cacheKeyStr, ttlKey, path, params = {}) {
+  const ttl = CACHE_TTL[ttlKey]
+  const memoryCached = getMemoryCache(memoryKey)
+  if (memoryCached) {
+    return Promise.resolve(memoryCached)
+  }
+
+  const key = `f1cache:${cacheKeyStr}`
+  const storageCached = ttl ? cacheGet(key, ttl) : null
+  if (storageCached) {
+    setMemoryCache(memoryKey, storageCached)
+    request(path, params).then(res => {
+      cacheSet(key, res)
+      setMemoryCache(memoryKey, res)
+    }).catch(() => {})
+    return Promise.resolve(storageCached)
+  }
+
+  return request(path, params).then(res => {
+    if (ttl) cacheSet(key, res)
+    setMemoryCache(memoryKey, res)
     return res
   })
 }
@@ -258,8 +291,13 @@ const api = {
     post(`/news/${news_id}/analyze-public`, {}),
 
   // ── 术语库 ───────────────────────────────────────
+  getTermsCatalog: () =>
+    cachedCatalogRequest('termsCatalog', '/terms::', '/terms', '/terms', {}),
+
   getTerms: (category, level) =>
-    cachedRequest(`/terms:${category || ''}:${level || ''}`, '/terms', '/terms', { category, level }),
+    (!category && !level)
+      ? api.getTermsCatalog()
+      : cachedRequest(`/terms:${category || ''}:${level || ''}`, '/terms', '/terms', { category, level }),
 
   getTerm: (slug) =>
     cachedRequest(`/term:${slug}`, '/terms', `/terms/${slug}`, {}),
