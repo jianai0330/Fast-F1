@@ -2,17 +2,51 @@
 FastF1 数据获取封装
 所有对 FastF1 的调用统一走这里，方便缓存和错误处理
 """
+import logging
+
 import fastf1
 import numpy as np
 import pandas as pd
-from functools import lru_cache
+from fastf1.exceptions import DataNotLoadedError
 
+logger = logging.getLogger(__name__)
+
+# 进程级内存缓存：同一个 session 只 load 一次
+_session_cache = {}
 
 def get_session(year: int, round_or_name, session_type: str):
-    """加载 session，自动使用 FastF1 缓存"""
-    session = fastf1.get_session(year, round_or_name, session_type)
-    session.load()
-    return session
+    """加载 session，内存缓存，同一进程内第二次请求直接返回
+
+    如果 session.load() 之后 laps 数据不可用，记录日志但不崩溃，
+    仍然返回 session 对象，由调用方通过 check_laps_available() 做进一步检查。
+    """
+    key = (year, str(round_or_name), session_type)
+    if key not in _session_cache:
+        session = fastf1.get_session(year, round_or_name, session_type)
+        try:
+            session.load()
+        except Exception as e:
+            logger.warning(f"session.load() 失败: {year} {round_or_name} {session_type} - {e}")
+            _session_cache[key] = session
+            return session
+        # load 完成后检查 laps 是否真的可用
+        try:
+            _ = session.laps
+        except DataNotLoadedError:
+            logger.warning(
+                f"session.laps 数据不可用: {year} {round_or_name} {session_type}"
+            )
+        _session_cache[key] = session
+    return _session_cache[key]
+
+
+def check_laps_available(session) -> str | None:
+    """检查 session 的 laps 数据是否可用，返回 None 表示可用，否则返回中文错误提示"""
+    try:
+        _ = session.laps
+        return None
+    except DataNotLoadedError:
+        return "该场次的详细计时数据暂未提供，可能是官方数据尚未发布，请稍后再试。"
 
 
 def fmt_time(td) -> str:

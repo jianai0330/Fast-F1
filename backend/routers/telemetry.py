@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from models.response import ok, err
 from services.fastf1_service import (
-    get_session, fmt_time, get_corner_distances, get_corner_labels, telemetry_to_dict
+    get_session, fmt_time, get_corner_distances, get_corner_labels, telemetry_to_dict,
+    check_laps_available
 )
 import fastf1.plotting
 import numpy as np
@@ -11,15 +12,20 @@ router = APIRouter()
 @router.get("")
 def get_telemetry(
     year: int = 2026,
-    round: int = None,
+    round_num: int = None,
     event: str = None,
     d1: str = "ALB",
     d2: str = "ALO",
     session: str = "Q"
 ):
     try:
-        identifier = round if round else event
+        identifier = round_num if round_num else event
         s = get_session(year, identifier, session)
+
+        # 检查 laps 数据是否可用
+        laps_err = check_laps_available(s)
+        if laps_err:
+            return err(laps_err)
 
         lap_a = s.laps.pick_drivers(d1).pick_fastest()
         lap_b = s.laps.pick_drivers(d2).pick_fastest()
