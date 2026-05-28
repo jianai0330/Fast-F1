@@ -98,7 +98,7 @@ function extractPathBounds(pathD) {
   }
 }
 
-function buildCircuitSvgDataUri(pathD, stroke = '#ff3b30') {
+function buildCircuitSvgDataUri(pathD, stroke = '#ff453a') {
   if (!pathD) return ''
   const box = extractPathBounds(pathD)
   const canvasWidth = 160
@@ -110,7 +110,7 @@ function buildCircuitSvgDataUri(pathD, stroke = '#ff3b30') {
   )
   const offsetX = (canvasWidth - box.width * scale) / 2 - box.minX * scale
   const offsetY = (canvasHeight - box.height * scale) / 2 - box.minY * scale
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvasWidth} ${canvasHeight}" fill="none" preserveAspectRatio="xMidYMid meet"><g transform="translate(${offsetX} ${offsetY}) scale(${scale})"><path d="${pathD}" stroke="${stroke}" stroke-width="3.8" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${canvasWidth} ${canvasHeight}" fill="none" preserveAspectRatio="xMidYMid meet"><g transform="translate(${offsetX} ${offsetY}) scale(${scale})"><path d="${pathD}" stroke="${stroke}" stroke-width="2.8" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 }
 
