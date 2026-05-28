@@ -2,34 +2,78 @@
   <!-- 顶部标题 -->
   <view class="header">
     <text class="title">F1 {{year}}</text>
-    <text class="subtitle">赛历</text>
+    <text class="subtitle">chua的赛历</text>
   </view>
 
-  <!-- 加载中 -->
-  <view wx:if="{{loading}}" class="loading-wrap">
-    <text>加载中...</text>
-  </view>
-
-  <!-- 错误 -->
-  <view wx:elif="{{error}}" class="loading-wrap">
-    <text class="text-muted">{{error}}</text>
-  </view>
-
-  <!-- 赛历列表 -->
-  <view wx:else class="event-list">
-    <view
-      wx:for="{{events}}"
-      wx:key="round"
-      class="event-item"
-      bindtap="onEventTap"
-      data-event="{{item}}"
-    >
-      <view class="round-badge">R{{item.round}}</view>
-      <view class="event-info flex-1">
-        <text class="event-name">{{item.name}}</text>
-        <text class="event-meta">{{item.location}} · {{item.date}}</text>
-      </view>
-      <view class="arrow">›</view>
+  <!-- 下一站倒计时 -->
+  <view wx:if="{{nextRace}}" class="countdown-card">
+    <view class="countdown-left">
+      <text class="countdown-name">{{nextRace.shortName}}</text>
+      <text class="countdown-bj">北京时间 {{nextRace.race_time_bj}}</text>
+    </view>
+    <view class="countdown-right">
+      <text class="countdown-label-text">距正赛</text>
+      <text class="countdown-timer">{{countdown}}</text>
     </view>
   </view>
+
+  <view wx:if="{{seasonSummary}}" class="cockpit-strip">
+    <view class="cockpit-stat">
+      <text class="cockpit-label">已完成</text>
+      <text class="cockpit-value">{{seasonSummary.completed}}</text>
+    </view>
+    <view class="cockpit-stat">
+      <text class="cockpit-label">待进行</text>
+      <text class="cockpit-value">{{seasonSummary.upcoming}}</text>
+    </view>
+    <view class="cockpit-stat">
+      <text class="cockpit-label">总分站</text>
+      <text class="cockpit-value">{{seasonSummary.total}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{latestRace}}" class="latest-race-card">
+    <view class="latest-race-head">
+      <text class="latest-race-kicker">最近一站</text>
+      <text class="latest-race-status">{{latestRace.status}}</text>
+    </view>
+    <text class="latest-race-name">R{{latestRace.round}} · {{latestRace.name}}</text>
+    <text class="latest-race-meta">{{latestRace.location}}</text>
+  </view>
+
+  <!-- 可滚动内容区 -->
+  <scroll-view class="content-scroll" scroll-y>
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading-wrap">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 错误 -->
+    <view wx:elif="{{error}}" class="loading-wrap">
+      <text class="text-muted">{{error}}</text>
+    </view>
+
+    <!-- 赛历列表 -->
+    <view wx:else class="event-list">
+      <view
+        wx:for="{{events}}"
+        wx:key="round"
+        class="event-item"
+        bindtap="onEventTap"
+        data-event="{{item}}"
+      >
+        <view class="round-badge">R{{item.round}}</view>
+        <view class="event-info flex-1">
+          <text class="event-name">{{item.name}}</text>
+          <text class="event-meta">{{item.location}} · {{item.date}}</text>
+        </view>
+        <!-- 赛道简笔图 -->
+        <canvas
+          type="2d"
+          id="circuit-{{index}}"
+          class="circuit-canvas"
+        ></canvas>
+      </view>
+    </view>
+  </scroll-view>
 </view>

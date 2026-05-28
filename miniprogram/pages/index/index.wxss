@@ -1,5 +1,13 @@
 .container {
-  padding-bottom: 40rpx;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.content-scroll {
+  flex: 1;
+  overflow: hidden;
 }
 
 .header {
@@ -21,6 +29,131 @@
   display: block;
 }
 
+/* ── 倒计时卡片 ── */
+.countdown-card {
+  margin: 20rpx 16rpx 4rpx;
+  padding: 28rpx 32rpx;
+  background: linear-gradient(135deg, #1e0a0a 0%, #2a0d0d 60%, #1a1a1a 100%);
+  border-radius: 16rpx;
+  border: 1rpx solid rgba(225, 6, 0, 0.35);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.countdown-left {
+  flex: 1;
+}
+
+.countdown-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+}
+
+.countdown-bj {
+  font-size: 22rpx;
+  color: #888;
+  display: block;
+  margin-top: 6rpx;
+}
+
+.countdown-right {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+}
+
+.countdown-label-text {
+  font-size: 20rpx;
+  color: #e10600;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.countdown-timer {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #e10600;
+  letter-spacing: 2rpx;
+  font-variant-numeric: tabular-nums;
+  display: block;
+}
+
+.cockpit-strip {
+  margin: 8rpx 16rpx 0;
+  padding: 18rpx 20rpx;
+  display: flex;
+  gap: 12rpx;
+  background: linear-gradient(180deg, #151515 0%, #101010 100%);
+  border-radius: 14rpx;
+  border: 1rpx solid #262626;
+}
+
+.cockpit-stat {
+  flex: 1;
+  min-width: 0;
+}
+
+.cockpit-label {
+  display: block;
+  font-size: 20rpx;
+  color: #8a8a8a;
+}
+
+.cockpit-value {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.latest-race-card {
+  margin: 12rpx 16rpx 4rpx;
+  padding: 22rpx 24rpx;
+  border-radius: 14rpx;
+  background:
+    radial-gradient(circle at top right, rgba(225, 6, 0, 0.18), transparent 35%),
+    linear-gradient(145deg, #171717 0%, #111111 100%);
+  border: 1rpx solid #262626;
+}
+
+.latest-race-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.latest-race-kicker {
+  font-size: 20rpx;
+  letter-spacing: 2rpx;
+  color: #8a8a8a;
+}
+
+.latest-race-status {
+  font-size: 20rpx;
+  color: #e10600;
+}
+
+.latest-race-name {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.latest-race-meta {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #8a8a8a;
+}
+
+/* ── 赛历列表 ── */
 .event-list {
   padding: 16rpx;
 }
@@ -33,6 +166,12 @@
   border-radius: 12rpx;
   padding: 24rpx;
   margin-bottom: 12rpx;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.event-item:active {
+  transform: scale(0.97);
+  opacity: 0.88;
 }
 
 .round-badge {
@@ -71,8 +210,9 @@
   display: block;
 }
 
-.arrow {
-  font-size: 40rpx;
-  color: #444444;
+.circuit-canvas {
+  width: 100rpx;
+  height: 70rpx;
   margin-left: 16rpx;
+  flex-shrink: 0;
 }
