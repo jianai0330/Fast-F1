@@ -1,11 +1,53 @@
 /* pages/forum-section/forum-section.wxss */
-.container { min-height: 100vh; background: #0f0f0f; position: relative; }
-.post-scroll { height: 100vh; }
+.container { height: 100vh; background: #0f0f0f; display: flex; flex-direction: column; }
+.post-scroll { flex: 1; overflow: hidden; }
+
+/* 排序切换 */
+.sort-tabs {
+  display: flex;
+  flex-direction: row;
+  padding: 16rpx 24rpx 0;
+  gap: 0;
+  background: #0f0f0f;
+}
+.sort-tab {
+  position: relative;
+  padding: 16rpx 32rpx;
+  font-size: 26rpx;
+  color: #666;
+  transition: color 0.2s ease;
+}
+.sort-tab-active {
+  color: #e8e8e8;
+  font-weight: bold;
+}
+.sort-tab-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: 40rpx;
+  height: 4rpx;
+  background: #e10600;
+  border-radius: 2rpx;
+}
 
 /* 骨架 */
 .sk-wrap { padding: 24rpx; }
 .sk-card { background: #1a1a1a; border-radius: 16rpx; padding: 28rpx; margin-bottom: 16rpx; }
-.sk-line { height: 22rpx; background: #252525; border-radius: 6rpx; margin-bottom: 14rpx; }
+.sk-line {
+  height: 22rpx;
+  background: linear-gradient(90deg, #222 25%, #2e2e2e 50%, #222 75%);
+  background-size: 400% 100%;
+  border-radius: 6rpx;
+  margin-bottom: 14rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
 .sk-short { width: 40%; } .sk-mid { width: 65%; } .sk-long { width: 88%; }
 
 /* 空状态 */
@@ -21,7 +63,9 @@
   padding: 28rpx;
   border: 1rpx solid #242424;
   position: relative;
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
+.post-card:active { transform: scale(0.97); opacity: 0.88; }
 
 .seeded-badge {
   display: inline-block;
@@ -52,12 +96,11 @@
   font-size: 22rpx;
   color: #555;
 }
-
 .meta-author { color: #777; max-width: 160rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .meta-dot { margin: 0 8rpx; }
 .meta-time { color: #555; }
 .meta-right { margin-left: auto; display: flex; flex-direction: row; gap: 20rpx; }
-.meta-stat { color: #555; }
+.meta-stat { color: #555; font-size: 22rpx; }
 
 /* 发帖悬浮按钮 */
 .fab {
@@ -72,10 +115,98 @@
   align-items: center;
   gap: 10rpx;
   box-shadow: 0 4rpx 24rpx rgba(225,6,0,0.4);
+  z-index: 999;
+  transition: transform 0.12s ease;
 }
+.fab:active { transform: scale(0.93); }
 .fab-icon { font-size: 32rpx; }
 .fab-text { font-size: 26rpx; color: #fff; font-weight: bold; }
 
 /* 加载更多 */
 .load-tip { text-align: center; padding: 40rpx 0 120rpx; font-size: 24rpx; }
 .text-muted { color: #555; }
+
+/* ── 热门帖子推荐 ────────────────────────────── */
+.hot-section {
+  margin: 16rpx 24rpx 0;
+  padding: 24rpx 0 8rpx;
+}
+.hot-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+.hot-header-icon {
+  font-size: 30rpx;
+  margin-right: 8rpx;
+}
+.hot-header-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #e8e8e8;
+}
+
+.hot-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: #1a1a1a;
+  border-radius: 12rpx;
+  margin-bottom: 12rpx;
+  padding: 20rpx 24rpx;
+  border-left: 6rpx solid #e10600;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.hot-card:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
+
+.hot-rank {
+  width: 48rpx;
+  height: 48rpx;
+  line-height: 48rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  background: #e10600;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: bold;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.hot-info {
+  flex: 1;
+  min-width: 0;
+}
+.hot-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #e8e8e8;
+  line-height: 1.4;
+  margin-bottom: 8rpx;
+}
+.hot-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+}
+.hot-author {
+  font-size: 22rpx;
+  color: #777;
+  max-width: 160rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hot-stat {
+  font-size: 22rpx;
+  color: #555;
+}

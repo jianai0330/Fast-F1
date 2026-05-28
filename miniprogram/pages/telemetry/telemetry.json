@@ -1,1 +1,9 @@
-{ "navigationBarTitleText": "遥测对比" }
+{
+  "navigationBarTitleText": "遥测对比",
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas"
+  },
+  "componentPlaceholder": {
+    "ec-canvas": "view"
+  }
+}

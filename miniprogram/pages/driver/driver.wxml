@@ -85,9 +85,96 @@
     </view>
 
     <!-- 简介 -->
-    <view class="section-card" style="margin-bottom:60rpx;">
+    <view class="section-card">
       <text class="section-title">车手简介</text>
       <text class="bio-text">{{info.bio}}</text>
+    </view>
+
+    <!-- 车迷评分 -->
+    <view class="section-card rating-card" style="margin-bottom:60rpx;">
+      <view class="rating-header-row">
+        <text class="section-title" style="margin-bottom:0">车迷评分</text>
+        <view wx:if="{{ratingSubmitted}}" class="rating-badge">已评价</view>
+      </view>
+
+      <!-- 未评分：打分区 -->
+      <view wx:if="{{!ratingSubmitted}}">
+        <text class="rating-hint">从五个维度为 {{info.nameCn}} 打分</text>
+        <view wx:for="{{ratingDims}}" wx:key="key" wx:for-index="dimIdx" class="dim-row">
+          <text class="dim-label">{{item.label}}</text>
+          <view class="stars-row">
+            <view wx:for="{{[1,2,3,4,5]}}" wx:key="*this" wx:for-item="star"
+                  class="star {{star <= item.val ? 'star-on' : 'star-off'}}"
+                  style="{{star <= item.val ? 'color:' + color : ''}}"
+                  bindtap="onStarTap" data-dim="{{dimIdx}}" data-val="{{star}}">★</view>
+          </view>
+          <text class="dim-score">{{item.val > 0 ? item.val : '-'}}</text>
+        </view>
+        <view class="submit-btn {{ratingReady ? 'submit-active' : 'submit-disabled'}}"
+              style="{{ratingReady ? 'border-color:' + color + ';color:' + color : ''}}"
+              bindtap="onRatingSubmit">提交评分</view>
+      </view>
+
+      <!-- 社区评分结果：只要有人评过就显示 -->
+      <view wx:if="{{communityCount > 0}}">
+        <view class="community-score-row">
+          <text class="community-big" style="color:{{color}}">{{communityAvg}}</text>
+          <view class="community-right">
+            <text class="community-label">社区综合评分</text>
+            <text class="community-count">共 {{communityCount}} 人评价</text>
+          </view>
+        </view>
+        <view wx:for="{{communityDims}}" wx:key="key" class="result-dim-row">
+          <text class="result-dim-label">{{item.label}}</text>
+          <view class="result-bar-bg">
+            <view class="result-bar-fill" style="width:{{item.pct}}%;background:{{color}}"></view>
+          </view>
+          <text class="result-dim-val">{{item.avg}}</text>
+        </view>
+        <text wx:if="{{ratingSubmitted}}" class="my-score-hint">我的评分：{{myScoreText}}</text>
+      </view>
+    </view>
+
+    <!-- 车迷留言 -->
+    <view class="section-card comment-card" style="margin-bottom:60rpx;">
+      <text class="section-title">车迷留言</text>
+
+      <!-- 输入框 -->
+      <view wx:if="{{hasUser}}" class="comment-input-row">
+        <input class="comment-input" placeholder="说点什么..." placeholder-style="color:#444"
+               value="{{commentDraft}}" bindinput="onCommentInput" maxlength="200" />
+        <view class="comment-send {{commentDraft ? 'send-active' : 'send-disabled'}}"
+              bindtap="onCommentSend">发送</view>
+      </view>
+      <view wx:else class="comment-login-tip" bindtap="onGoRegister">
+        <text class="text-muted">去论坛注册昵称后即可留言 →</text>
+      </view>
+
+      <!-- 评论列表 -->
+      <view wx:if="{{comments.length > 0}}">
+        <view wx:for="{{comments}}" wx:key="id" class="comment-item">
+          <view class="comment-header">
+            <view class="comment-avatar"><text class="comment-avatar-text">{{item.author_nickname[0]}}</text></view>
+            <view class="comment-meta">
+              <text class="comment-nick">{{item.author_nickname}}</text>
+              <text class="comment-time">{{item.time_str}}</text>
+            </view>
+          </view>
+          <text class="comment-content">{{item.content}}</text>
+          <view class="comment-bottom">
+            <view class="like-btn" bindtap="onCommentLike" data-id="{{item.id}}" data-idx="{{index}}">
+              <text class="like-icon">👍</text>
+              <text class="like-count">{{item.likes > 0 ? item.likes : ''}}</text>
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{commentsHasMore}}" class="load-more" bindtap="onLoadMoreComments">
+          <text class="text-muted">加载更多</text>
+        </view>
+      </view>
+      <view wx:elif="{{!commentsLoading}}" class="empty-comments">
+        <text class="text-muted">还没有留言，来说第一句吧</text>
+      </view>
     </view>
 
   </view>

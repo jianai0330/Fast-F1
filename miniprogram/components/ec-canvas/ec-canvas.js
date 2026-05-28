@@ -83,16 +83,17 @@ Component({
       const canUseNewCanvas = compareVersion(version, '2.9.0') >= 0;
       const forceUseOldCanvas = this.data.forceUseOldCanvas;
       const isUseNewCanvas = canUseNewCanvas && !forceUseOldCanvas;
-      this.setData({ isUseNewCanvas });
 
       if (forceUseOldCanvas && canUseNewCanvas) {
         console.warn('开发者强制使用旧canvas,建议关闭');
       }
 
       if (isUseNewCanvas) {
-        // console.log('微信基础库版本大于2.9.0，开始使用<canvas type="2d"/>');
-        // 2.9.0 可以使用 <canvas type="2d"></canvas>
-        this.initByNewWay(callback);
+        // setData 回调里再查 DOM，确保 type="2d" canvas 已渲染
+        // wx.nextTick 额外等一帧，避免回调触发时节点还未挂载（res=[null]）
+        this.setData({ isUseNewCanvas }, () => {
+          wx.nextTick(() => this.initByNewWay(callback));
+        });
       } else {
         const isValid = compareVersion(version, '1.9.91') >= 0
         if (!isValid) {
@@ -102,7 +103,9 @@ Component({
           return;
         } else {
           console.warn('建议将微信基础库调整大于等于2.9.0版本。升级后绘图将有更好性能');
-          this.initByOldWay(callback);
+          this.setData({ isUseNewCanvas }, () => {
+            this.initByOldWay(callback);
+          });
         }
       }
     },
@@ -147,6 +150,10 @@ Component({
         .select('.ec-canvas')
         .fields({ node: true, size: true })
         .exec(res => {
+          if (!res || !res[0] || !res[0].node) {
+            console.error('ec-canvas: canvas node not found, res=', res);
+            return;
+          }
           const canvasNode = res[0].node
           this.canvasNode = canvasNode
 

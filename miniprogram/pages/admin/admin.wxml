@@ -13,8 +13,19 @@
     <!-- 顶部标题 + 爬取按钮 -->
     <view class="admin-header">
       <text class="admin-title">🛠️ 管理后台</text>
-      <view class="crawl-btn" bindtap="onCrawl">
-        <text>🔄 爬取+分析</text>
+      <view class="crawl-btn {{analyzing ? 'crawl-btn-disabled' : ''}}" bindtap="onCrawl">
+        <text>{{analyzing ? '分析中...' : '🔄 爬取+分析'}}</text>
+      </view>
+    </view>
+
+    <!-- 分析进度条 -->
+    <view wx:if="{{analyzing}}" class="progress-wrap">
+      <view class="progress-step">{{analyzeStep}}</view>
+      <view class="progress-bar-bg">
+        <view class="progress-bar-fill" style="width: {{analyzeProgress}}%"></view>
+      </view>
+      <view class="progress-count">
+        {{analyzeDone}} / {{analyzeTotal}} 条
       </view>
     </view>
 
@@ -29,6 +40,11 @@
             bindtap="onTabChange" data-tab="comments">
         待审评论
         <text wx:if="{{comments.length > 0}}" class="badge">{{comments.length}}</text>
+      </view>
+      <view class="tab {{activeTab==='terms'?'tab-active':''}}"
+            bindtap="onTabChange" data-tab="terms">
+        待审术语
+        <text wx:if="{{terms.length > 0}}" class="badge">{{terms.length}}</text>
       </view>
     </view>
 
@@ -78,6 +94,29 @@
               <text>✅ 通过</text>
             </view>
             <view class="btn-reject" bindtap="onRejectComment" data-id="{{item.id}}">
+              <text>❌ 拒绝</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 术语列表 -->
+      <block wx:if="{{activeTab==='terms'}}">
+        <view wx:if="{{terms.length === 0}}" class="empty-wrap">
+          <text class="text-muted">暂无待审核术语 ✅</text>
+        </view>
+        <view wx:for="{{terms}}" wx:key="id" class="review-card">
+          <view class="review-meta">
+            <text class="review-author">{{item.name_zh}}</text>
+            <text class="review-section">· {{item.name_en}}</text>
+          </view>
+          <text class="review-title">{{item.category}}</text>
+          <text class="review-content">{{item.short_def}}</text>
+          <view class="action-row">
+            <view class="btn-approve" bindtap="onApproveTerm" data-id="{{item.id}}">
+              <text>✅ 通过</text>
+            </view>
+            <view class="btn-reject" bindtap="onRejectTerm" data-id="{{item.id}}">
               <text>❌ 拒绝</text>
             </view>
           </view>

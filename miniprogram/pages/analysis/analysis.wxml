@@ -2,7 +2,29 @@
 
   <!-- 加载中 -->
   <view wx:if="{{loading}}" class="loading-wrap">
-    <text>AI 正在分析数据，请稍候...</text>
+    <!-- 分析步骤流程条 -->
+    <view class="analysis-pipeline" wx:if="{{showPipeline}}">
+      <view class="pipeline-step {{currentStep >= 1 ? 'active' : ''}}">
+        <view class="step-icon">📡</view>
+        <view class="step-label">遥测数据采集</view>
+      </view>
+      <view class="pipeline-connector"></view>
+      <view class="pipeline-step {{currentStep >= 2 ? 'active' : ''}}">
+        <view class="step-icon">⚙️</view>
+        <view class="step-label">规则引擎计算</view>
+      </view>
+      <view class="pipeline-connector"></view>
+      <view class="pipeline-step {{currentStep >= 3 ? 'active' : ''}}">
+        <view class="step-icon">📚</view>
+        <view class="step-label">知识库匹配</view>
+      </view>
+      <view class="pipeline-connector"></view>
+      <view class="pipeline-step {{currentStep >= 4 ? 'active' : ''}}">
+        <view class="step-icon">🧠</view>
+        <view class="step-label">AI专业推理</view>
+      </view>
+    </view>
+    <text class="loading-text">AI 正在分析数据，请稍候...</text>
   </view>
 
   <!-- 错误 -->
@@ -14,15 +36,156 @@
   <!-- 分析报告 -->
   <view wx:else>
 
+    <view class="analysis-hero">
+      <view class="analysis-hero-top">
+        <text class="analysis-kicker">RACE REPORT</text>
+        <text class="analysis-source">{{reportSummary.sourceLabel}}</text>
+      </view>
+      <text class="analysis-matchup">{{d1}} vs {{d2}}</text>
+      <text class="analysis-track" wx:if="{{trackName}}">{{trackName}} · {{session}}</text>
+      <text class="analysis-lead">{{reportSummary.keyLine}}</text>
+    </view>
+
+    <view class="analysis-summary-strip" wx:if="{{reportSummary}}">
+      <view class="summary-chip">
+        <text class="summary-chip-label">章节</text>
+        <text class="summary-chip-value">{{reportSummary.sectionCount}}</text>
+      </view>
+      <view class="summary-chip" wx:for="{{reportSummary.metricCards}}" wx:key="label">
+        <text class="summary-chip-label">{{item.label}}</text>
+        <text class="summary-chip-value">{{item.value}}</text>
+      </view>
+    </view>
+
+    <!-- 分析方法论入口按钮 -->
+    <view class="methodology-entry" bindtap="onToggleMethodology">
+      <text class="methodology-btn-text">🔬 查看分析方法论</text>
+      <text class="methodology-arrow">{{showMethodology ? '收起' : '展开'}}</text>
+    </view>
+
+    <!-- 展开的方法论详情面板 -->
+    <view class="methodology-panel" wx:if="{{showMethodology}}">
+      <view class="method-header">
+        <text class="method-title">本次分析调用了以下专业知识体系</text>
+        <text class="method-subtitle">共5套分析方法论 + 9个领域知识库 + 24条赛道数据</text>
+      </view>
+
+      <!-- 本次使用的方法论 -->
+      <view class="method-section">
+        <text class="section-label">📐 本次使用的分析方法论</text>
+        <view class="method-item active">
+          <view class="item-header">
+            <text class="item-name">遥测对标分析</text>
+            <text class="item-tag">已激活</text>
+          </view>
+          <text class="item-desc">速度曲线对标 → 参数分解（制动/弯心/出弯/直线）→ 物理机制解读 → 竞争力结论。包含四阶段分解法、8种指标解读规则、12个正反示例。</text>
+        </view>
+        <view class="method-item active">
+          <view class="item-header">
+            <text class="item-name">扇区根因诊断</text>
+            <text class="item-tag">已激活</text>
+          </view>
+          <text class="item-desc">理想圈构成 → 弱势扇区定位 → 弯角级别根因分解。支持车辆设置/驾驶风格/轮胎状态/能量部署/外部因素五维归因。</text>
+        </view>
+      </view>
+
+      <!-- 其他可用方法论 -->
+      <view class="method-section">
+        <text class="section-label">📚 完整方法论体系</text>
+        <view class="method-item">
+          <view class="item-header">
+            <text class="item-name">轮胎与策略分析</text>
+            <text class="item-tag tag-race">正赛时激活</text>
+          </view>
+          <text class="item-desc">退化模型建立 → Undercut/Overcut判定 → 进站窗口计算 → 策略格局影响。含轮胎悬崖检测、燃油修正退化模型。</text>
+        </view>
+        <view class="method-item">
+          <view class="item-header">
+            <text class="item-name">赛事叙事生成</text>
+            <text class="item-tag tag-race">正赛时激活</text>
+          </view>
+          <text class="item-desc">数据驱动叙事 → 因果推理 → 竞争力判断 → 格局预判。严格三级置信度标注体系。</text>
+        </view>
+        <view class="method-item">
+          <view class="item-header">
+            <text class="item-name">新闻影响分析</text>
+            <text class="item-tag tag-news">新闻解读时激活</text>
+          </view>
+          <text class="item-desc">事实提取 → 性能因果链展开 → 积分格局映射 → 可验证预测。覆盖技术/人事/商业三类新闻。</text>
+        </view>
+      </view>
+
+      <!-- 知识库 -->
+      <view class="method-section">
+        <text class="section-label">🗂️ 领域知识库</text>
+        <view class="knowledge-grid">
+          <view class="knowledge-card">
+            <text class="card-icon">🏎️</text>
+            <text class="card-name">赛道特性库</text>
+            <text class="card-detail">24条赛道 · 含扇区类型/DRS区/退化等级/进站损失</text>
+          </view>
+          <view class="knowledge-card">
+            <text class="card-icon">🛞</text>
+            <text class="card-name">轮胎数据库</text>
+            <text class="card-detail">3种化合物 · 退化曲线/温度窗口/燃油修正系数</text>
+          </view>
+          <view class="knowledge-card">
+            <text class="card-icon">⚡</text>
+            <text class="card-name">DRS效果库</text>
+            <text class="card-detail">各赛道DRS区速度增益/超车概率/2026主动空力参数</text>
+          </view>
+          <view class="knowledge-card">
+            <text class="card-icon">🧮</text>
+            <text class="card-name">策略决策规则</text>
+            <text class="card-detail">Undercut/Overcut条件 · 安全车决策树 · 能量管理策略</text>
+          </view>
+          <view class="knowledge-card">
+            <text class="card-icon">⚠️</text>
+            <text class="card-name">分析安全网</text>
+            <text class="card-detail">10大常见分析错误 · 数据质量陷阱 · 2026规则特殊性</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 数据管线 -->
+      <view class="method-section">
+        <text class="section-label">⚙️ 数据处理管线</text>
+        <view class="pipeline-detail">
+          <view class="pipe-step">
+            <text class="pipe-num">1</text>
+            <view class="pipe-content">
+              <text class="pipe-name">遥测数据采集</text>
+              <text class="pipe-desc">从FIA官方数据流获取两车速度/油门/制动/DRS等通道数据</text>
+            </view>
+          </view>
+          <view class="pipe-step">
+            <text class="pipe-num">2</text>
+            <view class="pipe-content">
+              <text class="pipe-name">规则引擎计算</text>
+              <text class="pipe-desc">9大维度指标计算：扇区差/弯角对比/轮胎退化/理想圈/关键时刻分类</text>
+            </view>
+          </view>
+          <view class="pipe-step">
+            <text class="pipe-num">3</text>
+            <view class="pipe-content">
+              <text class="pipe-name">知识库动态匹配</text>
+              <text class="pipe-desc">根据赛道和session类型，自动加载对应方法论和参考数据（本次加载约{{knowledgeSize}}字）</text>
+            </view>
+          </view>
+          <view class="pipe-step">
+            <text class="pipe-num">4</text>
+            <view class="pipe-content">
+              <text class="pipe-name">AI专业推理</text>
+              <text class="pipe-desc">三层递进分析：全圈结构→分段来源→弯角机制，每个结论标注置信度</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <!-- 缓存提示 -->
     <view wx:if="{{cached}}" class="cache-badge">
       <text>⚡ 已缓存结果</text>
-    </view>
-
-    <!-- 车手对比标题 -->
-    <view class="report-header">
-      <text class="report-title">{{d1}}  vs  {{d2}}</text>
-      <text class="report-subtitle text-muted">AI 专业分析报告</text>
     </view>
 
     <!-- 各维度折叠卡片 -->
@@ -40,6 +203,11 @@
       <!-- 内容 -->
       <view wx:if="{{item.expanded}}" class="section-content">
         <text class="section-text">{{item.content}}</text>
+        <!-- 数据来源 -->
+        <view class="data-source" wx:if="{{item.dataSource}}">
+          <text class="source-label">数据来源：</text>
+          <text class="source-value">{{item.dataSource}}</text>
+        </view>
       </view>
     </view>
 
@@ -48,5 +216,46 @@
       重新生成分析
     </view>
 
+  </view>
+
+  <!-- 悬浮查词按钮 -->
+  <movable-area class="term-fab-area" wx:if="{{!termSheetVisible}}">
+    <movable-view class="term-fab" direction="all" x="{{fabX}}" y="{{fabY}}" bindtap="onTermFabTap">
+      <text class="fab-icon">?</text>
+    </movable-view>
+  </movable-area>
+
+  <!-- 快速查词 Sheet -->
+  <view class="term-sheet-mask" wx:if="{{termSheetVisible}}" bindtap="closeTermSheet"></view>
+  <view class="term-sheet {{termSheetVisible ? 'show' : ''}}">
+    <view class="sheet-handle"></view>
+    <view class="sheet-title">快速查词</view>
+
+    <!-- 搜索框 -->
+    <view class="sheet-search">
+      <input placeholder="输入F1术语..." value="{{termQuery}}" bindinput="onTermSearch" />
+    </view>
+
+    <!-- 搜索结果 -->
+    <view class="sheet-results" wx:if="{{termResults.length > 0}}">
+      <view class="sheet-result-item" wx:for="{{termResults}}" wx:key="slug" bindtap="onTermResultTap" data-slug="{{item.slug}}">
+        <view class="result-name">{{item.name_zh}}</view>
+        <view class="result-en">{{item.name_en}}</view>
+        <view class="result-def">{{item.short_def}}</view>
+      </view>
+    </view>
+
+    <!-- 热门术语（无搜索时显示） -->
+    <view class="sheet-popular" wx:if="{{!termQuery && popularTerms.length > 0}}">
+      <view class="popular-title">热门术语</view>
+      <view class="popular-item" wx:for="{{popularTerms}}" wx:key="slug" bindtap="onTermResultTap" data-slug="{{item.slug}}">
+        {{item.name_zh}}
+      </view>
+    </view>
+
+    <!-- 查看完整按钮（选中结果时） -->
+    <view class="sheet-footer" wx:if="{{selectedTerm}}">
+      <button class="btn-full-detail" bindtap="goTermDetail">查看完整解释</button>
+    </view>
   </view>
 </view>

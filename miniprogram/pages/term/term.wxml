@@ -11,6 +11,20 @@
 
   <scroll-view wx:else scroll-y class="scroll">
 
+    <!-- 浏览面包屑 -->
+    <view wx:if="{{breadcrumb.length > 0}}" class="breadcrumb-bar">
+      <view class="breadcrumb-inner">
+        <block wx:for="{{breadcrumb}}" wx:key="slug">
+          <text wx:if="{{index > 0}}" class="breadcrumb-sep">></text>
+          <text class="breadcrumb-item"
+                bindtap="onBreadcrumbTap"
+                data-slug="{{item.slug}}">{{item.name}}</text>
+        </block>
+        <text class="breadcrumb-sep">></text>
+        <text class="breadcrumb-item current">{{term.name_zh}}</text>
+      </view>
+    </view>
+
     <!-- 头部 -->
     <view class="header" style="border-color: {{term.color}};">
       <view class="header-top">
@@ -46,6 +60,14 @@
       <text class="short-def">{{term.short_def}}</text>
     </view>
 
+    <!-- 为什么重要 -->
+    <view wx:if="{{term.why_important}}" class="section">
+      <text class="section-label">💡 为什么重要</text>
+      <view class="why-box" style="border-left: 6rpx solid {{term.color}}33;">
+        <text class="why-text">{{term.why_important}}</text>
+      </view>
+    </view>
+
     <!-- 详细解释 -->
     <view wx:if="{{term.full_def}}" class="section">
       <text class="section-label">详细解释</text>
@@ -60,25 +82,56 @@
       </view>
     </view>
 
-    <!-- 相关术语 -->
-    <view wx:if="{{relatedTerms.length > 0}}" class="section">
+    <!-- 数据参考 -->
+    <view wx:if="{{term.data_ref}}" class="section">
+      <text class="section-label">📊 数据参考</text>
+      <view class="data-box">
+        <text class="data-text">{{term.data_ref}}</text>
+      </view>
+    </view>
+
+    <!-- 术语关系辐射图 -->
+    <view wx:if="{{radialNodes.length > 0}}" class="section">
       <text class="section-label">相关术语</text>
-      <view class="related-list">
-        <view wx:for="{{relatedTerms}}" wx:key="slug"
-              class="related-card" bindtap="onGoRelated" data-slug="{{item.slug}}">
-          <view class="related-card-left">
-            <text class="related-name-zh">{{item.name_zh}}</text>
-            <text class="related-short-def">{{item.short_def}}</text>
-          </view>
-          <view class="related-level" style="color: {{item.color}}; border-color: {{item.color}};">
-            <text>{{item.level_label}}</text>
+      <view class="radial-container">
+        <!-- 中心圆 -->
+        <view class="radial-center" style="background: {{term.color}}33;">
+          <text class="radial-center-text">{{term.name_zh}}</text>
+        </view>
+        <!-- 虚线圆环 -->
+        <view class="radial-dashed-ring"></view>
+        <!-- 外围节点 -->
+        <view wx:for="{{radialNodes}}" wx:key="slug"
+              class="radial-node"
+              style="transform: translate({{item.x}}rpx, {{item.y}}rpx);"
+              bindtap="onGoRelated"
+              data-slug="{{item.slug}}">
+          <view class="radial-node-inner">
+            <text class="radial-node-text">{{item.name_zh}}</text>
           </view>
         </view>
       </view>
     </view>
 
+    <!-- 继续深入了解按钮 -->
+    <view class="deep-btn" bindtap="onDeepDive">
+      <text class="deep-btn-text">继续深入了解 ✨</text>
+    </view>
+
     <view style="height: 60rpx;"></view>
 
   </scroll-view>
+
+  <!-- 假功能弹窗 -->
+  <view wx:if="{{deepVisible}}" class="deep-mask" bindtap="onCloseDeep">
+    <view class="deep-card" catchtap="noop">
+      <view class="deep-handle"></view>
+      <text class="deep-title">🤖 AI 深度解析</text>
+      <text class="deep-body">别花我 token 自己去问！</text>
+      <view class="deep-copy-btn" bindtap="onCopyTerm">
+        <text class="deep-copy-text">点击复制</text>
+      </view>
+    </view>
+  </view>
 
 </view>

@@ -16,49 +16,47 @@
     <!-- 车手信息栏 -->
     <view class="driver-bar">
       <view class="driver-info" wx:if="{{driverA}}">
-        <view class="driver-dot" style="background-color: {{driverA.color}}"></view>
+        <view class="driver-dot" style="background-color:{{driverA.color}}"></view>
         <view>
           <text class="driver-code">{{driverA.code}}</text>
           <text class="driver-team text-muted">{{driverA.team}}</text>
-          <text class="driver-time" style="color: {{driverA.color}}">{{driverA.lap_time}}</text>
+          <text class="driver-time" style="color:{{driverA.color}}">{{driverA.lap_time}}</text>
         </view>
       </view>
-
       <view class="gap-badge">
         <text class="gap-text">{{gap}}</text>
       </view>
-
       <view class="driver-info driver-info-right" wx:if="{{driverB}}">
         <view>
           <text class="driver-code">{{driverB.code}}</text>
           <text class="driver-team text-muted">{{driverB.team}}</text>
-          <text class="driver-time" style="color: {{driverB.color}}">{{driverB.lap_time}}</text>
+          <text class="driver-time" style="color:{{driverB.color}}">{{driverB.lap_time}}</text>
         </view>
-        <view class="driver-dot" style="background-color: {{driverB.color}}"></view>
+        <view class="driver-dot" style="background-color:{{driverB.color}}"></view>
       </view>
     </view>
 
     <!-- 图表 Tab 切换 -->
     <view class="chart-tabs">
-      <view class="chart-tab {{activeChart === 'speed' ? 'chart-tab-active' : ''}}"
+      <view class="chart-tab {{activeChart==='speed'?'chart-tab-active':''}}"
             bindtap="onChartTabChange" data-chart="speed">速度</view>
-      <view class="chart-tab {{activeChart === 'throttle' ? 'chart-tab-active' : ''}}"
+      <view class="chart-tab {{activeChart==='throttle'?'chart-tab-active':''}}"
             bindtap="onChartTabChange" data-chart="throttle">油门</view>
-      <view class="chart-tab {{activeChart === 'brake' ? 'chart-tab-active' : ''}}"
+      <view class="chart-tab {{activeChart==='brake'?'chart-tab-active':''}}"
             bindtap="onChartTabChange" data-chart="brake">刹车</view>
-      <view class="chart-tab {{activeChart === 'gear' ? 'chart-tab-active' : ''}}"
+      <view class="chart-tab {{activeChart==='gear'?'chart-tab-active':''}}"
             bindtap="onChartTabChange" data-chart="gear">档位</view>
     </view>
 
-    <!-- 图表区域（ECharts 占位，下一步接入） -->
-    <view class="chart-placeholder">
-      <text class="chart-placeholder-label">{{activeChart === 'speed' ? '速度 (km/h)' : activeChart === 'throttle' ? '油门 (%)' : activeChart === 'brake' ? '刹车' : '档位'}}</text>
-      <text class="chart-placeholder-hint">图表加载中（ECharts 接入后显示）</text>
+    <!-- 单个 canvas，切 tab 时直接换数据 -->
+    <view class="chart-wrap">
+      <ec-canvas id="ec-main" canvas-id="ec-main"
+                 ec="{{ ecConfig }}"></ec-canvas>
     </view>
 
-    <!-- 弯角标注提示 -->
+    <!-- 弯角说明 -->
     <view class="corner-hint">
-      <text class="text-muted">横轴：{{cornerLabels.join(' · ')}}</text>
+      <text class="text-muted">弯角：{{cornerLabels.join(' · ')}}</text>
     </view>
 
     <!-- 数据丢包提示 -->
@@ -67,9 +65,50 @@
     </view>
 
     <!-- AI 分析入口 -->
-    <view class="card" style="margin-top: 24rpx;">
+    <view class="card" style="margin-top:24rpx;">
       <view class="btn-primary" bindtap="onGoAnalysis">查看 AI 专业分析报告 →</view>
     </view>
 
+  </view>
+
+  <!-- 悬浮查词按钮 -->
+  <movable-area class="term-fab-area" wx:if="{{!termSheetVisible}}">
+    <movable-view class="term-fab" direction="all" x="{{fabX}}" y="{{fabY}}" bindtap="onTermFabTap">
+      <text class="fab-icon">?</text>
+    </movable-view>
+  </movable-area>
+
+  <!-- 快速查词 Sheet -->
+  <view class="term-sheet-mask" wx:if="{{termSheetVisible}}" bindtap="closeTermSheet"></view>
+  <view class="term-sheet {{termSheetVisible ? 'show' : ''}}">
+    <view class="sheet-handle"></view>
+    <view class="sheet-title">快速查词</view>
+
+    <!-- 搜索框 -->
+    <view class="sheet-search">
+      <input placeholder="输入F1术语..." value="{{termQuery}}" bindinput="onTermSearch" />
+    </view>
+
+    <!-- 搜索结果 -->
+    <view class="sheet-results" wx:if="{{termResults.length > 0}}">
+      <view class="sheet-result-item" wx:for="{{termResults}}" wx:key="slug" bindtap="onTermResultTap" data-slug="{{item.slug}}">
+        <view class="result-name">{{item.name_zh}}</view>
+        <view class="result-en">{{item.name_en}}</view>
+        <view class="result-def">{{item.short_def}}</view>
+      </view>
+    </view>
+
+    <!-- 热门术语（无搜索时显示） -->
+    <view class="sheet-popular" wx:if="{{!termQuery && popularTerms.length > 0}}">
+      <view class="popular-title">热门术语</view>
+      <view class="popular-item" wx:for="{{popularTerms}}" wx:key="slug" bindtap="onTermResultTap" data-slug="{{item.slug}}">
+        {{item.name_zh}}
+      </view>
+    </view>
+
+    <!-- 查看完整按钮（选中结果时） -->
+    <view class="sheet-footer" wx:if="{{selectedTerm}}">
+      <button class="btn-full-detail" bindtap="goTermDetail">查看完整解释</button>
+    </view>
   </view>
 </view>

@@ -125,3 +125,182 @@
   border: 1rpx solid; font-size: 20rpx; flex-shrink: 0;
   margin-left: 16rpx;
 }
+
+/* 继续深入了解按钮 */
+.deep-btn {
+  margin: 32rpx 32rpx 0;
+  background: #1a1a1a;
+  border: 1rpx solid #2a2a2a;
+  border-radius: 16rpx;
+  padding: 28rpx 0;
+  text-align: center;
+}
+.deep-btn-text { font-size: 28rpx; color: #aaa; }
+
+/* 弹窗 */
+.deep-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.deep-card {
+  background: #1a1a1a;
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 0 40rpx 80rpx;
+}
+.deep-handle {
+  width: 60rpx; height: 6rpx;
+  background: #333; border-radius: 3rpx;
+  margin: 16rpx auto 32rpx;
+}
+.deep-title {
+  font-size: 32rpx; font-weight: bold; color: #f0f0f0;
+  display: block; margin-bottom: 20rpx;
+}
+.deep-body {
+  font-size: 28rpx; color: #888;
+  display: block; margin-bottom: 40rpx; line-height: 1.7;
+}
+/* 面包屑 */
+.breadcrumb-bar {
+  padding: 16rpx 32rpx 8rpx;
+  background: #0f0f0f;
+}
+
+.breadcrumb-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.breadcrumb-item {
+  font-size: 24rpx;
+  color: #888;
+  line-height: 1.4;
+}
+
+.breadcrumb-item.current {
+  color: #f0f0f0;
+}
+
+.breadcrumb-sep {
+  font-size: 24rpx;
+  color: #444;
+  margin: 0 8rpx;
+}
+
+/* 为什么重要 */
+.why-box {
+  border-left: 6rpx solid;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 20rpx 24rpx;
+  border-radius: 0 12rpx 12rpx 0;
+}
+
+.why-text {
+  font-size: 28rpx;
+  color: #ccc;
+  line-height: 1.7;
+  display: block;
+}
+
+/* 数据参考 */
+.data-box {
+  background: #111;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  border: 1rpx solid #1e1e1e;
+}
+
+.data-text {
+  font-size: 26rpx;
+  color: #ddd;
+  line-height: 1.8;
+  display: block;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+}
+
+/* 辐射图 */
+.radial-container {
+  position: relative;
+  width: 100%;
+  height: 400rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.radial-center {
+  position: absolute;
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 0 20rpx rgba(0,0,0,0.3);
+}
+
+.radial-center-text {
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.3;
+  padding: 10rpx;
+}
+
+.radial-dashed-ring {
+  position: absolute;
+  width: 280rpx;
+  height: 280rpx;
+  border-radius: 50%;
+  border: 2rpx dashed #333;
+  z-index: 1;
+}
+
+.radial-node {
+  position: absolute;
+  z-index: 3;
+  transition: transform 0.2s ease;
+}
+
+.radial-node:active {
+  transform: scale(0.92) !important;
+}
+
+.radial-node-inner {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #2a2a2a;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.4);
+}
+
+.radial-node-text {
+  font-size: 22rpx;
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
+  padding: 8rpx;
+}
+
+.deep-copy-btn {
+  background: #e10600;
+  border-radius: 16rpx;
+  padding: 28rpx 0;
+  text-align: center;
+}
+.deep-copy-text { font-size: 28rpx; color: #fff; font-weight: bold; }

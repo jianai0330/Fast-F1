@@ -7,19 +7,26 @@
     <view class="section-tag"><text>{{sectionName}}</text></view>
   </view>
 
+  <!-- 引用卡片（有 quote 时显示） -->
+  <view wx:if="{{quote}}" class="quote-card">
+    <text class="quote-label">引用内容</text>
+    <text class="quote-text">{{quote.length > 80 ? quote.slice(0, 80) + '...' : quote}}</text>
+  </view>
+
   <!-- 标题 -->
   <view class="field-wrap">
     <view class="field-header">
       <text class="field-label">标题</text>
       <text class="field-count {{titleLen > 45 ? 'count-warn' : ''}}">{{titleLen}}/50</text>
     </view>
-    <input
+    <textarea
       class="title-input"
       placeholder="输入标题（5-50字）"
       placeholder-class="ph"
       maxlength="50"
       bindinput="onTitleInput"
       value="{{title}}"
+      auto-height
     />
   </view>
 
@@ -37,17 +44,18 @@
       bindinput="onContentInput"
       value="{{content}}"
       auto-height
+      cursor-color="#e10600"
     />
   </view>
 
   <!-- 提示 -->
   <view class="tips">
-    <text class="tips-text">📋 帖子提交后需审核，通过后将公开展示</text>
+    <text class="tips-text">📋 发布后立即可见</text>
   </view>
 
   <!-- 提交按钮 -->
   <view class="submit-btn {{submitting ? 'submit-disabled' : ''}}" bindtap="onSubmit">
-    <text>{{submitting ? '提交中...' : '提交帖子'}}</text>
+    <text>{{submitting ? '提交中...' : '发布帖子'}}</text>
   </view>
 
 </view>

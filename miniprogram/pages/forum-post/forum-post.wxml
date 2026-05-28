@@ -11,6 +11,16 @@
   <block wx:else>
     <scroll-view scroll-y class="post-scroll">
 
+      <!-- 来源新闻卡片 -->
+      <view wx:if="{{post.news_id}}" class="news-source-card" bindtap="onGoNews">
+        <view class="news-source-left">
+          <text class="news-source-label">来源新闻</text>
+          <text class="news-source-title">{{post.news_title}}</text>
+          <text class="news-source-from">{{post.news_source}}</text>
+        </view>
+        <text class="news-source-arrow">→</text>
+      </view>
+
       <!-- 帖子主体 -->
       <view class="post-body" wx:if="{{post}}">
         <!-- AI 种子标签 -->
@@ -26,6 +36,26 @@
         </view>
         <view class="divider"></view>
         <text class="post-content">{{post.content}}</text>
+
+        <!-- 点赞/点踩 + 删帖 -->
+        <view class="action-bar">
+          <view class="like-group">
+            <view class="like-btn {{myVote === 'like' ? 'voted' : ''}}"
+                  bindtap="onLike" data-type="like">
+              <text class="like-icon">👍</text>
+              <text class="like-count">{{likes}}</text>
+            </view>
+            <view class="like-btn {{myVote === 'dislike' ? 'voted-down' : ''}}"
+                  bindtap="onLike" data-type="dislike">
+              <text class="like-icon">👎</text>
+              <text class="like-count">{{dislikes}}</text>
+            </view>
+          </view>
+          <view wx:if="{{post.author_openid === openid}}"
+                class="delete-btn" bindtap="onDeletePost">
+            <text>删除</text>
+          </view>
+        </view>
       </view>
 
       <!-- 评论区 -->
@@ -79,3 +109,4 @@
   </block>
 
 </view>
+

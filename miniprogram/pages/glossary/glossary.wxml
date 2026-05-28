@@ -9,25 +9,90 @@
              placeholder="搜索术语..."
              placeholder-style="color:#444"
              value="{{searchVal}}"
-             bindinput="onSearchInput" />
+             bindinput="onSearchInput"
+             bindfocus="onSearchFocus"
+             bindblur="onSearchBlur" />
       <view wx:if="{{searchVal}}" class="search-clear" bindtap="onSearchClear">
         <text>✕</text>
       </view>
     </view>
+
+    <!-- 搜索聚焦面板 -->
+    <view wx:if="{{searchFocused && !searchVal}}" class="search-panel">
+      <!-- 热门术语 -->
+      <view class="sp-section" wx:if="{{popularTerms.length > 0}}">
+        <text class="sp-title">热门术语</text>
+        <view class="sp-list">
+          <view wx:for="{{popularTerms}}" wx:key="slug"
+                class="sp-item" bindtap="onPopularTap" data-slug="{{item.slug}}">
+            <text class="sp-item-dot" style="background: {{item.color}};"></text>
+            <text class="sp-item-text">{{item.name_zh}}</text>
+          </view>
+        </view>
+      </view>
+      <!-- 分割线 -->
+      <view wx:if="{{popularTerms.length > 0 && recentTerms.length > 0}}" class="sp-divider"></view>
+      <!-- 最近查看 -->
+      <view class="sp-section" wx:if="{{recentTerms.length > 0}}">
+        <text class="sp-title">最近查看</text>
+        <view class="sp-list">
+          <view wx:for="{{recentTerms}}" wx:key="slug"
+                class="sp-item" bindtap="onRecentTap" data-slug="{{item.slug}}">
+            <text class="sp-item-dot" style="background: {{item.color}};"></text>
+            <text class="sp-item-text sp-item-recent">{{item.name_zh}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 搜索联想列表 -->
+    <view wx:if="{{suggestions.length > 0}}" class="suggest-panel">
+      <view wx:for="{{suggestions}}" wx:key="slug"
+            class="suggest-item" bindtap="onSuggestionTap" data-slug="{{item.slug}}">
+        <text class="suggest-key" style="color: {{item.color}};">{{item.keyword}}</text>
+        <text class="suggest-arrow">→</text>
+        <text class="suggest-name">{{item.name_zh}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 本周热词 -->
+  <view wx:if="{{hotTop3.length > 0}}" class="hot-section">
+    <text class="hot-title">🔥 本周热词</text>
+    <scroll-view scroll-x class="hot-scroll">
+      <view class="hot-row">
+        <view wx:for="{{hotTop3}}" wx:key="slug"
+              class="hot-card" bindtap="onHotTermTap" data-slug="{{item.slug}}">
+          <view class="hot-card-border" style="background: {{item.color}};"></view>
+          <view class="hot-card-body">
+            <text class="hot-card-name">{{item.name_zh}}</text>
+            <view class="hot-card-bar-wrap">
+              <view class="hot-card-bar" style="width: {{item.hotPercent}}%; background: {{item.color}};"></view>
+            </view>
+            <text class="hot-card-count">提及 {{item.hotCount}} 次</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 
   <!-- 分类 tab -->
-  <scroll-view scroll-x class="cat-scroll">
-    <view class="cat-row">
-      <view wx:for="{{categories}}" wx:key="key"
-            class="cat-tab {{activeCategory === item.key ? 'cat-tab-active' : ''}}"
-            style="{{activeCategory === item.key ? 'border-color:' + item.color + '; background:' + item.color + '22;' : ''}}"
-            bindtap="onCategoryTap"
-            data-key="{{item.key}}">
-        <text style="{{activeCategory === item.key ? 'color:' + item.color : ''}}">{{item.label}}</text>
+  <view class="cat-header">
+    <scroll-view scroll-x class="cat-scroll">
+      <view class="cat-row">
+        <view wx:for="{{categories}}" wx:key="key"
+              class="cat-tab {{activeCategory === item.key ? 'cat-tab-active' : ''}}"
+              style="{{activeCategory === item.key ? 'border-color:' + item.color + '; background:' + item.color + '22;' : ''}}"
+              bindtap="onCategoryTap"
+              data-key="{{item.key}}">
+          <text style="{{activeCategory === item.key ? 'color:' + item.color : ''}}">{{item.label}}</text>
+        </view>
       </view>
+    </scroll-view>
+    <view class="cat-toggle" bindtap="onToggleCatView">
+      <text class="cat-toggle-icon">{{catViewMode === 'tech' ? '⇄' : '⇄'}}</text>
     </view>
-  </scroll-view>
+  </view>
 
   <!-- 加载中 -->
   <view wx:if="{{loading}}" class="state-center">
@@ -46,26 +111,89 @@
             class="term-card"
             bindtap="onTermTap"
             data-slug="{{item.slug}}">
-
-        <!-- 左侧色条 -->
         <view class="term-bar" style="background: {{item.color}};"></view>
-
         <view class="term-body">
           <view class="term-head">
-            <text class="term-zh">{{item.name_zh}}</text>
-            <view class="term-cat-tag" style="background: {{item.color}}18; border-color: {{item.color}};">
-              <text style="color: {{item.color}};">{{item.category_label}}</text>
+            <view class="term-name-row">
+              <text class="term-zh">{{item.name_en}}</text>
+              <text class="term-level" style="color: #ffd700;">{{item.levelStars}}</text>
+            </view>
+            <view class="term-head-right">
+              <!-- NEW 角标 -->
+              <text wx:if="{{item.spec_year == 2026}}" class="term-new-badge">NEW</text>
+              <view class="term-cat-tag" style="background: {{item.color}}18; border-color: {{item.color}};">
+                <text style="color: {{item.color}};">{{item.category_label}}</text>
+              </view>
             </view>
           </view>
-          <text class="term-en">{{item.name_en}}</text>
+          <text class="term-en">{{item.name_zh}}</text>
           <text class="term-def">{{item.short_def}}</text>
+          <!-- 热度条 -->
+          <view wx:if="{{item.hotCount > 0}}" class="term-hot-bar-wrap">
+            <view class="term-hot-bar" style="width: {{item.hotPercent}}%; background: {{item.color}};"></view>
+          </view>
         </view>
-
         <text class="term-arrow">›</text>
+      </view>
+
+      <!-- 提交入口卡片 -->
+      <view class="submit-entry" bindtap="onShowSubmit">
+        <text class="submit-icon">➕</text>
+        <view>
+          <text class="submit-title">没找到想要的术语？</text>
+          <text class="submit-sub">提交给我们，审核通过后收录</text>
+        </view>
       </view>
     </view>
 
     <view style="height: 60rpx;"></view>
   </scroll-view>
+
+  <!-- 提交术语弹窗 -->
+  <view wx:if="{{submitVisible}}" class="submit-mask" bindtap="onHideSubmit">
+    <view class="submit-card" catchtap="noop">
+      <view class="submit-card-handle"></view>
+      <text class="submit-card-title">提交新术语</text>
+
+      <view class="form-row">
+        <text class="form-label">中文名 *</text>
+        <input class="form-input" placeholder="如：超级削峰"
+               placeholder-style="color:#444"
+               value="{{form.name_zh}}" bindinput="onFormInput" data-field="name_zh" />
+      </view>
+      <view class="form-row">
+        <text class="form-label">英文名</text>
+        <input class="form-input" placeholder="如：Super Clipping"
+               placeholder-style="color:#444"
+               value="{{form.name_en}}" bindinput="onFormInput" data-field="name_en" />
+      </view>
+      <view class="form-row">
+        <text class="form-label">分类 *</text>
+        <scroll-view scroll-x class="cat-pick-scroll">
+          <view class="cat-pick-row">
+            <view wx:for="{{categories}}" wx:key="key"
+                  wx:if="{{item.key !== 'all'}}"
+                  class="cat-pick-item {{form.category === item.key ? 'cat-pick-active' : ''}}"
+                  style="{{form.category === item.key ? 'border-color:' + item.color + '; background:' + item.color + '22;' : ''}}"
+                  bindtap="onPickCategory" data-key="{{item.key}}" data-color="{{item.color}}">
+              <text style="{{form.category === item.key ? 'color:' + item.color : ''}}">{{item.label}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+      <view class="form-row">
+        <text class="form-label">一句话解释 *</text>
+        <textarea class="form-textarea" placeholder="简单描述这个术语的含义..."
+                  placeholder-style="color:#444"
+                  value="{{form.short_def}}" bindinput="onFormInput" data-field="short_def"
+                  maxlength="120" />
+        <text class="form-count">{{form.short_def.length}}/120</text>
+      </view>
+
+      <view class="submit-btn {{submitting ? 'submit-btn-disabled' : ''}}" bindtap="onSubmitTerm">
+        <text>{{submitting ? '提交中...' : '提交审核'}}</text>
+      </view>
+    </view>
+  </view>
 
 </view>

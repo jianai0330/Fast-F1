@@ -28,10 +28,43 @@
       </view>
     </view>
 
+    <!-- 术语标签栏 -->
+    <view wx:if="{{termTags.length > 0 || teamTags.length > 0}}" class="term-tags-section">
+      <scroll-view scroll-x class="term-tags-scroll">
+        <view class="term-tags-row">
+          <!-- 车队标签（方形，点击跳转筛选） -->
+          <view wx:for="{{teamTags}}" wx:key="slug"
+                class="team-tag"
+                style="border-color: {{item.color}}; background: {{item.color}}22;"
+                bindtap="onTeamTap"
+                data-slug="{{item.slug}}"
+                data-name="{{item.name}}"
+                data-color="{{item.color}}">
+            <text class="team-tag-name" style="color: {{item.color}};">{{item.name}}</text>
+          </view>
+          <!-- 术语标签（圆形，点击弹卡片） -->
+          <view wx:for="{{termTags}}" wx:key="slug"
+                class="term-tag"
+                style="border-color: {{item.color}}; background: {{item.color}}18;"
+                bindtap="onTermTap"
+                data-slug="{{item.slug}}">
+            <text class="term-tag-name" style="color: {{item.color}};">{{item.name_zh}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
     <!-- 摘要原文 -->
     <view class="section-card" wx:if="{{item.summary}}">
       <text class="section-label">原文摘要</text>
       <text class="summary-text">{{item.summary}}</text>
+      <view class="quote-row">
+        <view class="quote-btn" bindtap="onQuote"
+              data-label="原文摘要" data-content="{{item.summary}}">
+          <text class="quote-icon">💬</text>
+          <text class="quote-text">引用到讨论</text>
+        </view>
+      </view>
     </view>
 
     <!-- AI 解读区 -->
@@ -41,31 +74,187 @@
         <text class="ai-sub" wx:if="{{polling}}">分析中，请稍候...</text>
       </view>
 
-      <!-- 已分析：显示三段内容 -->
+      <!-- 分析步骤流程条（轮询时展示） -->
+      <view class="analysis-pipeline" wx:if="{{polling}}">
+        <view class="pipeline-step {{analyzeStep >= 1 ? 'active' : ''}}">
+          <view class="step-icon">📰</view>
+          <view class="step-label">全文提取</view>
+        </view>
+        <view class="pipeline-connector"></view>
+        <view class="pipeline-step {{analyzeStep >= 2 ? 'active' : ''}}">
+          <view class="step-icon">📊</view>
+          <view class="step-label">上下文匹配</view>
+        </view>
+        <view class="pipeline-connector"></view>
+        <view class="pipeline-step {{analyzeStep >= 3 ? 'active' : ''}}">
+          <view class="step-icon">🧠</view>
+          <view class="step-label">递进式推理</view>
+        </view>
+      </view>
+
+      <!-- 分析方法论入口按钮（已分析后展示） -->
+      <view class="methodology-entry" wx:if="{{item.analyzed}}" bindtap="onToggleMethodology">
+        <text class="methodology-btn-text">🔬 查看分析方法论</text>
+        <text class="methodology-arrow">{{showMethodology ? '收起' : '展开'}}</text>
+      </view>
+
+      <!-- 展开的方法论详情面板（新闻版） -->
+      <view class="methodology-panel" wx:if="{{item.analyzed && showMethodology}}">
+        <view class="method-header">
+          <text class="method-title">本次解读调用了以下专业知识体系</text>
+          <text class="method-subtitle">递进式三段分析 + 三步推论法 + 数据来源标注规范</text>
+        </view>
+
+        <!-- 分析方法 -->
+        <view class="method-section">
+          <text class="method-section-label">📐 分析方法</text>
+          <view class="method-item active">
+            <view class="item-header">
+              <text class="item-name">递进式三段分析</text>
+              <text class="item-tag">已激活</text>
+            </view>
+            <text class="item-desc">事实摘要 → 深度解读 → 我们的判断。每段递进式深入，避免表面化描述，确保分析有据可循、结论可验证。</text>
+          </view>
+          <view class="method-item active">
+            <view class="item-header">
+              <text class="item-name">三步推论法</text>
+              <text class="item-tag">已激活</text>
+            </view>
+            <text class="item-desc">事实提取 → 性能因果链展开 → 积分格局映射。从新闻事实出发，推演到竞技影响，最终映射到积分变化。</text>
+          </view>
+        </view>
+
+        <!-- 数据来源标注规范 -->
+        <view class="method-section">
+          <text class="method-section-label">🏷️ 数据来源标注规范</text>
+          <view class="method-item active">
+            <view class="item-header">
+              <text class="item-name">三级来源标注</text>
+              <text class="item-tag">强制执行</text>
+            </view>
+            <text class="item-desc">[原文] 标注直接引用新闻原文的内容 · [推算] 标注基于逻辑推理的结论 · [积分榜数据] 标注来自实时积分数据的信息。禁止编造数字。</text>
+          </view>
+        </view>
+
+        <!-- 知识库 -->
+        <view class="method-section">
+          <text class="method-section-label">🗂️ 领域知识库</text>
+          <view class="knowledge-grid">
+            <view class="knowledge-card">
+              <text class="card-icon">📅</text>
+              <text class="card-name">2026赛季时间线</text>
+              <text class="card-detail">赛历/测试日程/技术规则变更/积分变化</text>
+            </view>
+            <view class="knowledge-card">
+              <text class="card-icon">🏎️</text>
+              <text class="card-name">24赛道特性库</text>
+              <text class="card-detail">含赛道类型/DRS区/超车难度/典型策略</text>
+            </view>
+            <view class="knowledge-card">
+              <text class="card-icon">🏆</text>
+              <text class="card-name">积分榜实时数据</text>
+              <text class="card-detail">车手/车队积分 + 历史对比 + 格局走势</text>
+            </view>
+            <view class="knowledge-card">
+              <text class="card-icon">⚠️</text>
+              <text class="card-name">分析安全网</text>
+              <text class="card-detail">10大常见分析错误 · 数据质量陷阱 · 2026规则特殊性</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 处理管线 -->
+        <view class="method-section">
+          <text class="method-section-label">⚙️ 数据处理管线</text>
+          <view class="pipeline-detail">
+            <view class="pipe-step">
+              <text class="pipe-num">1</text>
+              <view class="pipe-content">
+                <text class="pipe-name">全文提取</text>
+                <text class="pipe-desc">从新闻源获取完整内容，提取关键事实与时间线索</text>
+              </view>
+            </view>
+            <view class="pipe-step">
+              <text class="pipe-num">2</text>
+              <view class="pipe-content">
+                <text class="pipe-name">语义匹配</text>
+                <text class="pipe-desc">匹配2026赛季时间线/赛道特性/积分数据等上下文</text>
+              </view>
+            </view>
+            <view class="pipe-step">
+              <text class="pipe-num">3</text>
+              <view class="pipe-content">
+                <text class="pipe-name">知识注入</text>
+                <text class="pipe-desc">将匹配的领域知识作为分析约束注入推理过程，确保结论基于事实</text>
+              </view>
+            </view>
+            <view class="pipe-step">
+              <text class="pipe-num">4</text>
+              <view class="pipe-content">
+                <text class="pipe-name">递进式推理</text>
+                <text class="pipe-desc">三段递进分析 + 每个判断标注置信度 + 数据来源三级标注</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 已分析：显示内容 + 重新分析按钮 -->
       <block wx:if="{{item.analyzed}}">
 
         <view class="ai-card" wx:if="{{item.tech_points}}">
           <view class="ai-card-header">
-            <text class="ai-emoji">🔬</text>
-            <text class="ai-card-title">技术要点</text>
+            <text class="ai-emoji">📋</text>
+            <text class="ai-card-title">事实摘要</text>
           </view>
           <text class="ai-card-body">{{item.tech_points}}</text>
+          <view class="quote-row">
+            <view class="quote-btn" bindtap="onQuote"
+                  data-label="事实摘要" data-content="{{item.tech_points}}">
+              <text class="quote-icon">💬</text>
+              <text class="quote-text">引用到讨论</text>
+            </view>
+          </view>
         </view>
 
         <view class="ai-card" wx:if="{{item.plain_explain}}">
           <view class="ai-card-header">
-            <text class="ai-emoji">🏎️</text>
-            <text class="ai-card-title">通俗解释</text>
+            <text class="ai-emoji">🔍</text>
+            <text class="ai-card-title">深度解读</text>
           </view>
           <text class="ai-card-body">{{item.plain_explain}}</text>
+          <view class="quote-row">
+            <view class="quote-btn" bindtap="onQuote"
+                  data-label="深度解读" data-content="{{item.plain_explain}}">
+              <text class="quote-icon">💬</text>
+              <text class="quote-text">引用到讨论</text>
+            </view>
+          </view>
         </view>
 
         <view class="ai-card" wx:if="{{item.race_impact}}">
           <view class="ai-card-header">
-            <text class="ai-emoji">📊</text>
-            <text class="ai-card-title">赛况影响</text>
+            <text class="ai-emoji">💡</text>
+            <text class="ai-card-title">我们的判断</text>
           </view>
-          <text class="ai-card-body">{{item.race_impact}}</text>
+          <!-- 置信度标签 -->
+          <view wx:if="{{raceImpactConfidence.level}}" class="confidence-tag confidence-{{raceImpactConfidence.level}}">
+            {{raceImpactConfidence.text}}
+          </view>
+          <text class="ai-card-body">{{raceImpactConfidence.text ? raceImpactConfidence.cleanText : item.race_impact}}</text>
+          <view class="quote-row">
+            <view class="quote-btn" bindtap="onQuote"
+                  data-label="我们的判断" data-content="{{item.race_impact}}">
+              <text class="quote-icon">💬</text>
+              <text class="quote-text">引用到讨论</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 重新分析按钮 -->
+        <view class="reanalyze-btn {{reanalyzeLoading ? 'reanalyze-btn-disabled' : ''}}"
+              bindtap="onReanalyze">
+          <text>{{reanalyzeLoading ? '重新生成中...' : '🔄 重新分析'}}</text>
         </view>
 
       </block>
@@ -80,20 +269,107 @@
         </view>
       </block>
 
-      <!-- 超时未返回 -->
+      <!-- 未分析且未在轮询：显示触发按钮 -->
       <view wx:else class="ai-pending">
-        <text class="text-muted">AI 解读生成中，请稍后刷新页面查看</text>
+        <text class="text-muted">还没有 AI 解读</text>
+        <view class="ai-trigger-btn {{triggerLoading ? 'ai-trigger-disabled' : ''}}"
+              bindtap="onTriggerAnalyze">
+          <text>{{triggerLoading ? '正在生成...' : '✨ 生成 AI 解读'}}</text>
+        </view>
+        <text class="ai-trigger-tip">首次生成需 10-20 秒，生成后所有人可见</text>
       </view>
 
     </view>
 
-    <!-- 底部按钮 -->
-    <view class="bottom-btn" bindtap="onGoForum">
-      <text>💬 去论坛讨论这条新闻</text>
+    <!-- 讨论区卡片 -->
+    <view class="discuss-section">
+      <view class="discuss-header">
+        <text class="discuss-title">💬 讨论区</text>
+        <view wx:if="{{relatedTotal > 0}}" class="discuss-count-tag">
+          <text>{{relatedTotal}} 条</text>
+        </view>
+      </view>
+
+      <!-- 有关联帖子 -->
+      <block wx:if="{{relatedPosts.length > 0}}">
+        <view wx:for="{{relatedPosts}}" wx:key="id"
+              class="related-post-card" bindtap="onGoPost" data-id="{{item.id}}">
+          <text class="related-post-title">{{item.title}}</text>
+          <view class="related-post-meta">
+            <text class="rp-author">{{item.author_nickname}}</text>
+            <text class="rp-dot">·</text>
+            <text class="rp-stat">{{item.comment_count}} 评论</text>
+          </view>
+        </view>
+        <view wx:if="{{relatedTotal > 3}}" class="view-all-btn" bindtap="onViewAllPosts">
+          <text>查看全部 {{relatedTotal}} 条讨论 →</text>
+        </view>
+      </block>
+
+      <!-- 无关联帖子 -->
+      <view wx:else class="no-discuss">
+        <text class="text-muted">还没有讨论，来发第一条 →</text>
+      </view>
+
+      <!-- 去发帖按钮 -->
+      <view class="bottom-btn" bindtap="onGoForum">
+        <text>✏️ 去论坛讨论这条新闻</text>
+      </view>
     </view>
 
     <view style="height: 60rpx;"></view>
 
   </scroll-view>
+
+  <!-- 术语卡片遮罩 -->
+  <view wx:if="{{termCardVisible}}" class="term-mask" bindtap="onCloseTermCard">
+    <view class="term-card" catchtap="noop">
+
+      <!-- 拖动条 -->
+      <view class="term-card-handle"></view>
+
+      <!-- 头部：名称 + level badge -->
+      <view class="term-card-header">
+        <view class="term-card-names">
+          <text class="term-name-zh">{{termCard.name_zh}}</text>
+          <text class="term-name-en">{{termCard.name_en}}</text>
+        </view>
+        <view class="term-level-badge" style="background: {{termCard.color}}22; border-color: {{termCard.color}};">
+          <text style="color: {{termCard.color}};">{{termCard.level_label}}</text>
+        </view>
+      </view>
+
+      <!-- category 标签 -->
+      <view class="term-category-row">
+        <view class="term-category-tag" style="background: {{termCard.color}}18;">
+          <text style="color: {{termCard.color}};">{{termCard.category_label}}</text>
+        </view>
+        <text wx:if="{{termCard.spec_year}}" class="term-spec-year">{{termCard.spec_year}} 规则</text>
+      </view>
+
+      <!-- 一句话解释 -->
+      <text class="term-short-def">{{termCard.short_def}}</text>
+
+      <!-- 详细解释（异步加载） -->
+      <text wx:if="{{termCard.full_def}}" class="term-full-def">{{termCard.full_def}}</text>
+
+      <!-- 经典案例 -->
+      <view wx:if="{{termCard.example}}" class="term-example-box">
+        <text class="term-example-label">📌 经典案例</text>
+        <text class="term-example-text">{{termCard.example}}</text>
+      </view>
+
+      <!-- 底部按钮 -->
+      <view class="term-card-footer">
+        <view class="term-btn-detail" bindtap="onGoTermDetail" data-slug="{{termCard.slug}}">
+          <text>查看完整解释 →</text>
+        </view>
+        <view class="term-btn-forum" bindtap="onGoForumFromTerm">
+          <text>去论坛讨论</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
 
 </view>

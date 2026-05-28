@@ -12,8 +12,40 @@
     </view>
   </view>
 
+  <!-- 热门帖子推荐 -->
+  <view class="hot-section" wx:if="{{!loading && hotPosts.length >= 3}}">
+    <view class="hot-header">
+      <text class="hot-header-icon">🔥</text>
+      <text class="hot-header-text">热门帖子</text>
+    </view>
+    <view wx:for="{{hotPosts}}" wx:key="id"
+          class="hot-card"
+          bindtap="onTapPost"
+          data-id="{{item.id}}">
+      <view class="hot-rank">{{index + 1}}</view>
+      <view class="hot-info">
+        <text class="hot-title">{{item.title}}</text>
+        <view class="hot-meta">
+          <text class="hot-author">{{item.author_nickname}}</text>
+          <text class="hot-stat">💬 {{item.comment_count}}</text>
+          <text class="hot-stat">👁 {{item.view_count}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 排序切换 -->
+  <view class="sort-tabs" wx:if="{{!loading && items.length > 0}}">
+    <view class="sort-tab {{sortMode === 'latest' ? 'sort-tab-active' : ''}}" bindtap="onSwitchSort" data-sort="latest">
+      <text>最新</text>
+    </view>
+    <view class="sort-tab {{sortMode === 'hot' ? 'sort-tab-active' : ''}}" bindtap="onSwitchSort" data-sort="hot">
+      <text>最热</text>
+    </view>
+  </view>
+
   <!-- 空状态 -->
-  <view wx:elif="{{!loading && items.length === 0}}" class="empty-wrap">
+  <view wx:if="{{!loading && items.length === 0}}" class="empty-wrap">
     <text class="empty-icon">💬</text>
     <text class="empty-text">还没有帖子，来发第一帖吧</text>
   </view>
@@ -52,10 +84,10 @@
 
   </scroll-view>
 
-  <!-- 发帖悬浮按钮 -->
-  <view class="fab" bindtap="onCreatePost">
-    <text class="fab-icon">✏️</text>
-    <text class="fab-text">发帖</text>
-  </view>
+</view>
 
+<!-- 发帖悬浮按钮（放在 container 外，确保 fixed 定位相对视口） -->
+<view class="fab" bindtap="onCreatePost">
+  <text class="fab-icon">✏️</text>
+  <text class="fab-text">发帖</text>
 </view>

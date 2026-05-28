@@ -1,21 +1,31 @@
 <!-- pages/forum/forum.wxml -->
+<wxs module="fmt" src="./forum.wxs"></wxs>
 <view class="container">
 
   <!-- 顶部 -->
   <view class="page-header">
-    <text class="page-title">F1 论坛</text>
-    <text class="page-subtitle">赛事讨论 · 车队分析</text>
+    <text class="page-title">Box Box</text>
+    <text class="page-subtitle">综合讨论 · 赛事 · 车队</text>
+  </view>
+
+  <!-- 聊天室入口 -->
+  <view class="chatroom-entry" bindtap="goToChatroom">
+    <text class="chatroom-icon">💬</text>
+    <text class="chatroom-text">匿名聊天室</text>
+    <text class="chatroom-arrow">›</text>
   </view>
 
   <!-- Tab -->
   <view class="tab-bar">
+    <view class="tab {{activeTab==='general'?'tab-active':''}}"
+          bindtap="onTabChange" data-tab="general">📝 综合讨论</view>
     <view class="tab {{activeTab==='race'?'tab-active':''}}"
-          bindtap="onTabChange" data-tab="race">🏁 赛事分区</view>
+          bindtap="onTabChange" data-tab="race">🏁 赛事</view>
     <view class="tab {{activeTab==='team'?'tab-active':''}}"
-          bindtap="onTabChange" data-tab="team">🏎️ 车队分区</view>
+          bindtap="onTabChange" data-tab="team">🏎️ 车队</view>
   </view>
 
-  <!-- 加载 -->
+  <!-- 加载骨架 -->
   <view wx:if="{{loading}}" class="state-wrap">
     <view class="sk-card" wx:for="{{[1,2,3,4,5,6]}}" wx:key="*this">
       <view class="sk-line sk-long"></view>
@@ -28,32 +38,80 @@
     <text class="text-muted">{{error}}</text>
   </view>
 
-  <!-- 赛事分区 -->
-  <scroll-view wx:elif="{{activeTab==='race'}}" scroll-y class="section-scroll">
-    <view class="section-grid">
-      <view wx:for="{{raceSections}}" wx:key="id"
-            class="section-card"
-            bindtap="onTapSection"
-            data-id="{{item.id}}"
-            data-name="{{item.name}}">
-        <text class="section-name">{{item.name}}</text>
-        <text class="section-arrow">›</text>
-      </view>
-    </view>
-  </scroll-view>
+  <block wx:else>
 
-  <!-- 车队分区 -->
-  <scroll-view wx:elif="{{activeTab==='team'}}" scroll-y class="section-scroll">
-    <view class="section-grid">
-      <view wx:for="{{teamSections}}" wx:key="id"
-            class="section-card"
-            bindtap="onTapSection"
-            data-id="{{item.id}}"
-            data-name="{{item.name}}">
-        <text class="section-name">{{item.name}}</text>
-        <text class="section-arrow">›</text>
+    <!-- ── 综合讨论 Tab ── -->
+    <scroll-view wx:if="{{activeTab==='general'}}" scroll-y class="section-scroll"
+                 bindscrolltolower="onGeneralScrollBottom">
+      <view wx:if="{{generalLoading && generalPosts.length === 0}}" class="state-wrap">
+        <view class="sk-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view class="sk-line sk-long"></view>
+          <view class="sk-line sk-short"></view>
+        </view>
       </view>
-    </view>
-  </scroll-view>
+      <view wx:elif="{{generalPosts.length === 0}}" class="state-center">
+        <text class="text-muted">还没有帖子，来发第一篇吧 🏎️</text>
+      </view>
+      <view wx:else class="post-list">
+        <view wx:for="{{generalPosts}}" wx:key="id"
+              class="post-card {{item.is_seeded ? 'post-seeded' : ''}}"
+              bindtap="onTapPost" data-id="{{item.id}}">
+          <view class="post-top">
+            <text wx:if="{{item.is_seeded}}" class="seed-badge">🤖 AI</text>
+            <text class="post-title">{{item.title}}</text>
+          </view>
+          <view class="post-meta">
+            <text class="meta-author">{{item.author_nickname}}</text>
+            <text class="meta-dot">·</text>
+            <text class="meta-time">{{fmt.time(item.created_at)}}</text>
+            <text class="meta-dot">·</text>
+            <text class="meta-stat">💬 {{item.comment_count}}</text>
+            <text class="meta-stat">👁 {{item.view_count}}</text>
+          </view>
+        </view>
+        <view wx:if="{{generalLoading}}" class="load-more-tip">
+          <text class="text-muted">加载中...</text>
+        </view>
+        <view wx:elif="{{!generalHasMore}}" class="load-more-tip">
+          <text class="text-muted">— 别看了 —</text>
+        </view>
+      </view>
+    </scroll-view>
 
+    <!-- ── 赛事分区 Tab ── -->
+    <scroll-view wx:elif="{{activeTab==='race'}}" scroll-y class="section-scroll">
+      <view class="section-grid">
+        <view wx:for="{{raceSections}}" wx:key="id"
+              class="section-card"
+              bindtap="onTapSection"
+              data-id="{{item.id}}"
+              data-name="{{item.name}}">
+          <text class="section-name">{{item.name}}</text>
+          <text class="section-arrow">›</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- ── 车队分区 Tab ── -->
+    <scroll-view wx:elif="{{activeTab==='team'}}" scroll-y class="section-scroll">
+      <view class="section-grid">
+        <view wx:for="{{teamSections}}" wx:key="id"
+              class="section-card"
+              bindtap="onTapSection"
+              data-id="{{item.id}}"
+              data-name="{{item.name}}">
+          <text class="section-name">{{item.name}}</text>
+          <text class="section-arrow">›</text>
+        </view>
+      </view>
+    </scroll-view>
+
+  </block>
+
+
+</view>
+
+<!-- FAB 发帖，始终悬浮在右下角 -->
+<view wx:if="{{activeTab==='general'}}" class="fab" bindtap="onCreateGeneral">
+  <text class="fab-icon">✏️</text>
 </view>

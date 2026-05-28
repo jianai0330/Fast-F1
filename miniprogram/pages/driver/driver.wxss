@@ -192,3 +192,269 @@
 }
 
 .text-muted { color: #555; }
+
+/* ── 车迷评分 ── */
+.rating-card { }
+
+.rating-header-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.rating-badge {
+  font-size: 18rpx;
+  color: #888;
+  background: #222;
+  border-radius: 20rpx;
+  padding: 4rpx 16rpx;
+}
+
+.rating-hint {
+  font-size: 22rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.dim-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 18rpx;
+}
+
+.dim-label {
+  font-size: 24rpx;
+  color: #aaa;
+  width: 120rpx;
+}
+
+.stars-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.star {
+  font-size: 40rpx;
+  line-height: 1;
+}
+.star-on  { color: #e10600; }
+.star-off { color: #333; }
+
+.dim-score {
+  font-size: 24rpx;
+  color: #666;
+  width: 36rpx;
+  text-align: right;
+}
+
+.submit-btn {
+  margin-top: 24rpx;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  border: 1rpx solid #333;
+  color: #444;
+}
+.submit-active  { font-weight: bold; }
+.submit-disabled { opacity: 0.4; }
+
+/* 社区结果 */
+.community-score-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 28rpx;
+}
+
+.community-big {
+  font-size: 80rpx;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.community-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.community-label {
+  font-size: 22rpx;
+  color: #888;
+}
+
+.community-count {
+  font-size: 20rpx;
+  color: #555;
+}
+
+.result-dim-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 14rpx;
+  gap: 12rpx;
+}
+
+.result-dim-label {
+  font-size: 22rpx;
+  color: #888;
+  width: 120rpx;
+}
+
+.result-bar-bg {
+  flex: 1;
+  height: 8rpx;
+  background: #222;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.result-bar-fill {
+  height: 100%;
+  border-radius: 4rpx;
+  transition: width 0.4s ease;
+}
+
+.result-dim-val {
+  font-size: 22rpx;
+  color: #aaa;
+  width: 40rpx;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.my-score-hint {
+  font-size: 20rpx;
+  color: #444;
+  display: block;
+  margin-top: 16rpx;
+}
+
+/* ── 车迷留言 ── */
+.comment-input-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  background: #111;
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+}
+
+.comment-input {
+  flex: 1;
+  font-size: 26rpx;
+  color: #fff;
+  height: 56rpx;
+}
+
+.comment-send {
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+  background: #1e1e1e;
+}
+.send-active   { color: #e10600; }
+.send-disabled { color: #444; }
+
+.comment-login-tip {
+  padding: 16rpx 0 24rpx;
+}
+
+.comment-item {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #1e1e1e;
+}
+.comment-item:last-child { border-bottom: none; }
+
+.comment-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.comment-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #2a2a2a;
+  border: 1rpx solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.comment-avatar-text {
+  font-size: 26rpx;
+  color: #aaa;
+  font-weight: bold;
+}
+
+.comment-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.comment-nick {
+  font-size: 24rpx;
+  color: #e10600;
+  font-weight: bold;
+}
+
+.comment-time {
+  font-size: 20rpx;
+  color: #444;
+}
+
+.comment-content {
+  font-size: 26rpx;
+  color: #ccc;
+  line-height: 1.6;
+  display: block;
+  padding-left: 76rpx;
+}
+
+.comment-bottom {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10rpx;
+  padding-left: 76rpx;
+}
+
+.like-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6rpx;
+  padding: 4rpx 12rpx 4rpx 0;
+}
+
+.like-icon  { font-size: 24rpx; }
+.like-count { font-size: 20rpx; color: #555; }
+
+.load-more {
+  text-align: center;
+  padding: 20rpx 0 4rpx;
+  font-size: 24rpx;
+}
+
+.empty-comments {
+  padding: 24rpx 0 8rpx;
+  text-align: center;
+  font-size: 24rpx;
+}

@@ -20,9 +20,9 @@
 .count-warn  { color: #e10600; }
 
 .nick-input {
-  width: 100%; background: #1a1a1a; border-radius: 16rpx;
-  padding: 28rpx; font-size: 32rpx; color: #e0e0e0;
-  border: 1rpx solid #2a2a2a; text-align: center;
+  width: 100%; background: #2a2a2a; border-radius: 16rpx;
+  padding: 40rpx 28rpx; font-size: 38rpx; color: #e0e0e0;
+  border: 1rpx solid #3a3a3a; text-align: center;
   letter-spacing: 4rpx; box-sizing: border-box;
 }
 .ph { color: #444; text-align: center; }

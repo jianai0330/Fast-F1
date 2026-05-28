@@ -1,1 +1,9 @@
-{ "navigationBarTitleText": "积分榜" }
+{
+  "navigationBarTitleText": "积分榜",
+  "usingComponents": {
+    "ec-canvas": "../../components/ec-canvas/ec-canvas"
+  },
+  "componentPlaceholder": {
+    "ec-canvas": "view"
+  }
+}
