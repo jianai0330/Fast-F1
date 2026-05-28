@@ -41,6 +41,20 @@
     <text class="latest-race-meta">{{latestRace.location}}</text>
   </view>
 
+  <view class="quick-actions">
+    <view
+      wx:for="{{quickActions}}"
+      wx:key="key"
+      class="quick-action-card"
+      bindtap="onQuickActionTap"
+      data-url="{{item.url}}"
+      data-type="{{item.type}}"
+    >
+      <text class="quick-action-label">{{item.label}}</text>
+      <text class="quick-action-hint">{{item.hint}}</text>
+    </view>
+  </view>
+
   <!-- 可滚动内容区 -->
   <scroll-view class="content-scroll" scroll-y>
     <!-- 加载中 -->

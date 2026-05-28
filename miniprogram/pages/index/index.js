@@ -95,6 +95,13 @@ function formatRaceStatus(event) {
   return raceTime > Date.now() ? '即将开跑' : '已完赛'
 }
 
+const QUICK_ACTIONS = [
+  { key: 'standings', label: '看积分榜', hint: '车手与车队走势', type: 'switchTab', url: '/pages/standings/standings' },
+  { key: 'news', label: '刷资讯', hint: '赛后热点与精选', type: 'switchTab', url: '/pages/news/news' },
+  { key: 'glossary', label: '查术语', hint: '一键补知识点', type: 'switchTab', url: '/pages/glossary/glossary' },
+  { key: 'forum', label: '进论坛', hint: '车迷讨论区', type: 'switchTab', url: '/pages/forum/forum' },
+]
+
 Page({
   data: {
     year: 2026,
@@ -106,6 +113,7 @@ Page({
     countdown: '',
     seasonSummary: null,
     latestRace: null,
+    quickActions: QUICK_ACTIONS,
   },
 
   _timer: null,
@@ -249,5 +257,15 @@ Page({
     wx.navigateTo({
       url: `/pages/event/event?round=${event.round}&name=${encodeURIComponent(event.name)}&year=${this.data.year}&race_time_utc=${raceTime}`
     })
+  },
+
+  onQuickActionTap(e) {
+    const { url, type } = e.currentTarget.dataset
+    if (!url) return
+    if (type === 'switchTab') {
+      wx.switchTab({ url })
+      return
+    }
+    wx.navigateTo({ url })
   },
 })
