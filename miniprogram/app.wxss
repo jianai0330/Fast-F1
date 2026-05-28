@@ -2,63 +2,112 @@
 page {
   background-color: #0f0f0f;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  font-family: 'Avenir Next', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* 通用卡片 */
+/* ── 页面入场动画（所有页面通用）────────────── */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(22rpx) scale(0.992); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+  animation: pageEnter 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ── 骨架屏闪光 ─────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.sk-line {
+  background: linear-gradient(90deg, #222 25%, #2e2e2e 50%, #222 75%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+/* ── 通用卡片 ───────────────────────────────── */
 .card {
-  background-color: #1a1a1a;
-  border-radius: 12rpx;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.015) 100%),
+    #171717;
+  border-radius: 18rpx;
   margin: 16rpx;
   padding: 24rpx;
+  border: 1rpx solid rgba(255,255,255,0.06);
+  box-shadow: 0 16rpx 36rpx rgba(0, 0, 0, 0.18);
+  transition: transform 0.16s ease, opacity 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
 
-/* 红色强调色 */
-.accent { color: #e10600; }
+.card:active {
+  transform: scale(0.982);
+  opacity: 0.94;
+  border-color: rgba(255,255,255,0.1);
+}
+
+/* ── 按钮点击回弹 ──────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, #ff3b30 0%, #e10600 55%, #940300 100%);
+  color: #ffffff;
+  border-radius: 999rpx;
+  padding: 18rpx 32rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: bold;
+  letter-spacing: 1rpx;
+  box-shadow: 0 12rpx 28rpx rgba(225, 6, 0, 0.26);
+  transition: transform 0.14s ease, opacity 0.14s ease, box-shadow 0.14s ease;
+}
+
+.btn-primary:active {
+  transform: scale(0.972);
+  opacity: 0.94;
+  box-shadow: 0 8rpx 18rpx rgba(225, 6, 0, 0.18);
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.025) 100%);
+  color: #ffffff;
+  border-radius: 999rpx;
+  padding: 18rpx 32rpx;
+  text-align: center;
+  font-size: 28rpx;
+  border: 1rpx solid rgba(255,255,255,0.08);
+  transition: transform 0.14s ease, opacity 0.14s ease, border-color 0.14s ease;
+}
+
+.btn-secondary:active {
+  transform: scale(0.972);
+  opacity: 0.94;
+  border-color: rgba(255,255,255,0.14);
+}
+
+/* ── 颜色 / 字体工具类 ─────────────────────── */
+.accent    { color: #e10600; }
 .accent-bg { background-color: #e10600; }
 
-/* 次要文字 */
 .text-muted { color: #888888; font-size: 24rpx; }
-.text-sm { font-size: 24rpx; }
-.text-md { font-size: 28rpx; }
-.text-lg { font-size: 32rpx; }
-.text-xl { font-size: 36rpx; }
+.text-sm    { font-size: 24rpx; }
+.text-md    { font-size: 28rpx; }
+.text-lg    { font-size: 32rpx; }
+.text-xl    { font-size: 36rpx; }
 
-/* 分割线 */
+/* ── 分割线 ─────────────────────────────────── */
 .divider {
   height: 1rpx;
   background-color: #2a2a2a;
   margin: 16rpx 0;
 }
 
-/* 按钮 */
-.btn-primary {
-  background-color: #e10600;
-  color: #ffffff;
-  border-radius: 8rpx;
-  padding: 16rpx 32rpx;
-  text-align: center;
-  font-size: 28rpx;
-  font-weight: bold;
-}
-
-.btn-secondary {
-  background-color: #2a2a2a;
-  color: #ffffff;
-  border-radius: 8rpx;
-  padding: 16rpx 32rpx;
-  text-align: center;
-  font-size: 28rpx;
-}
-
-/* Flex 工具类 */
-.row { display: flex; flex-direction: row; align-items: center; }
-.col { display: flex; flex-direction: column; }
-.flex-1 { flex: 1; }
+/* ── Flex 工具类 ─────────────────────────────── */
+.row            { display: flex; flex-direction: row; align-items: center; }
+.col            { display: flex; flex-direction: column; }
+.flex-1         { flex: 1; }
 .justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
+.justify-center  { justify-content: center; }
 
-/* 加载态 */
+/* ── 加载态 ─────────────────────────────────── */
 .loading-wrap {
   display: flex;
   justify-content: center;
@@ -68,7 +117,7 @@ page {
   font-size: 28rpx;
 }
 
-/* 车队色块 */
+/* ── 车队色块 ────────────────────────────────── */
 .team-dot {
   width: 12rpx;
   height: 12rpx;

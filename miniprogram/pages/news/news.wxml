@@ -3,10 +3,74 @@
 
 <view class="container">
 
-  <!-- 顶部标题栏 -->
+
   <view class="page-header">
-    <text class="page-title">F1 资讯</text>
-    <text class="page-subtitle">最新动态 · AI深度解读</text>
+    <view class="header-row">
+      <view>
+        <text class="page-title">{{teamFilter ? teamName + ' 资讯' : 'F1 资讯'}}</text>
+        <text class="page-subtitle">{{teamFilter ? '点击新闻查看详情' : '最新动态 · AI深度解读'}}</text>
+      </view>
+      <view wx:if="{{teamFilter}}" class="back-btn" bindtap="onBack">
+        <text class="back-text">← 全部</text>
+      </view>
+      <view wx:else class="roadmap-btn" bindtap="onShowRoadmap">
+        <text class="roadmap-icon">💡</text>
+      </view>
+    </view>
+    <view wx:if="{{!teamFilter}}" class="header-kicker-row">
+      <text class="header-kicker">EDITORIAL FEED</text>
+      <text class="header-kicker-muted">专业解读 · 精选推荐 · 中文优先</text>
+    </view>
+  </view>
+
+  <!-- F1 词典入口 -->
+  <view class="glossary-entry" bindtap="onGoGlossary">
+    <view class="glossary-entry-left">
+      <text class="glossary-icon">📖</text>
+      <view>
+        <text class="glossary-title">F1 词典</text>
+        <text class="glossary-sub">术语扩充中 · 新闻智能关联标签 · 战狼加油！</text>
+      </view>
+    </view>
+    <text class="glossary-arrow">›</text>
+  </view>
+
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索资讯..."
+        placeholder-class="search-placeholder"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearchConfirm"
+        confirm-type="search"
+      />
+      <view wx:if="{{searchKeyword}}" class="search-clear" bindtap="onSearchClear">
+        <text class="clear-icon">✕</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 语言筛选 Tab -->
+  <view class="lang-tabs" wx:if="{{!teamFilter}}">
+    <view wx:for="{{languageTabs}}" wx:key="key"
+          class="lang-tab {{activeLanguage === item.key ? 'lang-tab-active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onLanguageTab">
+      <text>{{item.label}}</text>
+    </view>
+  </view>
+
+  <!-- 搜索无结果提示 -->
+  <view wx:if="{{!loading && searchKeyword && items.length === 0}}" class="empty-search">
+    <text class="empty-icon">🔍</text>
+    <text class="empty-text">未找到"{{searchKeyword}}"相关资讯</text>
+    <view class="empty-hint" bindtap="onSearchClear">
+      <text>清空搜索</text>
+    </view>
   </view>
 
   <!-- 加载中 -->
@@ -24,8 +88,70 @@
     <view class="retry-btn" bindtap="loadNews">重试</view>
   </view>
 
+  <!-- 精选推荐（中文/全部模式下显示） -->
+  <view wx:if="{{(activeLanguage === 'zh' || activeLanguage === 'all') && curatedItems.length > 0}}" class="curated-section">
+    <view class="section-header">
+      <text class="section-title">精选推荐</text>
+      <text class="section-more" bindtap="goSubmit">+ 投稿</text>
+    </view>
+    <!-- 中文模式且新闻为空时，精选以完整卡片展示（左图右文） -->
+    <block wx:if="{{activeLanguage === 'zh' && items.length === 0}}">
+    <view wx:for="{{curatedItems}}" wx:key="id" class="news-card curated-full-card curated-row-card" bindtap="onCuratedTap" data-id="{{item.id}}">
+        <!-- 封面图区域 -->
+        <view class="curated-thumb-wrap">
+          <image wx:if="{{item.displayImage}}" class="curated-thumb-img" src="{{item.displayImage}}" mode="aspectFill" binderror="onCuratedImgError" data-id="{{item.id}}"></image>
+          <!-- 无图占位 -->
+          <view wx:else class="curated-thumb-placeholder platform-bg-{{item.platform}}">
+            <text class="placeholder-text">{{item.platformLabel}}</text>
+          </view>
+          <!-- 视频播放图标 -->
+          <view wx:if="{{item.content_type === 'video' && item.displayImage}}" class="video-play-icon">
+            <text class="play-icon-text">▶</text>
+          </view>
+        </view>
+        <!-- 右侧文字区 -->
+      <view class="curated-row-body">
+        <view class="card-meta">
+          <text class="source-tag platform-tag platform-{{item.platform}}">{{item.platformLabel}}</text>
+          <text class="time-text">{{item.typeLabel}}</text>
+        </view>
+        <text class="editorial-label">精选内容</text>
+        <text class="news-title">{{item.title}}</text>
+        <text class="news-summary" wx:if="{{item.note}}">{{item.note}}</text>
+        <view class="card-footer">
+            <view class="ai-badge"><text>📎 快照已存</text></view>
+            <text class="read-more">查看详情 ›</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <!-- 其他模式下仍用横滑卡片 -->
+    <scroll-view wx:else scroll-x class="curated-scroll">
+      <view class="curated-scroll-inner">
+        <view wx:for="{{curatedItems}}" wx:key="id" class="curated-card-h" bindtap="onCuratedTap" data-id="{{item.id}}">
+          <!-- 封面图区域 -->
+          <view class="curated-h-thumb-wrap">
+            <image wx:if="{{item.displayImage}}" class="curated-cover-h" src="{{item.displayImage}}" mode="aspectFill" binderror="onCuratedImgError" data-id="{{item.id}}"></image>
+            <!-- 无图占位 -->
+            <view wx:else class="curated-cover-h curated-thumb-placeholder platform-bg-{{item.platform}}">
+              <text class="placeholder-text">{{item.platformLabel}}</text>
+            </view>
+            <!-- 视频播放图标 -->
+            <view wx:if="{{item.content_type === 'video' && item.displayImage}}" class="video-play-icon-h">
+              <text class="play-icon-text">▶</text>
+            </view>
+          </view>
+          <view class="curated-card-h-body">
+            <text class="platform-tag platform-{{item.platform}}">{{item.platformLabel}}</text>
+            <text class="curated-title-h">{{item.title}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- 列表 -->
-  <scroll-view wx:else
+  <scroll-view wx:if="{{!loading && !error}}"
     scroll-y
     class="news-scroll"
     refresher-enabled
@@ -35,13 +161,15 @@
     <view wx:for="{{items}}" wx:key="id"
           class="news-card"
           bindtap="onTapNews"
-          data-id="{{item.id}}">
+          data-item="{{item}}">
 
       <!-- 来源 + 时间 -->
       <view class="card-meta">
         <text class="source-tag">{{item.source}}</text>
         <text class="time-text">{{fmt.time(item.published_at)}}</text>
       </view>
+
+      <text class="editorial-label">{{item.analyzed ? 'AI FEATURE' : 'NEWS UPDATE'}}</text>
 
       <!-- 标题 -->
       <text class="news-title">{{item.title}}</text>
@@ -55,7 +183,7 @@
           <text>✨ AI已解读</text>
         </view>
         <view wx:else class="ai-badge-pending">
-          <text>分析中...</text>
+          <text>待解读</text>
         </view>
         <text class="read-more">查看详情 ›</text>
       </view>
@@ -72,4 +200,65 @@
 
   </scroll-view>
 
+</view>
+
+<!-- ── 路线图 / 反馈弹窗 ── -->
+<view wx:if="{{showRoadmap}}" class="sheet-mask" bindtap="onCloseRoadmap">
+  <view class="sheet-panel" catchtap="noop">
+
+    <view class="sheet-handle"></view>
+
+    <text class="sheet-title">🏎️ 艾芙丸小程序 · 加油战狼版 1.0</text>
+    <text class="sheet-sub">感谢你使用！这里是已实现的功能与后续开发计划</text>
+
+    <!-- 已上线 -->
+    <view class="sheet-section">
+      <text class="section-label done-label">✅ 已上线（v1.0）</text>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">赛历总览 · 排位成绩 · 正赛名次变化折线图（含进站圈标注）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">遥测对比 4 维度：速度 / 油门 / 刹车 / 档位，赛道弯角精准标注</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">AI 专业分析报告（规则引擎提取双车遥测指标 → DeepSeek 生成 Markdown 报告）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">车手 / 车队实时积分榜（三接口并行拉取 · 服务端 30min 内存缓存）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">F1 资讯聚合（4 个 RSS 源：The Race / Motorsport.com / Crash.net / F1i.com）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">AI 三段式深度解读：🔬 技术要点 / 🏎️ 通俗解释 / 📊 赛况影响</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">RAG 增强：关键词触发自动注入实时积分 + 2026 完整赛季车手阵容上下文</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">新闻 × 论坛联动：AI 分析段落一键引用至讨论区</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">论坛（赛事/车队双分区 · 发帖/评论/点赞/删帖 · AI Bot 自动发布种子内容）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">F1 词典（基础/进阶/高阶术语库，新闻详情页标签实时联动 · 点击浮层查看释义）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">全局 SWR 缓存策略（stale-while-revalidate，首屏秒出旧数据）</text></view>
+      <view class="feature-row"><text class="feature-dot done-dot">·</text><text class="feature-text">云端 24/7 自动运行（腾讯云香港 · systemd 守护进程 · APScheduler 每小时爬取+分析）</text></view>
+    </view>
+
+    <!-- AI 引擎进化 -->
+    <view class="sheet-section">
+      <text class="section-label ai-label">🧠 AI 引擎进化（规划中）</text>
+      <view class="feature-row"><text class="feature-dot ai-dot">·</text><text class="feature-text">新闻正文 / AI 分析中关键词高亮，匹配术语库后点击浮层查看详细释义</text></view>
+      <view class="feature-row"><text class="feature-dot ai-dot">·</text><text class="feature-text">Skills 约束框架：锁定输出格式 · 注入防幻觉规则 · 置信度自动校验</text></view>
+      <view class="feature-row"><text class="feature-dot ai-dot">·</text><text class="feature-text">知识库沉淀：优质分析存档为 few-shot 示例，持续强化 prompt 准确性</text></view>
+      <view class="feature-row"><text class="feature-dot ai-dot">·</text><text class="feature-text">Prompt 工程迭代：多轮 CoT 推理链 · 动态上下文注入 · 输出一致性保障</text></view>
+      <view class="feature-row"><text class="feature-dot ai-dot">·</text><text class="feature-text">双通道分析：自动识别技术向 vs 大众向受众，专业度自适应调整</text></view>
+    </view>
+
+    <!-- 近期计划 -->
+    <view class="sheet-section">
+      <text class="section-label plan-label">🚧 近期计划（v1.1+）</text>
+      <view class="feature-row"><text class="feature-dot plan-dot">·</text><text class="feature-text">赛道圈速区段热力图（颜色编码秒差，快/慢区一目了然）</text></view>
+      <view class="feature-row"><text class="feature-dot plan-dot">·</text><text class="feature-text">车手历史成绩纵向对比（跨赛季 ECharts 趋势图）</text></view>
+      <view class="feature-row"><text class="feature-dot plan-dot">·</text><text class="feature-text">胎温 / ERS 使用率深度分析</text></view>
+      <view class="feature-row"><text class="feature-dot plan-dot">·</text><text class="feature-text">实时比赛动态推送（WebSocket 订阅，正赛期间秒级更新）</text></view>
+      <view class="feature-row"><text class="feature-dot plan-dot">·</text><text class="feature-text">赛道 3D 可视化 + 驾驶线轨迹叠加</text></view>
+      <view class="feature-row"><text class="feature-dot plan-dot">·</text><text class="feature-text">车队无线电关键时刻音频片段收录</text></view>
+    </view>
+
+    <view class="sheet-feedback">
+      <text class="feedback-text">发现 bug 或有好想法？</text>
+      <view class="feedback-btn" bindtap="onCopyFeedback">
+        <text>复制反馈邮箱</text>
+      </view>
+    </view>
+
+    <view class="sheet-close" bindtap="onCloseRoadmap">
+      <text>关闭</text>
+    </view>
+
+  </view>
 </view>

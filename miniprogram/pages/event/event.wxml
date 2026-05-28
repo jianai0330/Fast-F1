@@ -1,5 +1,14 @@
 <view class="container">
 
+  <view class="event-hero">
+    <view class="event-hero-top">
+      <text class="event-hero-kicker">RACE WEEKEND</text>
+      <text class="event-hero-year">{{year}}</text>
+    </view>
+    <text class="event-hero-title">{{name}}</text>
+    <text wx:if="{{raceTimeUtc}}" class="event-hero-meta">正赛时间 · {{raceTimeUtc}}</text>
+  </view>
+
   <!-- Tab 栏（吸顶） -->
   <view class="tab-bar">
     <view class="tab {{activeTab === 'circuit' ? 'tab-active' : ''}}" bindtap="onTabChange" data-tab="circuit">赛道信息</view>
