@@ -2,6 +2,7 @@ import * as echarts from '../../components/ec-canvas/echarts'
 const { api } = require('../../utils/api')
 
 const CHANNELS = ['speed', 'throttle', 'brake', 'gear']
+const MAX_CHART_POINTS = 420
 
 const Y_CONFIGS = {
   speed:    { name: 'Speed (km/h)', min: 50,  max: 340 },
@@ -68,6 +69,53 @@ function buildOption(channel, telemetry, driverA, driverB, cornerLabels, cornerD
   }
 }
 
+function buildSampleIndices(length, maxPoints = MAX_CHART_POINTS) {
+  if (!length || length <= maxPoints) {
+    return Array.from({ length }, (_, i) => i)
+  }
+  const indices = [0]
+  const step = (length - 1) / (maxPoints - 1)
+  let lastIndex = 0
+  for (let i = 1; i < maxPoints - 1; i++) {
+    const index = Math.round(i * step)
+    if (index > lastIndex && index < length - 1) {
+      indices.push(index)
+      lastIndex = index
+    }
+  }
+  if (indices[indices.length - 1] !== length - 1) {
+    indices.push(length - 1)
+  }
+  return indices
+}
+
+function sampleSeries(values, indices) {
+  return indices.map(index => values[index])
+}
+
+function downsampleDriverTelemetry(driverTelemetry) {
+  const indices = buildSampleIndices((driverTelemetry.distance || []).length)
+  const sampled = {
+    distance: sampleSeries(driverTelemetry.distance || [], indices),
+  }
+
+  CHANNELS.forEach(channel => {
+    sampled[channel] = sampleSeries(driverTelemetry[channel] || [], indices)
+  })
+
+  return sampled
+}
+
+function downsampleTelemetry(telemetry, driverCodes) {
+  const sampled = {}
+  driverCodes.forEach(code => {
+    if (telemetry[code]) {
+      sampled[code] = downsampleDriverTelemetry(telemetry[code])
+    }
+  })
+  return sampled
+}
+
 Page({
   data: {
     year: 2026, round: null,
@@ -86,6 +134,8 @@ Page({
     popularTerms: [],
     selectedTerm: null,
     allTerms: [],
+    termsLoading: false,
+    termsLoaded: false,
     fabX: 280,
     fabY: 500,
   },
@@ -102,7 +152,6 @@ Page({
       session: options.session || 'Q',
     })
     this.loadTelemetry()
-    this.loadTermsData()
   },
 
   async loadTelemetry() {
@@ -111,7 +160,7 @@ Page({
     try {
       const res = await api.getTelemetry(year, round, d1, d2, session)
       const data = res.data
-      this._telemetryCache = data.telemetry
+      this._telemetryCache = downsampleTelemetry(data.telemetry, [data.driver_a.code, data.driver_b.code])
       // 所有数据在同一个 setData 里更新，setData 回调时 wx:else 已渲染
       this.setData({
         loading: false,
@@ -166,6 +215,8 @@ Page({
 
   // ── 悬浮查词 ──────────────────────────────────────
   async loadTermsData() {
+    if (this.data.termsLoading || this.data.termsLoaded) return
+    this.setData({ termsLoading: true })
     try {
       const [termsRes, popularRes] = await Promise.all([
         api.getTerms(),
@@ -176,13 +227,22 @@ Page({
         popularTerms: (popularRes.data || []).map(slug => {
           const t = (termsRes.data || []).find(t => t.slug === slug)
           return t || { slug, name_zh: slug }
-        })
+        }),
+        termsLoading: false,
+        termsLoaded: true,
       })
-    } catch(e) { console.error('loadTermsData', e) }
+      if (this.data.termQuery) {
+        this._filterTerms(this.data.termQuery)
+      }
+    } catch(e) {
+      console.error('loadTermsData', e)
+      this.setData({ termsLoading: false })
+    }
   },
 
   onTermFabTap() {
     this.setData({ termSheetVisible: true })
+    this.loadTermsData()
   },
 
   closeTermSheet() {
@@ -192,13 +252,22 @@ Page({
   onTermSearch(e) {
     const query = e.detail.value.toLowerCase().trim()
     this.setData({ termQuery: query })
-    if (!query) { this.setData({ termResults: [] }); return }
+    if (!query) {
+      this.setData({ termResults: [] })
+      return
+    }
+    if (!this.data.termsLoaded) {
+      this.loadTermsData()
+      return
+    }
+    this._filterTerms(query)
+  },
 
+  _filterTerms(query) {
     const results = this.data.allTerms.filter(t => {
       const searchFields = `${t.name_zh} ${t.name_en} ${t.aliases || ''}`.toLowerCase()
       return searchFields.includes(query)
     }).slice(0, 5)
-
     this.setData({ termResults: results })
   },
 
