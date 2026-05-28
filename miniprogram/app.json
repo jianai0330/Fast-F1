@@ -4,7 +4,23 @@
     "pages/event/event",
     "pages/telemetry/telemetry",
     "pages/analysis/analysis",
-    "pages/standings/standings"
+    "pages/standings/standings",
+    "pages/news/news",
+    "pages/news-detail/news-detail",
+    "pages/forum/forum",
+    "pages/forum-section/forum-section",
+    "pages/forum-post/forum-post",
+    "pages/forum-create/forum-create",
+    "pages/forum-register/forum-register",
+    "pages/admin/admin",
+    "pages/term/term",
+    "pages/glossary/glossary",
+    "pages/webview/webview",
+    "pages/news-team/news-team",
+    "pages/driver/driver",
+    "pages/curated-submit/curated-submit",
+    "pages/curated-detail/curated-detail",
+    "pages/chatroom/chatroom"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -21,14 +37,38 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "赛历"
+        "text": "赛历",
+        "iconPath": "assets/icons/calendar.png",
+        "selectedIconPath": "assets/icons/calendar_selected.png"
       },
       {
         "pagePath": "pages/standings/standings",
-        "text": "积分榜"
+        "text": "积分榜",
+        "iconPath": "assets/icons/standings.png",
+        "selectedIconPath": "assets/icons/standings_selected.png"
+      },
+      {
+        "pagePath": "pages/glossary/glossary",
+        "text": "词典",
+        "iconPath": "assets/icons/glossary.png",
+        "selectedIconPath": "assets/icons/glossary_selected.png"
+      },
+      {
+        "pagePath": "pages/news/news",
+        "text": "资讯",
+        "iconPath": "assets/icons/news.png",
+        "selectedIconPath": "assets/icons/news_selected.png"
+      },
+      {
+        "pagePath": "pages/forum/forum",
+        "text": "论坛",
+        "iconPath": "assets/icons/forum.png",
+        "selectedIconPath": "assets/icons/forum_selected.png"
       }
     ]
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "darkmode": false,
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
 }

@@ -5,10 +5,11 @@ F1 数据可视化微信小程序。FastF1 获取数据 → FastAPI 后端 → E
 详细设计见 `F1_miniprogram_design.md`。
 
 ## 记忆文件（每次启动必读）
-- `memory/MEMORY.md` — 索引，自动加载
-- `memory/progress.md` — 当前进度和任务状态
-- `memory/architecture.md` — 目录结构和数据格式
-- `memory/llm_api.md` — 国内 LLM 接入方案（DeepSeek）
+路径：`/Users/aijian/Downloads/Fast-F1/memory/`
+- `MEMORY.md` — 索引，每次对话优先读此文件
+- `progress.md` — 当前进度和任务状态
+- `architecture.md` — 目录结构和数据格式
+- `llm_api.md` — 国内 LLM 接入方案（DeepSeek）
 
 ## 开发规范
 
@@ -35,6 +36,7 @@ F1 数据可视化微信小程序。FastF1 获取数据 → FastAPI 后端 → E
 规则引擎（Python 计算）→ 结构化 JSON 指标 → Prompt 模板 → DeepSeek API → Markdown 报告
 不要把原始遥测数组传给 LLM，只传计算后的摘要指标。
 
-## 迭代节奏
-每次对话结束前更新 `memory/progress.md` 的任务状态。
+## 迭代节奏【强制规则】
+⚠️ 每完成一个步骤，立刻更新 `memory/progress.md`，不等对话结束。
+⚠️ 不更新 progress 就继续下一步 = 违规。
 上下文不足时，把重要结论写入对应 memory 文件，下次对话从 MEMORY.md 恢复。

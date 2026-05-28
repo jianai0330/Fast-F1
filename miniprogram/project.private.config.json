@@ -1,13 +1,25 @@
 {
   "libVersion": "3.4.3",
   "projectname": "miniprogram",
-  "condition": {},
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/forum-register/forum-register",
+          "pathName": "pages/forum-register/forum-register",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  },
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "coverView": false,
     "lazyloadPlaceholderEnable": false,
     "skylineRenderEnable": false,
-    "preloadBackgroundData": false,
+    "preloadBackgroundData": true,
     "autoAudits": false,
     "useApiHook": true,
     "showShadowRootInWxmlPanel": false,
