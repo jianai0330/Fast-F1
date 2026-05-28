@@ -36,3 +36,13 @@ docs/api_reference/api_autogen/
 # all variations of cache directories
 *_cache/
 .DS_Store
+.env
+
+# 后端缓存和环境变量
+backend/cache/
+cache/
+backend/db/*.db
+backend/db/*.db-shm
+backend/db/*.db-wal
+backend/static/covers/
+*.pyc

@@ -1,0 +1,298 @@
+<view class="container">
+
+  <!-- Tab 栏（吸顶） -->
+  <view class="tab-bar">
+    <view class="tab {{activeTab === 'circuit' ? 'tab-active' : ''}}" bindtap="onTabChange" data-tab="circuit">赛道信息</view>
+    <view class="tab {{activeTab === 'qualifying' ? 'tab-active' : ''}}" bindtap="onTabChange" data-tab="qualifying">排位赛</view>
+    <view class="tab {{activeTab === 'race' ? 'tab-active' : ''}}" bindtap="onTabChange" data-tab="race">正赛圈时</view>
+    <view class="tab {{activeTab === 'telemetry' ? 'tab-active' : ''}}" bindtap="onTabChange" data-tab="telemetry">数据对比</view>
+  </view>
+
+  <!-- 可滚动内容区 -->
+  <scroll-view class="content-scroll" scroll-y>
+
+  <!-- 赛道信息 -->
+  <view wx:if="{{activeTab === 'circuit'}}">
+    <view wx:if="{{circuitLoading}}" class="loading-wrap"><text>加载中...</text></view>
+    <view wx:elif="{{circuit}}" class="circuit-wrap">
+
+      <!-- 基础参数卡片 -->
+      <view class="ci-card">
+        <view class="ci-header">
+          <text class="ci-name">{{circuit.detail.name_cn || circuit.location}}</text>
+          <text class="ci-country">{{circuit.detail.country}} · {{circuit.detail.city}}</text>
+        </view>
+        <view class="ci-type-row">
+          <text class="ci-badge">{{circuit.detail.type}}</text>
+          <text class="ci-badge">{{circuit.detail.direction}}</text>
+          <text class="ci-badge">首届 {{circuit.detail.first_gp}}</text>
+        </view>
+        <view class="ci-stats-grid">
+          <view class="ci-stat">
+            <text class="ci-stat-val">{{circuit.detail.length_km}} km</text>
+            <text class="ci-stat-label">赛道长度</text>
+          </view>
+          <view class="ci-stat">
+            <text class="ci-stat-val">{{circuit.detail.laps}} 圈</text>
+            <text class="ci-stat-label">正赛圈数</text>
+          </view>
+          <view class="ci-stat">
+            <text class="ci-stat-val">{{circuit.detail.turns}}</text>
+            <text class="ci-stat-label">弯角数</text>
+          </view>
+          <view class="ci-stat">
+            <text class="ci-stat-val">{{circuit.detail.drs_zones}}</text>
+            <text class="ci-stat-label">DRS区域</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 圈速记录 -->
+      <view class="ci-card">
+        <text class="ci-section-title">最快圈记录</text>
+        <view class="ci-record-row">
+          <text class="ci-record-time">{{circuit.detail.lap_record}}</text>
+          <view class="ci-record-info">
+            <text class="ci-record-holder">{{circuit.detail.lap_record_holder}}</text>
+            <text class="ci-record-year text-muted">{{circuit.detail.lap_record_year}} 年</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 赛道特点 -->
+      <view class="ci-card">
+        <text class="ci-section-title">赛道特点</text>
+        <view class="ci-tags">
+          <text wx:for="{{circuit.detail.characteristics}}" wx:key="*this" class="ci-tag">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 赛道亮点 -->
+      <view class="ci-card">
+        <text class="ci-section-title">赛道亮点</text>
+        <view wx:for="{{circuit.detail.highlights}}" wx:key="*this" class="ci-highlight-row">
+          <text class="ci-bullet">▸</text>
+          <text class="ci-highlight-text">{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 轮胎策略 -->
+      <view class="ci-card">
+        <text class="ci-section-title">轮胎策略</text>
+        <text class="ci-body-text">{{circuit.detail.tyre_strategy}}</text>
+      </view>
+
+      <!-- 天气 -->
+      <view class="ci-card" style="margin-bottom:40rpx;">
+        <text class="ci-section-title">赛事天气</text>
+        <text class="ci-body-text">{{circuit.detail.weather}}</text>
+      </view>
+
+    </view>
+    <!-- 无详细数据时 -->
+    <view wx:elif="{{!circuitLoading}}" class="loading-wrap">
+      <text class="text-muted">暂无该赛道详细信息</text>
+    </view>
+  </view>
+
+  <!-- 排位赛结果 -->
+  <view wx:if="{{activeTab === 'qualifying'}}">
+    <view wx:if="{{!raceHappened}}" class="loading-wrap"><text class="text-muted">排位赛尚未发生</text></view>
+    <view wx:elif="{{qualiLoading}}" class="loading-wrap"><text>加载中...</text></view>
+    <view wx:elif="{{qualifying}}">
+      <!-- 表头 -->
+      <view class="quali-header row">
+        <text class="col-pos text-muted">P</text>
+        <text class="col-driver text-muted">车手</text>
+        <text class="col-time text-muted">Q1</text>
+        <text class="col-time text-muted">Q2</text>
+        <text class="col-time text-muted">Q3</text>
+      </view>
+      <view class="divider"></view>
+      <!-- 数据行 -->
+      <view wx:for="{{qualifying.results}}" wx:key="driver" class="quali-row row">
+        <text class="col-pos {{index < 3 ? 'accent' : 'text-muted'}}">{{item.position}}</text>
+        <view class="col-driver">
+          <text class="driver-code">{{item.driver}}</text>
+          <text class="team-name text-muted">{{item.team}}</text>
+        </view>
+        <text class="col-time text-sm">{{item.q1}}</text>
+        <text class="col-time text-sm">{{item.q2}}</text>
+        <text class="col-time text-sm {{index === 0 ? 'accent' : ''}}">{{item.q3}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 正赛圈时图表 -->
+  <view wx:if="{{activeTab === 'race'}}">
+    <view wx:if="{{!raceHappened}}" class="loading-wrap"><text class="text-muted">正赛尚未发生</text></view>
+    <view wx:elif="{{raceLoading}}" class="loading-wrap"><text>加载正赛数据...</text></view>
+    <view wx:elif="{{raceError}}" class="loading-wrap"><text class="text-muted">{{raceError}}</text></view>
+    <view wx:elif="{{raceReady}}">
+
+      <!-- 上半：名次变化图 -->
+      <view class="race-chart-wrap">
+        <ec-canvas id="ec-race" canvas-id="ec-race"
+                   ec="{{ raceChartConfig }}"></ec-canvas>
+      </view>
+
+      <!-- 图表说明条 -->
+      <view class="race-legend-row">
+        <text class="text-muted" style="font-size:18rpx;flex:1;">线色 = 车手  ， ○ = 进站圈</text>
+        <text class="text-muted" style="font-size:18rpx;">上方 = 名次靠前</text>
+      </view>
+
+      <!-- 车手选择器 -->
+      <view class="driver-selector-wrap">
+        <view class="driver-selector-title">
+          <text class="ds-title-text">选择车手</text>
+          <text class="ds-hint">{{raceSelected.length}} 已选</text>
+        </view>
+        <view class="driver-grid">
+          <view
+            wx:for="{{raceDrivers}}"
+            wx:key="code"
+            class="driver-chip {{item.selected ? 'driver-chip-on' : 'driver-chip-off'}}"
+            style="{{item.selected ? 'border-color:' + item.color + ';' : ''}}"
+            bindtap="onRaceDriverTap"
+            data-code="{{item.code}}"
+          >
+            <view class="chip-bar" style="background:{{item.color}};opacity:{{item.selected ? 1 : 0.2}};"></view>
+            <view class="chip-body">
+              <text class="chip-rank">P{{item.rank}}</text>
+              <text class="chip-code" style="color:{{item.selected ? item.color : '#555'}};">{{item.code}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 下半：数据卡片 -->
+      <view class="race-cards-wrap">
+        <view wx:for="{{raceCards}}" wx:key="code" class="race-card">
+          <!-- 卡片头部 -->
+          <view class="rc-header">
+            <view class="rc-pos-bar" style="background:{{item.color}};"></view>
+            <text class="rc-pos">P{{item.pos}}</text>
+            <text class="rc-code" style="color:{{item.color}};">{{item.code}}</text>
+            <view class="rc-stats">
+              <view class="rc-stat">
+                <text class="rc-stat-val">{{item.bestLap}}</text>
+                <text class="rc-stat-label">最快圈</text>
+              </view>
+              <view class="rc-stat">
+                <text class="rc-stat-val">{{item.pitCount}}</text>
+                <text class="rc-stat-label">进站</text>
+              </view>
+              <view class="rc-stat">
+                <text class="rc-stat-val">{{item.totalLaps}}</text>
+                <text class="rc-stat-label">总圈数</text>
+              </view>
+            </view>
+          </view>
+          <!-- 轮胎策略横条 -->
+          <view class="rc-stints">
+            <view
+              wx:for="{{item.stints}}"
+              wx:key="index"
+              wx:for-item="st"
+              class="rc-stint"
+              style="flex:{{st.laps}};background:{{st.color}}15;border-left:3rpx solid {{st.color}};"
+            >
+              <text class="rc-stint-cmp" style="color:{{st.color}};">{{st.compound[0]}}</text>
+              <text class="rc-stint-laps">{{st.laps}}圈</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 数据对比入口 -->
+  <view wx:if="{{activeTab === 'telemetry'}}" class="telemetry-panel">
+    <view wx:if="{{!raceHappened}}" class="loading-wrap"><text class="text-muted">排位赛尚未发生</text></view>
+    <view wx:else class="card">
+      <text class="section-title">选择对比车手</text>
+
+      <view wx:if="{{driverList.length === 0}}" class="loading-wrap" style="height:120rpx;">
+        <text class="text-muted">加载车手列表中...</text>
+      </view>
+
+      <view wx:else class="picker-row row">
+        <!-- 车手 A -->
+        <picker class="flex-1" mode="selector"
+                range="{{driverListFull}}" value="{{d1Index}}"
+                bindchange="onD1Pick">
+          <view class="driver-picker">
+            <text class="picker-label text-muted">车手 A</text>
+            <text class="picker-value accent">{{d1}}</text>
+            <text class="picker-arrow text-muted">▼</text>
+          </view>
+        </picker>
+
+        <text class="vs-text">VS</text>
+
+        <!-- 车手 B -->
+        <picker class="flex-1" mode="selector"
+                range="{{driverListFull}}" value="{{d2Index}}"
+                bindchange="onD2Pick">
+          <view class="driver-picker">
+            <text class="picker-label text-muted">车手 B</text>
+            <text class="picker-value" style="color:#00d2be">{{d2}}</text>
+            <text class="picker-arrow text-muted">▼</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="btn-primary" style="margin-top:24rpx;" bindtap="onGoTelemetry">
+        查看遥测对比图表
+      </view>
+      <view class="btn-secondary" style="margin-top:16rpx;" bindtap="onGoAnalysis">
+        AI 专业分析报告
+      </view>
+    </view>
+  </view>
+  </scroll-view>
+
+  <!-- 悬浮查词按钮 -->
+  <movable-area class="term-fab-area" wx:if="{{!termSheetVisible}}">
+    <movable-view class="term-fab" direction="all" x="{{fabX}}" y="{{fabY}}" bindtap="onTermFabTap">
+      <text class="fab-icon">?</text>
+    </movable-view>
+  </movable-area>
+
+  <!-- 快速查词 Sheet -->
+  <view class="term-sheet-mask" wx:if="{{termSheetVisible}}" bindtap="closeTermSheet"></view>
+  <view class="term-sheet {{termSheetVisible ? 'show' : ''}}">
+    <view class="sheet-handle"></view>
+    <view class="sheet-title">快速查词</view>
+
+    <!-- 搜索框 -->
+    <view class="sheet-search">
+      <input placeholder="输入F1术语..." value="{{termQuery}}" bindinput="onTermSearch" />
+    </view>
+
+    <!-- 搜索结果 -->
+    <view class="sheet-results" wx:if="{{termResults.length > 0}}">
+      <view class="sheet-result-item" wx:for="{{termResults}}" wx:key="slug" bindtap="onTermResultTap" data-slug="{{item.slug}}">
+        <view class="result-name">{{item.name_zh}}</view>
+        <view class="result-en">{{item.name_en}}</view>
+        <view class="result-def">{{item.short_def}}</view>
+      </view>
+    </view>
+
+    <!-- 热门术语（无搜索时显示） -->
+    <view class="sheet-popular" wx:if="{{!termQuery && popularTerms.length > 0}}">
+      <view class="popular-title">热门术语</view>
+      <view class="popular-item" wx:for="{{popularTerms}}" wx:key="slug" bindtap="onTermResultTap" data-slug="{{item.slug}}">
+        {{item.name_zh}}
+      </view>
+    </view>
+
+    <!-- 查看完整按钮（选中结果时） -->
+    <view class="sheet-footer" wx:if="{{selectedTerm}}">
+      <button class="btn-full-detail" bindtap="goTermDetail">查看完整解释</button>
+    </view>
+  </view>
+
+</view>

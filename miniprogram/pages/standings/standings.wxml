@@ -1,0 +1,78 @@
+<view class="container">
+
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>加载积分榜...</text>
+  </view>
+
+  <view wx:elif="{{error}}" class="loading-wrap">
+    <text class="text-muted">{{error}}</text>
+  </view>
+
+  <view wx:else>
+
+    <!-- Tab 切换 -->
+    <view class="tab-bar">
+      <view class="tab {{activeTab==='driver'?'tab-active':''}}"
+            bindtap="onTabChange" data-tab="driver">车手积分</view>
+      <view class="tab {{activeTab==='constructor'?'tab-active':''}}"
+            bindtap="onTabChange" data-tab="constructor">车队积分</view>
+    </view>
+
+    <!-- 车手积分榜 -->
+    <view wx:if="{{activeTab==='driver'}}">
+      <!-- 积分趋势图 -->
+      <view wx:if="{{driverTrend.length > 0}}" class="trend-wrap">
+        <ec-canvas id="ec-trend" canvas-id="ec-trend"
+                   ec="{{ trendChartConfig }}"></ec-canvas>
+      </view>
+      <!-- 排名表格 -->
+      <view class="standings-header row">
+        <text class="col-pos text-muted">P</text>
+        <text class="col-name text-muted">车手</text>
+        <text class="col-pts text-muted">积分</text>
+        <text class="col-wins text-muted">冠军</text>
+      </view>
+      <view class="divider"></view>
+      <view wx:for="{{drivers}}" wx:key="driver" class="standings-row row"
+            bindtap="onDriverTap" data-code="{{item.driver}}" data-color="{{item.color}}"
+            data-team="{{item.team}}" data-points="{{item.points}}"
+            data-position="{{item.position}}" data-wins="{{item.wins}}">
+        <view class="col-pos">
+          <text class="{{index < 3 ? 'accent' : 'text-muted'}}">{{item.position}}</text>
+        </view>
+        <view class="col-name row">
+          <view class="driver-bar-line" style="background:{{item.color}}"></view>
+          <view>
+            <text class="driver-code-text">{{item.driver}}</text>
+            <text class="team-name-text text-muted">{{item.team}}</text>
+          </view>
+        </view>
+        <text class="col-pts points-text">{{item.points}}</text>
+        <text class="col-wins text-muted">{{item.wins > 0 ? item.wins : '-'}}</text>
+      </view>
+    </view>
+
+    <!-- 车队积分榜 -->
+    <view wx:if="{{activeTab==='constructor'}}">
+      <view class="standings-header row">
+        <text class="col-pos text-muted">P</text>
+        <text class="col-name text-muted">车队</text>
+        <text class="col-pts text-muted">积分</text>
+        <text class="col-wins text-muted">冠军</text>
+      </view>
+      <view class="divider"></view>
+      <view wx:for="{{constructors}}" wx:key="team" class="standings-row row">
+        <view class="col-pos">
+          <text class="{{index < 3 ? 'accent' : 'text-muted'}}">{{item.position}}</text>
+        </view>
+        <view class="col-name row">
+          <view class="driver-bar-line" style="background:{{item.color}}"></view>
+          <text class="driver-code-text">{{item.team}}</text>
+        </view>
+        <text class="col-pts points-text">{{item.points}}</text>
+        <text class="col-wins text-muted">{{item.wins > 0 ? item.wins : '-'}}</text>
+      </view>
+    </view>
+
+  </view>
+</view>
