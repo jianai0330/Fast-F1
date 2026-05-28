@@ -155,9 +155,9 @@ Page({
             circuitSvg: circuit ? buildCircuitSvgDataUri(circuit.d) : '',
           }
         })
-      this.setData({ events, loading: false })
-      // 为每站标记状态
+      // 为每站标记状态（在 setData 之前）
       this._markEventStatus(events)
+      this.setData({ events, loading: false })
       this._pickNextRace(events)
       this._buildSeasonSummary(events)
     } catch (e) {
