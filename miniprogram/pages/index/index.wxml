@@ -41,7 +41,7 @@
     <text class="latest-race-meta">{{latestRace.location}}</text>
   </view>
 
-  <view class="quick-actions">
+  <view class="quick-actions quick-actions-compact">
     <view
       wx:for="{{quickActions}}"
       wx:key="key"
