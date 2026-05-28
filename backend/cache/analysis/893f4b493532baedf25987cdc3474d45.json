@@ -1,0 +1,184 @@
+{
+  "metrics": {
+    "corners": [
+      {
+        "corner": "T1",
+        "brake_point_delta": "-64m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 170.0,
+        "min_speed_b": 165.0,
+        "min_speed_delta": "+5.0 km/h",
+        "exit_speed_delta": "+21.0 km/h"
+      },
+      {
+        "corner": "T2",
+        "brake_point_delta": "-2m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 170.0,
+        "min_speed_b": 165.0,
+        "min_speed_delta": "+5.0 km/h",
+        "exit_speed_delta": "-6.0 km/h"
+      },
+      {
+        "corner": "T3",
+        "min_speed_a": 217.0,
+        "min_speed_b": 214.0,
+        "min_speed_delta": "+3.0 km/h",
+        "exit_speed_delta": "+0.0 km/h"
+      },
+      {
+        "corner": "T4",
+        "min_speed_a": 217.0,
+        "min_speed_b": 214.0,
+        "min_speed_delta": "+3.0 km/h",
+        "exit_speed_delta": "+1.0 km/h"
+      },
+      {
+        "corner": "T5",
+        "min_speed_a": 206.0,
+        "min_speed_b": 202.0,
+        "min_speed_delta": "+4.0 km/h",
+        "exit_speed_delta": "-1.0 km/h"
+      },
+      {
+        "corner": "T6",
+        "min_speed_a": 184.0,
+        "min_speed_b": 185.0,
+        "min_speed_delta": "-1.0 km/h",
+        "exit_speed_delta": "+6.0 km/h"
+      },
+      {
+        "corner": "T7",
+        "min_speed_a": 226.0,
+        "min_speed_b": 226.0,
+        "min_speed_delta": "+0.0 km/h",
+        "exit_speed_delta": "+1.0 km/h"
+      },
+      {
+        "corner": "T8",
+        "brake_point_delta": "-117m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 161.0,
+        "min_speed_b": 157.0,
+        "min_speed_delta": "+4.0 km/h",
+        "exit_speed_delta": "+11.0 km/h"
+      },
+      {
+        "corner": "T9",
+        "brake_point_delta": "+7m",
+        "brake_point_note": "A brakes later",
+        "min_speed_a": 143.0,
+        "min_speed_b": 144.0,
+        "min_speed_delta": "-1.0 km/h",
+        "exit_speed_delta": "-7.0 km/h"
+      },
+      {
+        "corner": "T10",
+        "brake_point_delta": "-4m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 114.0,
+        "min_speed_b": 95.0,
+        "min_speed_delta": "+19.0 km/h",
+        "exit_speed_delta": "+7.0 km/h"
+      },
+      {
+        "corner": "T11",
+        "brake_point_delta": "+5m",
+        "brake_point_note": "A brakes later",
+        "min_speed_a": 74.0,
+        "min_speed_b": 76.0,
+        "min_speed_delta": "-2.0 km/h",
+        "exit_speed_delta": "-17.0 km/h"
+      },
+      {
+        "corner": "T12",
+        "min_speed_a": 223.0,
+        "min_speed_b": 230.0,
+        "min_speed_delta": "-7.0 km/h",
+        "exit_speed_delta": "-2.0 km/h"
+      },
+      {
+        "corner": "T13",
+        "brake_point_delta": "+22m",
+        "brake_point_note": "A brakes later",
+        "min_speed_a": 176.0,
+        "min_speed_b": 181.0,
+        "min_speed_delta": "-5.0 km/h",
+        "exit_speed_delta": "+11.0 km/h"
+      },
+      {
+        "corner": "T14",
+        "min_speed_a": 168.0,
+        "min_speed_b": 165.0,
+        "min_speed_delta": "+3.0 km/h",
+        "exit_speed_delta": "-13.0 km/h"
+      },
+      {
+        "corner": "T15",
+        "min_speed_a": 189.0,
+        "min_speed_b": 315.0,
+        "min_speed_delta": "-126.0 km/h",
+        "exit_speed_delta": "-131.0 km/h"
+      },
+      {
+        "corner": "T16",
+        "min_speed_a": 189.0,
+        "min_speed_b": 280.0,
+        "min_speed_delta": "-91.0 km/h",
+        "exit_speed_delta": "-106.0 km/h"
+      },
+      {
+        "corner": "T17",
+        "min_speed_a": 189.0,
+        "min_speed_b": 272.0,
+        "min_speed_delta": "-83.0 km/h",
+        "exit_speed_delta": "-91.0 km/h"
+      },
+      {
+        "corner": "T18",
+        "brake_point_delta": "-96m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 189.0,
+        "min_speed_b": 97.0,
+        "min_speed_delta": "+92.0 km/h",
+        "exit_speed_delta": "-68.0 km/h"
+      }
+    ],
+    "sectors": {
+      "Sector1": {
+        "delta": "-0.194s",
+        "faster": "ANT"
+      },
+      "Sector2": {
+        "delta": "-0.277s",
+        "faster": "ANT"
+      },
+      "Sector3": {
+        "delta": "-0.160s",
+        "faster": "ANT"
+      }
+    },
+    "straights": {
+      "top_speed_a": 321.0,
+      "top_speed_b": 323.0,
+      "top_speed_delta": "-2.0 km/h",
+      "top_speed_faster": "NOR",
+      "throttle_pct_a": 66.4,
+      "throttle_pct_b": 57.1,
+      "throttle_pct_delta": "+9.3%"
+    },
+    "tyre": {
+      "ANT": {
+        "std": 11.623,
+        "slope": 0.5533
+      },
+      "NOR": {
+        "std": 13.076,
+        "slope": 0.2157
+      },
+      "note": "std=圈时标准差(s), slope=每圈衰退速率(s/lap)"
+    }
+  },
+  "report": "## 总体结论\n在铃鹿赛道的排位赛中，梅赛德斯车手ANT以1:28.778的圈速，领先迈凯伦车手NOR达0.631秒。这一显著优势主要源于ANT在赛道三个计时段（S1、S2、S3）的全面领先，尤其是在S2赛段领先了0.277秒。尽管NOR在最高尾速上略胜2.0 km/h，但未能弥补其在弯道中的巨大损失。\n\n## 赛段分析\nANT在三个赛段均建立了优势，其中**S2赛段（-0.277s）** 的领先最为突出，这通常是铃鹿赛道中高速连续弯角组合的部分，表明ANT的赛车在中高速弯的平衡性与下压力表现更佳。**S1赛段（-0.194s）** 的差距主要来自发车直道后的低速复合弯（如T10）。**S3赛段（-0.160s）** 包含著名的“Spoon弯”和“130R”弯，ANT在此的稳定发挥锁定了最终优势，三个赛段的累积优势构成了0.631秒的总差距。\n\n## 弯道攻略\n关键差距出现在以下弯角：\n1.  **T10弯**：NOR的刹车点比ANT晚了4米，但入弯最低速低了19 km/h，出弯速也慢7 km/h，显示其激进延迟刹车导致了入弯速度严重损失，过弯线路可能受到影响。\n2.  **T18弯（发夹弯）**：NOR的刹车点惊人地晚了96米，但入弯最低速反而高出92 km/h，而出弯速却慢了68 km/h。这强烈暗示**NOR在此圈可能出现了严重失误或锁死**，导致未能有效减速入弯，从而彻底破坏了出弯节奏和加速。\n3.  **T15-T17连续弯**：此处数据异常（NOR的最低速度远高于ANT），结合T18的情况，进一步支持了NOR在最后一弯序列可能**提前收油或未按正常节奏过弯**，数据已不能反映正常的弯速对比。\n\n## 直线 & 油门效率\nNOR的赛车在直道上拥有**最高尾速优势（+2.0 km/h）**，这通常意味着其下压力调校较低或引擎模式更激进。然而，ANT的**油门开度百分比高出9.3%**，这表明在可全油门路段，ANT的赛车能更早、更长时间地全油门加速，其赛车在出弯牵引力和弯中稳定性可能更好，从而能在直道起点获得更高的初速度，部分抵消了尾速的微小劣势。\n\n## 轮胎管理\n从轮胎表现数据来看，ANT的圈速**标准差更小（11.623s vs 13.076s）**，说明其单圈速度一致性更高，对轮胎的操控更稳定。然而，ANT的轮胎**衰退斜率更高（0.5533 s/lap vs 0.2157 s/lap）**，意味着其单圈速度随轮胎衰减而下降的速率更快。这揭示了两种不同的轮胎管理策略：ANT可能采用了更激进的轮胎使用方式以榨取单圈极限速度，而NOR的节奏则相对更保守、更线性。",
+  "cached": false
+}

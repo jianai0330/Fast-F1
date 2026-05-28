@@ -1,0 +1,167 @@
+/* pages/news/news.wxss */
+
+.container {
+  min-height: 100vh;
+  background-color: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部标题 */
+.page-header {
+  padding: 32rpx 32rpx 20rpx;
+  background-color: #1a1a1a;
+  border-bottom: 1rpx solid #2a2a2a;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+}
+
+.page-subtitle {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-top: 6rpx;
+}
+
+/* 滚动容器 */
+.news-scroll {
+  flex: 1;
+  height: calc(100vh - 140rpx);
+}
+
+/* 状态区 */
+.state-wrap {
+  padding: 32rpx;
+}
+
+.error-text {
+  color: #888;
+  font-size: 28rpx;
+  display: block;
+  text-align: center;
+  margin-top: 60rpx;
+}
+
+.retry-btn {
+  margin: 24rpx auto 0;
+  width: 160rpx;
+  text-align: center;
+  padding: 16rpx 0;
+  background: #e10600;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 8rpx;
+}
+
+/* 骨架屏 */
+.skeleton-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.sk-line {
+  height: 24rpx;
+  background: #2a2a2a;
+  border-radius: 6rpx;
+  margin-bottom: 16rpx;
+}
+
+.sk-short { width: 40%; }
+.sk-long  { width: 90%; }
+.sk-mid   { width: 70%; }
+
+/* 新闻卡片 */
+.news-card {
+  background-color: #1a1a1a;
+  border-radius: 16rpx;
+  margin: 16rpx 24rpx 0;
+  padding: 28rpx;
+  border: 1rpx solid #242424;
+}
+
+.card-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.source-tag {
+  font-size: 22rpx;
+  color: #e10600;
+  background: rgba(225, 6, 0, 0.12);
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.time-text {
+  font-size: 22rpx;
+  color: #555;
+}
+
+.news-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #f0f0f0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.5;
+  margin-bottom: 12rpx;
+}
+
+.news-summary {
+  font-size: 24rpx;
+  color: #777;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.6;
+  margin-bottom: 20rpx;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-badge {
+  font-size: 22rpx;
+  color: #f5a623;
+  background: rgba(245, 166, 35, 0.12);
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.ai-badge-pending {
+  font-size: 22rpx;
+  color: #555;
+  padding: 4rpx 0;
+}
+
+.read-more {
+  font-size: 24rpx;
+  color: #555;
+}
+
+/* 加载更多 */
+.load-more-tip {
+  text-align: center;
+  padding: 40rpx 0 60rpx;
+  font-size: 24rpx;
+}
+
+/* 通用 */
+.text-muted { color: #555; }

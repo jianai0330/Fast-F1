@@ -1,0 +1,34 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/event/event",
+    "pages/telemetry/telemetry",
+    "pages/analysis/analysis",
+    "pages/standings/standings"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#0f0f0f",
+    "navigationBarTitleText": "F1 Data",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0f0f0f"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#e10600",
+    "backgroundColor": "#1a1a1a",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "赛历"
+      },
+      {
+        "pagePath": "pages/standings/standings",
+        "text": "积分榜"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

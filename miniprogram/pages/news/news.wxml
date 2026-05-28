@@ -1,0 +1,75 @@
+<!-- pages/news/news.wxml -->
+<wxs module="fmt" src="./news.wxs"></wxs>
+
+<view class="container">
+
+  <!-- 顶部标题栏 -->
+  <view class="page-header">
+    <text class="page-title">F1 资讯</text>
+    <text class="page-subtitle">最新动态 · AI深度解读</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="state-wrap">
+    <view class="skeleton-card" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+      <view class="sk-line sk-short"></view>
+      <view class="sk-line sk-long"></view>
+      <view class="sk-line sk-mid"></view>
+    </view>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="state-wrap">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="loadNews">重试</view>
+  </view>
+
+  <!-- 列表 -->
+  <scroll-view wx:else
+    scroll-y
+    class="news-scroll"
+    refresher-enabled
+    bindrefresherrefresh="onPullDownRefresh"
+    bindscrolltolower="onReachBottom"
+  >
+    <view wx:for="{{items}}" wx:key="id"
+          class="news-card"
+          bindtap="onTapNews"
+          data-id="{{item.id}}">
+
+      <!-- 来源 + 时间 -->
+      <view class="card-meta">
+        <text class="source-tag">{{item.source}}</text>
+        <text class="time-text">{{fmt.time(item.published_at)}}</text>
+      </view>
+
+      <!-- 标题 -->
+      <text class="news-title">{{item.title}}</text>
+
+      <!-- 摘要 -->
+      <text class="news-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
+
+      <!-- AI解读标签 -->
+      <view class="card-footer">
+        <view wx:if="{{item.analyzed}}" class="ai-badge">
+          <text>✨ AI已解读</text>
+        </view>
+        <view wx:else class="ai-badge-pending">
+          <text>分析中...</text>
+        </view>
+        <text class="read-more">查看详情 ›</text>
+      </view>
+
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{loadingMore}}" class="load-more-tip">
+      <text class="text-muted">加载更多...</text>
+    </view>
+    <view wx:elif="{{!hasMore && items.length > 0}}" class="load-more-tip">
+      <text class="text-muted">— 已显示全部 —</text>
+    </view>
+
+  </scroll-view>
+
+</view>

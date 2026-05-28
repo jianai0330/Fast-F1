@@ -1,0 +1,13 @@
+== 在服务器 OrcaTerm 里依次运行以下3条命令 ==
+
+【第1步】写入公钥前半段：
+printf '%s' 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCz8q1UckXQWharhmYJeeMi5KvlEs4O6YGakk01h9vaG4B4ytPGtlu6JpA21ca7gHPb5gtT7IAX8D50g8J72Rk7KoYD9u86JDsaUWD+lNX+J96QkrwDxAzT8d3ijTqWJCbB7ORCxLiquVsRzegttjPWAgg013UCSCnHbam4Rhm' > /home/ubuntu/.ssh/authorized_keys
+
+【第2步】追加公钥后半段：
+printf '%s\n' 'VNNMbY5SVAMbpDhStxw+kH7jqqb5NzoBo6b/AeggYseoJhUuFe9sTfyqftTB6xbtGnqVoCIMjRBvabLFH4+P7Fn5wvVpuCRGlI2LBAVCgSgc/xhh7t0FfNfUw5DoHVVe8HaP1zDWznRI7fGY8vmZXyoSMw4QttemHNc4VNB1M75h7 aijian@Ais-MacBook-Pro.local' >> /home/ubuntu/.ssh/authorized_keys
+
+【第3步】验证字节数（应该是563左右）：
+wc -c /home/ubuntu/.ssh/authorized_keys
+
+== 验证通过后，在本机 Mac 终端运行 ==
+ssh ubuntu@43.129.185.165

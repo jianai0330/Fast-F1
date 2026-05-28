@@ -1,0 +1,192 @@
+{
+  "metrics": {
+    "corners": [
+      {
+        "corner": "T1",
+        "brake_point_delta": "-27m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 153.0,
+        "min_speed_b": 157.0,
+        "min_speed_delta": "-4.0 km/h",
+        "exit_speed_delta": "+34.0 km/h"
+      },
+      {
+        "corner": "T2",
+        "brake_point_delta": "+2m",
+        "brake_point_note": "A brakes later",
+        "min_speed_a": 153.0,
+        "min_speed_b": 157.0,
+        "min_speed_delta": "-4.0 km/h",
+        "exit_speed_delta": "+5.0 km/h"
+      },
+      {
+        "corner": "T3",
+        "brake_point_delta": "-31m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 199.0,
+        "min_speed_b": 193.0,
+        "min_speed_delta": "+6.0 km/h",
+        "exit_speed_delta": "+8.0 km/h"
+      },
+      {
+        "corner": "T4",
+        "brake_point_delta": "-31m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 196.0,
+        "min_speed_b": 193.0,
+        "min_speed_delta": "+3.0 km/h",
+        "exit_speed_delta": "+9.0 km/h"
+      },
+      {
+        "corner": "T5",
+        "brake_point_delta": "-38m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 175.0,
+        "min_speed_b": 179.0,
+        "min_speed_delta": "-4.0 km/h",
+        "exit_speed_delta": "-11.0 km/h"
+      },
+      {
+        "corner": "T6",
+        "brake_point_delta": "-38m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 171.0,
+        "min_speed_b": 167.0,
+        "min_speed_delta": "+4.0 km/h",
+        "exit_speed_delta": "+4.0 km/h"
+      },
+      {
+        "corner": "T7",
+        "min_speed_a": 223.0,
+        "min_speed_b": 217.0,
+        "min_speed_delta": "+6.0 km/h",
+        "exit_speed_delta": "+3.0 km/h"
+      },
+      {
+        "corner": "T8",
+        "brake_point_delta": "-24m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 138.0,
+        "min_speed_b": 143.0,
+        "min_speed_delta": "-5.0 km/h",
+        "exit_speed_delta": "+9.0 km/h"
+      },
+      {
+        "corner": "T9",
+        "brake_point_delta": "-18m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 138.0,
+        "min_speed_b": 136.0,
+        "min_speed_delta": "+2.0 km/h",
+        "exit_speed_delta": "+7.0 km/h"
+      },
+      {
+        "corner": "T10",
+        "brake_point_delta": "-31m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 67.0,
+        "min_speed_b": 120.0,
+        "min_speed_delta": "-53.0 km/h",
+        "exit_speed_delta": "+25.0 km/h"
+      },
+      {
+        "corner": "T11",
+        "brake_point_delta": "+12m",
+        "brake_point_note": "A brakes later",
+        "min_speed_a": 67.0,
+        "min_speed_b": 73.0,
+        "min_speed_delta": "-6.0 km/h",
+        "exit_speed_delta": "+22.0 km/h"
+      },
+      {
+        "corner": "T12",
+        "min_speed_a": 233.0,
+        "min_speed_b": 220.0,
+        "min_speed_delta": "+13.0 km/h",
+        "exit_speed_delta": "+12.0 km/h"
+      },
+      {
+        "corner": "T13",
+        "brake_point_delta": "-34m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 165.0,
+        "min_speed_b": 163.0,
+        "min_speed_delta": "+2.0 km/h",
+        "exit_speed_delta": "+67.0 km/h"
+      },
+      {
+        "corner": "T14",
+        "min_speed_a": 157.0,
+        "min_speed_b": 153.0,
+        "min_speed_delta": "+4.0 km/h",
+        "exit_speed_delta": "+3.0 km/h"
+      },
+      {
+        "corner": "T15",
+        "min_speed_a": 308.0,
+        "min_speed_b": 325.0,
+        "min_speed_delta": "-17.0 km/h",
+        "exit_speed_delta": "-20.0 km/h"
+      },
+      {
+        "corner": "T16",
+        "min_speed_a": 308.0,
+        "min_speed_b": 279.0,
+        "min_speed_delta": "+29.0 km/h",
+        "exit_speed_delta": "+14.0 km/h"
+      },
+      {
+        "corner": "T17",
+        "min_speed_a": 276.0,
+        "min_speed_b": 268.0,
+        "min_speed_delta": "+8.0 km/h",
+        "exit_speed_delta": "+29.0 km/h"
+      },
+      {
+        "corner": "T18",
+        "brake_point_delta": "-100m",
+        "brake_point_note": "B brakes later",
+        "min_speed_a": 90.0,
+        "min_speed_b": 88.0,
+        "min_speed_delta": "+2.0 km/h",
+        "exit_speed_delta": "-9.0 km/h"
+      }
+    ],
+    "sectors": {
+      "Sector1": {
+        "delta": "-0.678s",
+        "faster": "ALB"
+      },
+      "Sector2": {
+        "delta": "-0.717s",
+        "faster": "ALB"
+      },
+      "Sector3": {
+        "delta": "-0.163s",
+        "faster": "ALB"
+      }
+    },
+    "straights": {
+      "top_speed_a": 320.0,
+      "top_speed_b": 328.0,
+      "top_speed_delta": "-8.0 km/h",
+      "top_speed_faster": "ALO",
+      "throttle_pct_a": 58.8,
+      "throttle_pct_b": 58.9,
+      "throttle_pct_delta": "-0.1%"
+    },
+    "tyre": {
+      "ALB": {
+        "std": 19.03,
+        "slope": 0.5706
+      },
+      "ALO": {
+        "std": 10.275,
+        "slope": 2.8934
+      },
+      "note": "std=圈时标准差(s), slope=每圈衰退速率(s/lap)"
+    }
+  },
+  "report": "## 总体结论\n在铃鹿赛道的排位赛中，威廉姆斯车队的亚历山大·阿尔本（ALB）以1:31.088的圈速，领先阿斯顿·马丁车队的费尔南多·阿隆索（ALO）多达1.558秒，优势显著。这一巨大差距主要源于ALB在S1和S2赛段（分别快0.678秒和0.717秒）的全面统治，尤其是在中高速弯角组合中展现了更强的赛车性能与驾驶信心。\n\n## 赛段分析\n从赛段时间差来看，ALB的优势在S1和S2赛段尤为突出，分别领先0.678秒和0.717秒，这通常对应着赛道的第一计时段（包含高速弯）和第二计时段（包含著名的“S”弯组合）。这表明ALB的赛车在中高速弯角的下压力水平和平衡性更佳，或车手能更早、更激进地踩下油门。S3赛段差距较小（0.163秒），ALO在此试图追回时间，但ALB在出弯加速和牵引力方面仍保持微弱优势，巩固了整体圈速。\n\n## 弯道攻略\n关键弯角数据显示，ALB在多数中高速弯（如T3、T7、T12）保持了更高的最低过弯速度（快6-13 km/h），这是其赛段时间优势的直接来源。最具策略性差异的是T10-T11连续弯：ALB在T10刹车点晚31米，以牺牲最低速度（低53 km/h）为代价，换取T11出弯时高达25 km/h的速度优势，体现了“慢进快出”的经典走线。而ALO在T15（130R弯）速度更快，但出弯速度损失20 km/h，可能因赛车平衡或牵引力问题影响了直道末端加速。\n\n## 直线 & 油门效率\n在直线性能上，阿隆索（ALO）的最高时速达到328 km/h，比阿尔本（ALB）快8 km/h，这通常意味着阿斯顿马丁赛车采用了更低的下压力或更高效的尾速调校。然而，两位车手的全油门百分比几乎相同（ALB 58.8% vs ALO 58.9%），差距仅0.1%。这表明ALB的巨大圈速优势并非来自更激进的油门使用，而是主要依靠在弯道中积累的速度优势，弥补了直道尾速的不足。\n\n## 轮胎管理\n从轮胎稳定性数据看，阿隆索（ALO）的圈时标准差（10.275秒）远低于阿尔本（19.03秒），说明ALO的单圈表现更稳定、一致性更高。然而，ALO的轮胎衰退斜率高达2.8934秒/圈，远高于ALB的0.5706秒/圈，这意味着在长距离模拟中，ALO的轮胎磨损更快，圈速下降速率会显著加快。ALB虽然单圈波动大，但轮胎衰退控制极佳，可能在正赛中拥有更持久的竞争力。",
+  "cached": false
+}

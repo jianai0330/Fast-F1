@@ -1,0 +1,61 @@
+<!-- pages/forum-section/forum-section.wxml -->
+<wxs module="fmt" src="./forum-section.wxs"></wxs>
+
+<view class="container">
+
+  <!-- 骨架 -->
+  <view wx:if="{{loading}}" class="sk-wrap">
+    <view class="sk-card" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+      <view class="sk-line sk-long"></view>
+      <view class="sk-line sk-mid"></view>
+      <view class="sk-line sk-short"></view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{!loading && items.length === 0}}" class="empty-wrap">
+    <text class="empty-icon">💬</text>
+    <text class="empty-text">还没有帖子，来发第一帖吧</text>
+  </view>
+
+  <!-- 帖子列表 -->
+  <scroll-view wx:else scroll-y class="post-scroll"
+               bindscrolltolower="onReachBottom"
+               refresher-enabled bindrefresherrefresh="onPullDownRefresh">
+
+    <view wx:for="{{items}}" wx:key="id"
+          class="post-card"
+          bindtap="onTapPost"
+          data-id="{{item.id}}">
+
+      <!-- AI种子标签 -->
+      <view wx:if="{{item.is_seeded}}" class="seeded-badge">
+        <text>AI资讯</text>
+      </view>
+
+      <text class="post-title">{{item.title}}</text>
+
+      <view class="post-meta">
+        <text class="meta-author">{{item.author_nickname}}</text>
+        <text class="meta-dot">·</text>
+        <text class="meta-time">{{fmt.time(item.created_at)}}</text>
+        <view class="meta-right">
+          <text class="meta-stat">💬 {{item.comment_count}}</text>
+          <text class="meta-stat">👁 {{item.view_count}}</text>
+        </view>
+      </view>
+
+    </view>
+
+    <view wx:if="{{loadingMore}}" class="load-tip"><text class="text-muted">加载中...</text></view>
+    <view wx:elif="{{!hasMore && items.length > 0}}" class="load-tip"><text class="text-muted">— 已显示全部 —</text></view>
+
+  </scroll-view>
+
+  <!-- 发帖悬浮按钮 -->
+  <view class="fab" bindtap="onCreatePost">
+    <text class="fab-icon">✏️</text>
+    <text class="fab-text">发帖</text>
+  </view>
+
+</view>

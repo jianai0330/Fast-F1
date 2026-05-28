@@ -1,0 +1,81 @@
+<!-- pages/forum-post/forum-post.wxml -->
+<wxs module="fmt" src="./forum-post.wxs"></wxs>
+
+<view class="container">
+
+  <!-- 加载 -->
+  <view wx:if="{{loading}}" class="state-center">
+    <text class="text-muted">加载中...</text>
+  </view>
+
+  <block wx:else>
+    <scroll-view scroll-y class="post-scroll">
+
+      <!-- 帖子主体 -->
+      <view class="post-body" wx:if="{{post}}">
+        <!-- AI 种子标签 -->
+        <view wx:if="{{post.is_seeded}}" class="seeded-badge">
+          <text>✨ AI资讯</text>
+        </view>
+        <text class="post-title">{{post.title}}</text>
+        <view class="post-meta">
+          <text class="meta-author">{{post.author_nickname}}</text>
+          <text class="meta-dot">·</text>
+          <text class="meta-time">{{fmt.time(post.created_at)}}</text>
+          <text class="meta-section">· {{post.section_name}}</text>
+        </view>
+        <view class="divider"></view>
+        <text class="post-content">{{post.content}}</text>
+      </view>
+
+      <!-- 评论区 -->
+      <view class="comment-section">
+        <text class="comment-header">💬 共 {{comments.length}} 条评论</text>
+
+        <!-- 空评论 -->
+        <view wx:if="{{comments.length === 0}}" class="empty-comment">
+          <text class="text-muted">暂无评论，来说第一句话吧</text>
+        </view>
+
+        <!-- 评论列表 -->
+        <view wx:for="{{comments}}" wx:key="id" class="comment-card">
+          <view class="comment-header-row">
+            <view class="avatar-circle">
+              <text class="avatar-text">{{item.author_nickname.substring(0,1)}}</text>
+            </view>
+            <view class="comment-info">
+              <text class="comment-author">{{item.author_nickname}}</text>
+              <text class="comment-time">{{fmt.time(item.created_at)}}</text>
+            </view>
+          </view>
+          <text class="comment-content">{{item.content}}</text>
+        </view>
+
+      </view>
+
+      <!-- 底部占位 -->
+      <view style="height: 130rpx;"></view>
+
+    </scroll-view>
+
+    <!-- 底部评论输入框 -->
+    <view class="input-bar">
+      <input
+        class="comment-input"
+        placeholder="说点什么..."
+        placeholder-class="input-placeholder"
+        value="{{inputVal}}"
+        bindinput="onInputChange"
+        bindfocus="onInputFocus"
+        confirm-type="send"
+        bindconfirm="onSubmitComment"
+        adjust-position
+      />
+      <view class="send-btn {{submitting ? 'send-btn-disabled' : ''}}"
+            bindtap="onSubmitComment">
+        <text>发送</text>
+      </view>
+    </view>
+  </block>
+
+</view>

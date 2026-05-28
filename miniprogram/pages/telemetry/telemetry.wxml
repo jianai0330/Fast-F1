@@ -1,0 +1,75 @@
+<view class="container">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>正在加载遥测数据...</text>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="loading-wrap">
+    <text class="text-muted">{{error}}</text>
+  </view>
+
+  <!-- 主内容 -->
+  <view wx:else>
+
+    <!-- 车手信息栏 -->
+    <view class="driver-bar">
+      <view class="driver-info" wx:if="{{driverA}}">
+        <view class="driver-dot" style="background-color: {{driverA.color}}"></view>
+        <view>
+          <text class="driver-code">{{driverA.code}}</text>
+          <text class="driver-team text-muted">{{driverA.team}}</text>
+          <text class="driver-time" style="color: {{driverA.color}}">{{driverA.lap_time}}</text>
+        </view>
+      </view>
+
+      <view class="gap-badge">
+        <text class="gap-text">{{gap}}</text>
+      </view>
+
+      <view class="driver-info driver-info-right" wx:if="{{driverB}}">
+        <view>
+          <text class="driver-code">{{driverB.code}}</text>
+          <text class="driver-team text-muted">{{driverB.team}}</text>
+          <text class="driver-time" style="color: {{driverB.color}}">{{driverB.lap_time}}</text>
+        </view>
+        <view class="driver-dot" style="background-color: {{driverB.color}}"></view>
+      </view>
+    </view>
+
+    <!-- 图表 Tab 切换 -->
+    <view class="chart-tabs">
+      <view class="chart-tab {{activeChart === 'speed' ? 'chart-tab-active' : ''}}"
+            bindtap="onChartTabChange" data-chart="speed">速度</view>
+      <view class="chart-tab {{activeChart === 'throttle' ? 'chart-tab-active' : ''}}"
+            bindtap="onChartTabChange" data-chart="throttle">油门</view>
+      <view class="chart-tab {{activeChart === 'brake' ? 'chart-tab-active' : ''}}"
+            bindtap="onChartTabChange" data-chart="brake">刹车</view>
+      <view class="chart-tab {{activeChart === 'gear' ? 'chart-tab-active' : ''}}"
+            bindtap="onChartTabChange" data-chart="gear">档位</view>
+    </view>
+
+    <!-- 图表区域（ECharts 占位，下一步接入） -->
+    <view class="chart-placeholder">
+      <text class="chart-placeholder-label">{{activeChart === 'speed' ? '速度 (km/h)' : activeChart === 'throttle' ? '油门 (%)' : activeChart === 'brake' ? '刹车' : '档位'}}</text>
+      <text class="chart-placeholder-hint">图表加载中（ECharts 接入后显示）</text>
+    </view>
+
+    <!-- 弯角标注提示 -->
+    <view class="corner-hint">
+      <text class="text-muted">横轴：{{cornerLabels.join(' · ')}}</text>
+    </view>
+
+    <!-- 数据丢包提示 -->
+    <view wx:if="{{note}}" class="note-bar">
+      <text class="note-text">⚠ {{note}}</text>
+    </view>
+
+    <!-- AI 分析入口 -->
+    <view class="card" style="margin-top: 24rpx;">
+      <view class="btn-primary" bindtap="onGoAnalysis">查看 AI 专业分析报告 →</view>
+    </view>
+
+  </view>
+</view>

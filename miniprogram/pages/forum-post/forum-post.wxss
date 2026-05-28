@@ -1,0 +1,92 @@
+/* pages/forum-post/forum-post.wxss */
+.container { min-height: 100vh; background: #0f0f0f; display: flex; flex-direction: column; }
+.post-scroll { height: 100vh; }
+.state-center { display: flex; align-items: center; justify-content: center; height: 60vh; }
+.text-muted { color: #555; font-size: 26rpx; }
+
+/* 帖子主体 */
+.post-body { padding: 32rpx; background: #1a1a1a; border-bottom: 1rpx solid #2a2a2a; }
+
+.seeded-badge {
+  display: inline-block; font-size: 20rpx; color: #4a9eff;
+  background: rgba(74,158,255,0.12); padding: 4rpx 14rpx;
+  border-radius: 16rpx; margin-bottom: 16rpx;
+}
+
+.post-title {
+  font-size: 34rpx; font-weight: bold; color: #f0f0f0;
+  line-height: 1.6; display: block; margin-bottom: 20rpx;
+}
+
+.post-meta {
+  display: flex; flex-direction: row; align-items: center;
+  font-size: 22rpx; color: #555; flex-wrap: wrap; gap: 4rpx;
+}
+.meta-author { color: #888; }
+.meta-dot { margin: 0 6rpx; }
+.meta-time { color: #555; }
+.meta-section { color: #555; }
+
+.divider { height: 1rpx; background: #2a2a2a; margin: 24rpx 0; }
+
+.post-content {
+  font-size: 28rpx; color: #bbb; line-height: 1.9;
+  display: block; white-space: pre-wrap;
+}
+
+/* 评论区 */
+.comment-section { padding: 24rpx 24rpx 0; }
+
+.comment-header {
+  font-size: 26rpx; color: #777; display: block;
+  margin-bottom: 20rpx; font-weight: bold;
+}
+
+.empty-comment { padding: 40rpx 0; text-align: center; }
+
+.comment-card {
+  background: #1a1a1a; border-radius: 16rpx;
+  padding: 24rpx; margin-bottom: 16rpx;
+  border: 1rpx solid #242424;
+}
+
+.comment-header-row {
+  display: flex; flex-direction: row; align-items: center;
+  margin-bottom: 16rpx; gap: 16rpx;
+}
+
+.avatar-circle {
+  width: 56rpx; height: 56rpx; border-radius: 50%;
+  background: #e10600; display: flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.avatar-text { font-size: 24rpx; color: #fff; font-weight: bold; }
+
+.comment-info { display: flex; flex-direction: column; gap: 4rpx; }
+.comment-author { font-size: 24rpx; color: #ccc; font-weight: 500; }
+.comment-time   { font-size: 20rpx; color: #555; }
+.comment-content { font-size: 26rpx; color: #aaa; line-height: 1.7; display: block; }
+
+/* 底部输入栏 */
+.input-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #1a1a1a; border-top: 1rpx solid #2a2a2a;
+  display: flex; flex-direction: row; align-items: center;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+}
+
+.comment-input {
+  flex: 1; background: #111; border-radius: 40rpx;
+  padding: 16rpx 28rpx; font-size: 26rpx; color: #ddd;
+  margin-right: 16rpx; min-height: 64rpx;
+}
+.input-placeholder { color: #444; }
+
+.send-btn {
+  background: #e10600; border-radius: 40rpx;
+  padding: 16rpx 32rpx; font-size: 26rpx; color: #fff;
+  white-space: nowrap; font-weight: bold;
+}
+.send-btn-disabled { background: #444; }

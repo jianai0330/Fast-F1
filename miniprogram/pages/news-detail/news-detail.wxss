@@ -1,0 +1,189 @@
+/* pages/news-detail/news-detail.wxss */
+
+.container {
+  min-height: 100vh;
+  background-color: #0f0f0f;
+}
+
+.detail-scroll {
+  height: 100vh;
+}
+
+/* 状态 */
+.state-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.error-text { color: #888; font-size: 28rpx; }
+.text-muted { color: #555; font-size: 26rpx; }
+
+/* 标题区 */
+.title-section {
+  padding: 32rpx 32rpx 24rpx;
+  background: #1a1a1a;
+  border-bottom: 1rpx solid #2a2a2a;
+}
+
+.meta-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.source-tag {
+  font-size: 22rpx;
+  color: #e10600;
+  background: rgba(225,6,0,0.12);
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.time-text {
+  font-size: 22rpx;
+  color: #555;
+}
+
+.news-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #f0f0f0;
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.origin-btn {
+  display: inline-flex;
+  align-items: center;
+  font-size: 24rpx;
+  color: #4a9eff;
+  padding: 8rpx 0;
+}
+
+/* 摘要卡片 */
+.section-card {
+  margin: 24rpx 24rpx 0;
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  border-left: 4rpx solid #333;
+}
+
+.section-label {
+  font-size: 22rpx;
+  color: #555;
+  display: block;
+  margin-bottom: 14rpx;
+  text-transform: uppercase;
+  letter-spacing: 2rpx;
+}
+
+.summary-text {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 1.8;
+  display: block;
+}
+
+/* AI 解读区 */
+.ai-section {
+  margin: 24rpx 24rpx 0;
+}
+
+.ai-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.ai-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #f5a623;
+}
+
+.ai-sub {
+  font-size: 22rpx;
+  color: #555;
+}
+
+/* AI 三段卡片 */
+.ai-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid #242424;
+}
+
+.ai-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.ai-emoji {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.ai-card-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ddd;
+}
+
+.ai-card-body {
+  font-size: 26rpx;
+  color: #aaa;
+  line-height: 1.8;
+  display: block;
+}
+
+/* 骨架屏 */
+.skeleton-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.sk-line {
+  height: 22rpx;
+  background: #252525;
+  border-radius: 6rpx;
+  margin-bottom: 16rpx;
+}
+
+.sk-short { width: 35%; }
+.sk-long  { width: 92%; }
+.sk-mid   { width: 68%; }
+
+/* 等待提示 */
+.ai-pending {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 40rpx 28rpx;
+  text-align: center;
+}
+
+/* 底部按钮 */
+.bottom-btn {
+  margin: 32rpx 24rpx 0;
+  background: #1a1a1a;
+  border: 1rpx solid #2a2a2a;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #aaa;
+}

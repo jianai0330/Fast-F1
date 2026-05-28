@@ -5,14 +5,15 @@
 ---
 
 ### 优化审查记录（2026-05-28）
-- [ ] `jianai0330/Fast-F1` 已由用户创建：下一步整理本轮实际改动，避免提交运行态文件，然后执行首次 commit 与 push。
-- [ ] 首次提交准备中：仅 stage 本轮真实改动文件（流畅度优化、仓库治理、路线图），明确排除 `.env`、cache、数据库与其他运行态文件。
+- [x] `jianai0330/Fast-F1` 已由用户创建：本地已按该仓库完成首次 commit 与 push。
+- [x] 首次提交准备中：已仅 stage 本轮真实改动文件（流畅度优化、仓库治理、路线图），明确排除 `.env`、cache、数据库与其他运行态文件。
+- [x] 已完成首次定向 commit：提交信息 `Improve app responsiveness and repo hygiene`，仅包含本轮明确处理的流畅度优化、仓库治理与路线图文件；其他已暂存运行态/历史文件保持未随本次 commit 提交。
 - [ ] 尝试直接代建 GitHub 仓库：基于已打通的 `jianai0330` SSH 身份，通过本机浏览器检查 GitHub 登录态并创建 `jianai0330/Fast-F1` 空仓库，成功后再执行首次 commit/push。
 - [ ] 开始为 GitHub 账号 `jianai0330` 生成专用 SSH key：本轮仅创建新 key，不修改现有 GitHub SSH 配置与仓库 remote；待用户把公钥加到 GitHub 后再切换。
 - [x] 已生成 `jianai0330` 专用 SSH key：私钥 `~/.ssh/id_ed25519_jianai0330_github`，公钥 `~/.ssh/id_ed25519_jianai0330_github.pub`，指纹 `SHA256:ovEi4diccf+2FJTPhMOhrHBgyAYOnGKsZCSubdv94Ic`；待用户把公钥添加到 GitHub 账号 `jianai0330` 后，再修改 `~/.ssh/config` 与仓库 remote。
-- [ ] `jianai0330` SSH key 已添加到 GitHub：下一步写入专用 SSH host、验证认证是否已切到 `jianai0330`，并检查个人仓库 `jianai0330/Fast-F1` 是否存在。
+- [x] `jianai0330` SSH key 已添加到 GitHub：专用 SSH host 已写入并验证通过。
 - [x] `jianai0330` SSH host 已切换到新 key，SSH 认证返回 `Hi jianai0330!`；当前仓库 remotes 已调整为 `origin=git@jianai0330:jianai0330/Fast-F1.git`、`upstream=git@github.com:theOehrly/Fast-F1.git`。验证发现 GitHub 上 `jianai0330/Fast-F1` 目前不存在，需创建后才能 push。
-- [ ] API 代建仓库遇到账户边界：命令行可用的 GitHub token 实际属于 `aijiangientech`，因此通过 API 创建出的仓库是 `aijiangientech/Fast-F1`，不是目标账号 `jianai0330/Fast-F1`。SSH 身份已是 `jianai0330`，但 API 身份尚未切换。
+- [x] API 代建仓库账户边界已确认：命令行可用的 GitHub token 实际属于 `aijiangientech`，因此 API 建仓落在 `aijiangientech/Fast-F1`；最终已改由用户创建 `jianai0330/Fast-F1` 并成功接通 `origin/main`。
 - [ ] GitHub 仓库接管检查：当前仓库 `origin` 指向 `git@github.com:theOehrly/Fast-F1.git`（上游仓库），本机未安装 `gh`；后续需改为用户自己的 GitHub 仓库再执行常规 commit/push 流程。
 - [x] 本机 GitHub 身份核对完成：`~/.ssh/config` 中 `jianai0330`、`ajn2020`、`github.com-aijiangientech` 三个别名均可成功 SSH 认证到 GitHub 账号 `aijiangientech`；当前仓库本地 git 用户仍是 `aijian_max <ai.jian.gientech@outlook.com>`。
 - [x] Git 身份配置已调整：全局个人身份改为 `aijian_mac <ai.jian.gientech@outlook.com>`；`/Users/aijian/Documents/company-repos/` 路径规则改为 `简爱 <p6063391@gientech.com>`；当前仓库本地 git 用户也已设置为 `简爱 <p6063391@gientech.com>`。

@@ -1,0 +1,194 @@
+.container {
+  background-color: #0d0d0d;
+  min-height: 100vh;
+}
+
+/* 英雄区 */
+.hero {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 40rpx 28rpx 32rpx;
+  background-color: #111;
+  gap: 24rpx;
+}
+
+.hero-number {
+  font-size: 96rpx;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  opacity: 0.9;
+  min-width: 120rpx;
+  text-align: center;
+}
+
+.hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  flex: 1;
+}
+
+.hero-name-cn {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.hero-name-en {
+  font-size: 22rpx;
+  color: #888;
+  letter-spacing: 1rpx;
+}
+
+.hero-meta-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 4rpx;
+}
+
+.hero-flag { font-size: 28rpx; }
+.hero-nationality { font-size: 24rpx; color: #aaa; }
+.hero-dot { font-size: 24rpx; color: #555; }
+.hero-team { font-size: 24rpx; font-weight: bold; }
+
+/* 卡片 */
+.section-card {
+  background-color: #1a1a1a;
+  margin: 16rpx 20rpx 0;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  border: 1rpx solid #222;
+}
+
+.section-title {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #666;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+/* 本赛季数据 */
+.stats-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  flex: 1;
+}
+
+.stat-val {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  font-size: 20rpx;
+  color: #555;
+}
+
+.stat-divider {
+  width: 1rpx;
+  height: 60rpx;
+  background-color: #2a2a2a;
+}
+
+/* 积分走势 */
+.trend-bars {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8rpx;
+  overflow-x: auto;
+  padding-bottom: 4rpx;
+}
+
+.trend-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  min-width: 52rpx;
+}
+
+.trend-bar-wrap {
+  height: 80rpx;
+  display: flex;
+  align-items: flex-end;
+}
+
+.trend-bar {
+  width: 28rpx;
+  border-radius: 4rpx 4rpx 0 0;
+  min-height: 2rpx;
+}
+
+.trend-round {
+  font-size: 16rpx;
+  color: #555;
+}
+
+.trend-pts {
+  font-size: 18rpx;
+  color: #aaa;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 职业生涯 */
+.career-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.career-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  flex: 1;
+}
+
+.career-val {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.career-label {
+  font-size: 18rpx;
+  color: #555;
+}
+
+/* 简介 */
+.bio-text {
+  font-size: 26rpx;
+  color: #bbb;
+  line-height: 1.7;
+}
+
+/* 通用 */
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.text-muted { color: #555; }

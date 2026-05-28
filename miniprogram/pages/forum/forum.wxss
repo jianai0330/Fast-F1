@@ -1,0 +1,35 @@
+/* pages/forum/forum.wxss */
+.container { min-height: 100vh; background: #0f0f0f; display: flex; flex-direction: column; }
+
+.page-header { padding: 32rpx 32rpx 20rpx; background: #1a1a1a; border-bottom: 1rpx solid #2a2a2a; }
+.page-title  { font-size: 40rpx; font-weight: bold; color: #fff; display: block; }
+.page-subtitle { font-size: 24rpx; color: #666; display: block; margin-top: 6rpx; }
+
+.tab-bar { display: flex; background: #1a1a1a; border-bottom: 1rpx solid #2a2a2a; flex-shrink: 0; }
+.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 26rpx; color: #888; }
+.tab-active { color: #e10600; border-bottom: 4rpx solid #e10600; font-weight: bold; }
+
+.section-scroll { flex: 1; }
+.section-grid { padding: 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
+
+.section-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx 32rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border: 1rpx solid #242424;
+}
+
+.section-name { font-size: 28rpx; color: #e0e0e0; font-weight: 500; }
+.section-arrow { font-size: 32rpx; color: #444; }
+
+/* 骨架 */
+.state-wrap  { padding: 24rpx; }
+.state-center { padding: 80rpx 32rpx; text-align: center; }
+.sk-card { background: #1a1a1a; border-radius: 16rpx; padding: 28rpx; margin-bottom: 16rpx; }
+.sk-line { height: 22rpx; background: #252525; border-radius: 6rpx; margin-bottom: 14rpx; }
+.sk-short { width: 40%; } .sk-long { width: 85%; }
+.text-muted { color: #555; font-size: 26rpx; }

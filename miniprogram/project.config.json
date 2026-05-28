@@ -1,0 +1,15 @@
+{
+  "appid": "wx8198848f733aa5b2",
+  "projectname": "F1 Data",
+  "description": "F1数据可视化小程序",
+  "projectpath": "/Users/aijian/Downloads/Fast-F1/miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.4.3",
+  "condition": {}
+}

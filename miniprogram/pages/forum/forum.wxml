@@ -1,0 +1,59 @@
+<!-- pages/forum/forum.wxml -->
+<view class="container">
+
+  <!-- 顶部 -->
+  <view class="page-header">
+    <text class="page-title">F1 论坛</text>
+    <text class="page-subtitle">赛事讨论 · 车队分析</text>
+  </view>
+
+  <!-- Tab -->
+  <view class="tab-bar">
+    <view class="tab {{activeTab==='race'?'tab-active':''}}"
+          bindtap="onTabChange" data-tab="race">🏁 赛事分区</view>
+    <view class="tab {{activeTab==='team'?'tab-active':''}}"
+          bindtap="onTabChange" data-tab="team">🏎️ 车队分区</view>
+  </view>
+
+  <!-- 加载 -->
+  <view wx:if="{{loading}}" class="state-wrap">
+    <view class="sk-card" wx:for="{{[1,2,3,4,5,6]}}" wx:key="*this">
+      <view class="sk-line sk-long"></view>
+      <view class="sk-line sk-short"></view>
+    </view>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="state-center">
+    <text class="text-muted">{{error}}</text>
+  </view>
+
+  <!-- 赛事分区 -->
+  <scroll-view wx:elif="{{activeTab==='race'}}" scroll-y class="section-scroll">
+    <view class="section-grid">
+      <view wx:for="{{raceSections}}" wx:key="id"
+            class="section-card"
+            bindtap="onTapSection"
+            data-id="{{item.id}}"
+            data-name="{{item.name}}">
+        <text class="section-name">{{item.name}}</text>
+        <text class="section-arrow">›</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 车队分区 -->
+  <scroll-view wx:elif="{{activeTab==='team'}}" scroll-y class="section-scroll">
+    <view class="section-grid">
+      <view wx:for="{{teamSections}}" wx:key="id"
+            class="section-card"
+            bindtap="onTapSection"
+            data-id="{{item.id}}"
+            data-name="{{item.name}}">
+        <text class="section-name">{{item.name}}</text>
+        <text class="section-arrow">›</text>
+      </view>
+    </view>
+  </scroll-view>
+
+</view>

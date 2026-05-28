@@ -1,0 +1,35 @@
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">F1 {{year}}</text>
+    <text class="subtitle">赛历</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="loading-wrap">
+    <text class="text-muted">{{error}}</text>
+  </view>
+
+  <!-- 赛历列表 -->
+  <view wx:else class="event-list">
+    <view
+      wx:for="{{events}}"
+      wx:key="round"
+      class="event-item"
+      bindtap="onEventTap"
+      data-event="{{item}}"
+    >
+      <view class="round-badge">R{{item.round}}</view>
+      <view class="event-info flex-1">
+        <text class="event-name">{{item.name}}</text>
+        <text class="event-meta">{{item.location}} · {{item.date}}</text>
+      </view>
+      <view class="arrow">›</view>
+    </view>
+  </view>
+</view>

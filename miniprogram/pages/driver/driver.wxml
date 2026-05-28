@@ -1,0 +1,100 @@
+<scroll-view class="container" scroll-y>
+
+  <view wx:if="{{info}}">
+
+    <!-- 顶部英雄区 -->
+    <view class="hero" style="border-bottom: 4rpx solid {{color}}">
+      <view class="hero-number" style="color:{{color}}">{{info.number}}</view>
+      <view class="hero-info">
+        <text class="hero-name-cn">{{info.nameCn}}</text>
+        <text class="hero-name-en">{{info.fullName}}</text>
+        <view class="hero-meta-row">
+          <text class="hero-flag">{{info.flag}}</text>
+          <text class="hero-nationality">{{info.nationality}}</text>
+          <text class="hero-dot">·</text>
+          <text class="hero-team" style="color:{{color}}">{{info.team}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 本赛季数据 -->
+    <view class="section-card">
+      <text class="section-title">2026 赛季</text>
+      <view class="stats-row">
+        <view class="stat-item">
+          <text class="stat-val" style="color:{{color}}">P{{season.position}}</text>
+          <text class="stat-label">当前排名</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-val">{{season.points}}</text>
+          <text class="stat-label">积分</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-val">{{season.wins > 0 ? season.wins : '-'}}</text>
+          <text class="stat-label">冠军</text>
+        </view>
+        <view class="stat-divider"></view>
+        <view class="stat-item">
+          <text class="stat-val">{{info.age}}</text>
+          <text class="stat-label">年龄</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 积分趋势（简单折线用 view 模拟） -->
+    <view wx:if="{{trend.length > 1}}" class="section-card">
+      <text class="section-title">积分走势</text>
+      <view class="trend-bars">
+        <view wx:for="{{trend}}" wx:key="*this" class="trend-item">
+          <view class="trend-bar-wrap">
+            <view class="trend-bar" style="height:{{item[1] > 0 ? (item[1] / trendMax * 80) : 2}}rpx; background:{{color}}"></view>
+          </view>
+          <text class="trend-round">R{{item[0]}}</text>
+          <text class="trend-pts">{{item[1]}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 职业生涯数据 -->
+    <view class="section-card">
+      <text class="section-title">职业生涯</text>
+      <view class="career-grid">
+        <view class="career-item">
+          <text class="career-val">{{info.careerStats.seasons}}</text>
+          <text class="career-label">赛季</text>
+        </view>
+        <view class="career-item">
+          <text class="career-val">{{info.careerStats.races}}</text>
+          <text class="career-label">参赛</text>
+        </view>
+        <view class="career-item">
+          <text class="career-val">{{info.careerStats.podiums}}</text>
+          <text class="career-label">领奖台</text>
+        </view>
+        <view class="career-item">
+          <text class="career-val">{{info.careerStats.poles}}</text>
+          <text class="career-label">杆位</text>
+        </view>
+        <view class="career-item">
+          <text class="career-val">{{info.careerStats.fastestLaps}}</text>
+          <text class="career-label">最快圈</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 简介 -->
+    <view class="section-card" style="margin-bottom:60rpx;">
+      <text class="section-title">车手简介</text>
+      <text class="bio-text">{{info.bio}}</text>
+    </view>
+
+  </view>
+
+  <!-- 无数据 -->
+  <view wx:else class="loading-wrap">
+    <text class="text-muted">暂无该车手信息</text>
+  </view>
+
+</scroll-view>

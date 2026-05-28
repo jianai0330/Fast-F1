@@ -1,0 +1,52 @@
+<view class="container">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>AI 正在分析数据，请稍候...</text>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="error-wrap">
+    <text class="text-muted">{{error}}</text>
+    <view class="btn-secondary" style="margin-top:24rpx;width:200rpx;" bindtap="onRefresh">重试</view>
+  </view>
+
+  <!-- 分析报告 -->
+  <view wx:else>
+
+    <!-- 缓存提示 -->
+    <view wx:if="{{cached}}" class="cache-badge">
+      <text>⚡ 已缓存结果</text>
+    </view>
+
+    <!-- 车手对比标题 -->
+    <view class="report-header">
+      <text class="report-title">{{d1}}  vs  {{d2}}</text>
+      <text class="report-subtitle text-muted">AI 专业分析报告</text>
+    </view>
+
+    <!-- 各维度折叠卡片 -->
+    <view
+      wx:for="{{sections}}"
+      wx:key="title"
+      class="section-card"
+    >
+      <!-- 标题行（可点击折叠） -->
+      <view class="section-header" bindtap="onSectionToggle" data-idx="{{index}}">
+        <text class="section-title">{{item.title}}</text>
+        <text class="section-arrow">{{item.expanded ? '▲' : '▼'}}</text>
+      </view>
+
+      <!-- 内容 -->
+      <view wx:if="{{item.expanded}}" class="section-content">
+        <text class="section-text">{{item.content}}</text>
+      </view>
+    </view>
+
+    <!-- 刷新按钮 -->
+    <view class="btn-secondary" style="margin: 24rpx 16rpx;" bindtap="onRefresh">
+      重新生成分析
+    </view>
+
+  </view>
+</view>

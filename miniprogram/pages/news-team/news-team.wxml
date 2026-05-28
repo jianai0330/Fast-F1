@@ -1,0 +1,65 @@
+<!-- pages/news-team/news-team.wxml -->
+<wxs module="fmt" src="../news/news.wxs"></wxs>
+
+<view class="container">
+
+  <!-- 顶部色条 -->
+  <view class="team-header" style="border-bottom-color: {{teamColor}};">
+    <text class="team-title">{{teamName}}</text>
+    <text class="team-sub">相关资讯</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="state-wrap">
+    <view class="skeleton-card" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+      <view class="sk-line sk-short"></view>
+      <view class="sk-line sk-long"></view>
+      <view class="sk-line sk-mid"></view>
+    </view>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="state-wrap">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="loadNews">重试</view>
+  </view>
+
+  <!-- 空结果 -->
+  <view wx:elif="{{!loading && items.length === 0}}" class="state-wrap">
+    <text class="empty-text">暂无相关资讯</text>
+  </view>
+
+  <!-- 列表 -->
+  <scroll-view wx:else
+    scroll-y
+    class="news-scroll"
+    refresher-enabled
+    bindrefresherrefresh="onPullDownRefresh"
+    bindscrolltolower="loadMore"
+  >
+    <view wx:for="{{items}}" wx:key="id"
+          class="news-card"
+          bindtap="onTapNews"
+          data-id="{{item.id}}">
+      <view class="card-meta">
+        <text class="source-tag">{{item.source}}</text>
+        <text class="time-text">{{fmt.time(item.published_at)}}</text>
+      </view>
+      <text class="news-title">{{item.title}}</text>
+      <text class="news-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
+      <view class="card-footer">
+        <view wx:if="{{item.analyzed}}" class="ai-badge"><text>✨ AI已解读</text></view>
+        <view wx:else class="ai-badge-pending"><text>待解读</text></view>
+        <text class="read-more">查看详情 ›</text>
+      </view>
+    </view>
+
+    <view wx:if="{{loadingMore}}" class="load-more-tip">
+      <text class="text-muted">加载更多...</text>
+    </view>
+    <view wx:elif="{{!hasMore && items.length > 0}}" class="load-more-tip">
+      <text class="text-muted">— 已显示全部 —</text>
+    </view>
+  </scroll-view>
+
+</view>

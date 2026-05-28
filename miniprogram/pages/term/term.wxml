@@ -1,0 +1,84 @@
+<!-- pages/term/term.wxml -->
+<view class="container">
+
+  <view wx:if="{{loading}}" class="state-center">
+    <text class="text-muted">加载中...</text>
+  </view>
+
+  <view wx:elif="{{error}}" class="state-center">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <scroll-view wx:else scroll-y class="scroll">
+
+    <!-- 头部 -->
+    <view class="header" style="border-color: {{term.color}};">
+      <view class="header-top">
+        <view class="names">
+          <text class="name-zh">{{term.name_zh}}</text>
+          <text class="name-en">{{term.name_en}}</text>
+        </view>
+        <view class="level-badge" style="color: {{term.color}}; border-color: {{term.color}}; background: {{term.color}}18;">
+          <text>{{term.level_label}}</text>
+        </view>
+      </view>
+      <view class="meta-row">
+        <view class="cat-tag" style="color: {{term.color}}; background: {{term.color}}18;">
+          <text>{{term.category_label}}</text>
+        </view>
+        <text wx:if="{{term.spec_year}}" class="spec-year">{{term.spec_year}} 规则</text>
+      </view>
+    </view>
+
+    <!-- 别名 -->
+    <view wx:if="{{term.aliases_list.length > 0}}" class="section">
+      <text class="section-label">别名 / 关键词</text>
+      <view class="aliases-row">
+        <view wx:for="{{term.aliases_list}}" wx:key="*this" class="alias-tag">
+          <text>{{item}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 一句话解释 -->
+    <view class="section">
+      <text class="section-label">简介</text>
+      <text class="short-def">{{term.short_def}}</text>
+    </view>
+
+    <!-- 详细解释 -->
+    <view wx:if="{{term.full_def}}" class="section">
+      <text class="section-label">详细解释</text>
+      <text class="full-def">{{term.full_def}}</text>
+    </view>
+
+    <!-- 经典案例 -->
+    <view wx:if="{{term.example}}" class="section">
+      <text class="section-label">📌 经典案例</text>
+      <view class="example-box">
+        <text class="example-text">{{term.example}}</text>
+      </view>
+    </view>
+
+    <!-- 相关术语 -->
+    <view wx:if="{{relatedTerms.length > 0}}" class="section">
+      <text class="section-label">相关术语</text>
+      <view class="related-list">
+        <view wx:for="{{relatedTerms}}" wx:key="slug"
+              class="related-card" bindtap="onGoRelated" data-slug="{{item.slug}}">
+          <view class="related-card-left">
+            <text class="related-name-zh">{{item.name_zh}}</text>
+            <text class="related-short-def">{{item.short_def}}</text>
+          </view>
+          <view class="related-level" style="color: {{item.color}}; border-color: {{item.color}};">
+            <text>{{item.level_label}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view style="height: 60rpx;"></view>
+
+  </scroll-view>
+
+</view>

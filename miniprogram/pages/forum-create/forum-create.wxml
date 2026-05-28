@@ -1,0 +1,53 @@
+<!-- pages/forum-create/forum-create.wxml -->
+<view class="container">
+
+  <!-- 分区标签 -->
+  <view class="section-tag-row">
+    <text class="section-label">发布到：</text>
+    <view class="section-tag"><text>{{sectionName}}</text></view>
+  </view>
+
+  <!-- 标题 -->
+  <view class="field-wrap">
+    <view class="field-header">
+      <text class="field-label">标题</text>
+      <text class="field-count {{titleLen > 45 ? 'count-warn' : ''}}">{{titleLen}}/50</text>
+    </view>
+    <input
+      class="title-input"
+      placeholder="输入标题（5-50字）"
+      placeholder-class="ph"
+      maxlength="50"
+      bindinput="onTitleInput"
+      value="{{title}}"
+    />
+  </view>
+
+  <!-- 正文 -->
+  <view class="field-wrap">
+    <view class="field-header">
+      <text class="field-label">正文</text>
+      <text class="field-count {{contentLen > 1800 ? 'count-warn' : ''}}">{{contentLen}}/2000</text>
+    </view>
+    <textarea
+      class="content-input"
+      placeholder="分享你的想法..."
+      placeholder-class="ph"
+      maxlength="2000"
+      bindinput="onContentInput"
+      value="{{content}}"
+      auto-height
+    />
+  </view>
+
+  <!-- 提示 -->
+  <view class="tips">
+    <text class="tips-text">📋 帖子提交后需审核，通过后将公开展示</text>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-btn {{submitting ? 'submit-disabled' : ''}}" bindtap="onSubmit">
+    <text>{{submitting ? '提交中...' : '提交帖子'}}</text>
+  </view>
+
+</view>

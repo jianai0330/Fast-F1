@@ -1,0 +1,71 @@
+<!-- pages/glossary/glossary.wxml -->
+<view class="container">
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-inner">
+      <text class="search-icon">🔍</text>
+      <input class="search-input"
+             placeholder="搜索术语..."
+             placeholder-style="color:#444"
+             value="{{searchVal}}"
+             bindinput="onSearchInput" />
+      <view wx:if="{{searchVal}}" class="search-clear" bindtap="onSearchClear">
+        <text>✕</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分类 tab -->
+  <scroll-view scroll-x class="cat-scroll">
+    <view class="cat-row">
+      <view wx:for="{{categories}}" wx:key="key"
+            class="cat-tab {{activeCategory === item.key ? 'cat-tab-active' : ''}}"
+            style="{{activeCategory === item.key ? 'border-color:' + item.color + '; background:' + item.color + '22;' : ''}}"
+            bindtap="onCategoryTap"
+            data-key="{{item.key}}">
+        <text style="{{activeCategory === item.key ? 'color:' + item.color : ''}}">{{item.label}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="state-center">
+    <text class="muted">加载中...</text>
+  </view>
+
+  <!-- 空结果 -->
+  <view wx:elif="{{filtered.length === 0}}" class="state-center">
+    <text class="muted">没有找到相关术语</text>
+  </view>
+
+  <!-- 术语列表 -->
+  <scroll-view wx:else scroll-y class="list-scroll">
+    <view class="list-wrap">
+      <view wx:for="{{filtered}}" wx:key="slug"
+            class="term-card"
+            bindtap="onTermTap"
+            data-slug="{{item.slug}}">
+
+        <!-- 左侧色条 -->
+        <view class="term-bar" style="background: {{item.color}};"></view>
+
+        <view class="term-body">
+          <view class="term-head">
+            <text class="term-zh">{{item.name_zh}}</text>
+            <view class="term-cat-tag" style="background: {{item.color}}18; border-color: {{item.color}};">
+              <text style="color: {{item.color}};">{{item.category_label}}</text>
+            </view>
+          </view>
+          <text class="term-en">{{item.name_en}}</text>
+          <text class="term-def">{{item.short_def}}</text>
+        </view>
+
+        <text class="term-arrow">›</text>
+      </view>
+    </view>
+
+    <view style="height: 60rpx;"></view>
+  </scroll-view>
+
+</view>

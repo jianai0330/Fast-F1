@@ -1,0 +1,127 @@
+/* pages/term/term.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #0f0f0f;
+}
+
+.scroll { height: 100vh; }
+
+.state-center {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 60vh;
+}
+
+.text-muted { color: #555; font-size: 26rpx; }
+.error-text { color: #888; font-size: 28rpx; }
+
+/* 头部 */
+.header {
+  padding: 32rpx;
+  background: #1a1a1a;
+  border-left: 6rpx solid;
+  margin-bottom: 4rpx;
+}
+
+.header-top {
+  display: flex; flex-direction: row;
+  align-items: flex-start; justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.names {
+  display: flex; flex-direction: column; gap: 8rpx;
+}
+
+.name-zh {
+  font-size: 40rpx; font-weight: bold; color: #f0f0f0;
+}
+
+.name-en {
+  font-size: 24rpx; color: #666;
+}
+
+.level-badge {
+  padding: 6rpx 18rpx; border-radius: 20rpx;
+  border: 1rpx solid; font-size: 22rpx; flex-shrink: 0;
+}
+
+.meta-row {
+  display: flex; flex-direction: row; align-items: center; gap: 12rpx;
+}
+
+.cat-tag {
+  padding: 4rpx 16rpx; border-radius: 16rpx; font-size: 22rpx;
+}
+
+.spec-year { font-size: 22rpx; color: #555; }
+
+/* 各 section */
+.section {
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #1e1e1e;
+}
+
+.section-label {
+  font-size: 22rpx; color: #555; display: block;
+  margin-bottom: 14rpx; letter-spacing: 2rpx;
+}
+
+/* 别名 */
+.aliases-row {
+  display: flex; flex-direction: row; flex-wrap: wrap; gap: 10rpx;
+}
+
+.alias-tag {
+  padding: 6rpx 18rpx; background: #222;
+  border-radius: 20rpx; font-size: 22rpx; color: #888;
+}
+
+/* 解释 */
+.short-def {
+  font-size: 28rpx; color: #ccc; line-height: 1.7; display: block;
+}
+
+.full-def {
+  font-size: 26rpx; color: #999; line-height: 1.8; display: block;
+}
+
+/* 案例 */
+.example-box {
+  background: #111; border-radius: 12rpx; padding: 20rpx;
+}
+
+.example-text {
+  font-size: 26rpx; color: #888; line-height: 1.7; display: block;
+}
+
+/* 相关术语 */
+.related-list {
+  display: flex; flex-direction: column; gap: 12rpx;
+}
+
+.related-card {
+  background: #1a1a1a; border-radius: 14rpx;
+  padding: 20rpx 24rpx; border: 1rpx solid #242424;
+  display: flex; flex-direction: row;
+  align-items: center; justify-content: space-between;
+}
+
+.related-card-left {
+  display: flex; flex-direction: column; gap: 6rpx; flex: 1;
+}
+
+.related-name-zh {
+  font-size: 28rpx; font-weight: bold; color: #ddd;
+}
+
+.related-short-def {
+  font-size: 22rpx; color: #666; line-height: 1.5;
+}
+
+.related-level {
+  padding: 4rpx 14rpx; border-radius: 16rpx;
+  border: 1rpx solid; font-size: 20rpx; flex-shrink: 0;
+  margin-left: 16rpx;
+}

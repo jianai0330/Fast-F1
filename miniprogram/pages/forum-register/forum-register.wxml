@@ -1,0 +1,33 @@
+<!-- pages/forum-register/forum-register.wxml -->
+<view class="container">
+
+  <view class="hero">
+    <text class="hero-icon">🏎️</text>
+    <text class="hero-title">设置你的论坛昵称</text>
+    <text class="hero-sub">只需一次，畅享 F1 讨论社区</text>
+  </view>
+
+  <view class="field-wrap">
+    <view class="field-header">
+      <text class="field-label">昵称</text>
+      <text class="field-count {{nicknameLen > 10 ? 'count-warn' : ''}}">
+        {{nicknameLen}}/12
+      </text>
+    </view>
+    <input
+      class="nick-input"
+      placeholder="2-12 个字，随便起"
+      placeholder-class="ph"
+      maxlength="12"
+      bindinput="onNicknameInput"
+      value="{{nickname}}"
+      focus
+    />
+    <text class="field-hint">不含特殊符号，设置后可修改</text>
+  </view>
+
+  <view class="submit-btn {{submitting ? 'submit-disabled' : ''}}" bindtap="onSubmit">
+    <text>{{submitting ? '注册中...' : '确认并进入论坛'}}</text>
+  </view>
+
+</view>

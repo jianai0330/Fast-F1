@@ -1,0 +1,91 @@
+<!-- pages/admin/admin.wxml -->
+<view class="container">
+
+  <!-- 未解锁：锁屏页 -->
+  <view wx:if="{{!unlocked}}" class="lock-screen">
+    <text class="lock-icon" bindlongpress="onLogoLongPress">🔒</text>
+    <text class="lock-tip">长按上方图标进入管理后台</text>
+  </view>
+
+  <!-- 已解锁：管理界面 -->
+  <view wx:else class="admin-wrap">
+
+    <!-- 顶部标题 + 爬取按钮 -->
+    <view class="admin-header">
+      <text class="admin-title">🛠️ 管理后台</text>
+      <view class="crawl-btn" bindtap="onCrawl">
+        <text>🔄 爬取+分析</text>
+      </view>
+    </view>
+
+    <!-- Tab -->
+    <view class="tab-bar">
+      <view class="tab {{activeTab==='posts'?'tab-active':''}}"
+            bindtap="onTabChange" data-tab="posts">
+        待审帖子
+        <text wx:if="{{posts.length > 0}}" class="badge">{{posts.length}}</text>
+      </view>
+      <view class="tab {{activeTab==='comments'?'tab-active':''}}"
+            bindtap="onTabChange" data-tab="comments">
+        待审评论
+        <text wx:if="{{comments.length > 0}}" class="badge">{{comments.length}}</text>
+      </view>
+    </view>
+
+    <!-- 加载 -->
+    <view wx:if="{{loading}}" class="state-center">
+      <text class="text-muted">加载中...</text>
+    </view>
+
+    <scroll-view wx:else scroll-y class="review-scroll">
+
+      <!-- 帖子列表 -->
+      <block wx:if="{{activeTab==='posts'}}">
+        <view wx:if="{{posts.length === 0}}" class="empty-wrap">
+          <text class="text-muted">暂无待审核帖子 ✅</text>
+        </view>
+        <view wx:for="{{posts}}" wx:key="id" class="review-card">
+          <view class="review-meta">
+            <text class="review-author">{{item.author_nickname}}</text>
+            <text class="review-section">· {{item.section_name}}</text>
+          </view>
+          <text class="review-title">{{item.title}}</text>
+          <text class="review-content">{{item.content}}</text>
+          <view class="action-row">
+            <view class="btn-approve" bindtap="onApprovePost" data-id="{{item.id}}">
+              <text>✅ 通过</text>
+            </view>
+            <view class="btn-reject" bindtap="onRejectPost" data-id="{{item.id}}">
+              <text>❌ 拒绝</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 评论列表 -->
+      <block wx:if="{{activeTab==='comments'}}">
+        <view wx:if="{{comments.length === 0}}" class="empty-wrap">
+          <text class="text-muted">暂无待审核评论 ✅</text>
+        </view>
+        <view wx:for="{{comments}}" wx:key="id" class="review-card">
+          <view class="review-meta">
+            <text class="review-author">{{item.author_nickname}}</text>
+            <text class="review-section">· {{item.post_title}}</text>
+          </view>
+          <text class="review-content">{{item.content}}</text>
+          <view class="action-row">
+            <view class="btn-approve" bindtap="onApproveComment" data-id="{{item.id}}">
+              <text>✅ 通过</text>
+            </view>
+            <view class="btn-reject" bindtap="onRejectComment" data-id="{{item.id}}">
+              <text>❌ 拒绝</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+    </scroll-view>
+
+  </view>
+
+</view>

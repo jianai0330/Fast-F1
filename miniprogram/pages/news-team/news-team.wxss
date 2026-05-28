@@ -1,0 +1,151 @@
+/* pages/news-team/news-team.wxss */
+
+.container {
+  min-height: 100vh;
+  background-color: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-header {
+  padding: 28rpx 32rpx 20rpx;
+  background: #1a1a1a;
+  border-bottom: 3rpx solid #e10600;
+}
+
+.team-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+  display: block;
+}
+
+.team-sub {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+  margin-top: 4rpx;
+}
+
+.news-scroll {
+  flex: 1;
+  height: calc(100vh - 120rpx);
+}
+
+.news-card {
+  margin: 20rpx 24rpx 0;
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  border: 1rpx solid #242424;
+}
+.news-card:active { opacity: 0.8; }
+
+.card-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+
+.source-tag {
+  font-size: 22rpx;
+  color: #e10600;
+  background: rgba(225,6,0,0.12);
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.time-text { font-size: 22rpx; color: #555; }
+
+.news-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #eee;
+  line-height: 1.5;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.news-summary {
+  font-size: 24rpx;
+  color: #777;
+  line-height: 1.6;
+  display: block;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8rpx;
+}
+
+.ai-badge {
+  background: rgba(245,166,35,0.12);
+  border-radius: 20rpx;
+  padding: 4rpx 14rpx;
+  font-size: 22rpx;
+  color: #f5a623;
+}
+
+.ai-badge-pending {
+  background: #222;
+  border-radius: 20rpx;
+  padding: 4rpx 14rpx;
+  font-size: 22rpx;
+  color: #555;
+}
+
+.read-more { font-size: 24rpx; color: #4a9eff; }
+
+.load-more-tip {
+  padding: 32rpx 0;
+  text-align: center;
+}
+
+.text-muted { font-size: 24rpx; color: #444; }
+
+/* 状态页 */
+.state-wrap {
+  padding: 32rpx 24rpx;
+}
+
+.skeleton-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+}
+
+.sk-line {
+  height: 22rpx;
+  background: #252525;
+  border-radius: 6rpx;
+  margin-bottom: 16rpx;
+}
+
+.sk-short { width: 35%; }
+.sk-long  { width: 92%; }
+.sk-mid   { width: 68%; }
+
+.error-text { color: #888; font-size: 28rpx; display: block; text-align: center; margin-bottom: 24rpx; }
+.empty-text { color: #555; font-size: 28rpx; display: block; text-align: center; margin-top: 120rpx; }
+
+.retry-btn {
+  margin: 0 auto;
+  width: 160rpx;
+  text-align: center;
+  padding: 16rpx 0;
+  background: #e10600;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #fff;
+}

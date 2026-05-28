@@ -1,0 +1,30 @@
+/Users/aijian/anaconda3/envs/llm_eval_new/bin/python /Users/aijian/Downloads/Fast-F1/suzuka_2026_russell_vs_antonelli.py
+core           INFO 	Loading data for Japanese Grand Prix - Qualifying [v0.0+UNKNOWN]
+req            INFO 	Using cached data for session_info
+req            INFO 	Using cached data for driver_info
+req            INFO 	Using cached data for session_status_data
+req            INFO 	Using cached data for track_status_data
+req            INFO 	Using cached data for _extended_timing_data
+req            INFO 	Using cached data for timing_app_data
+core           INFO 	Processing timing data...
+req            INFO 	Using cached data for car_data
+req            INFO 	Using cached data for position_data
+req            INFO 	Using cached data for weather_data
+req            INFO 	Using cached data for race_control_messages
+core           INFO 	Finished loading data for 22 drivers: ['12', '63', '81', '16', '1', '44', '10', '6', '5', '41', '3', '31', '27', '30', '43', '55', '23', '87', '11', '77', '14', '18']
+/Users/aijian/Downloads/Fast-F1/fastf1/core.py:3079: FutureWarning: pick_lap is deprecated and will be removed in a future release. Use pick_laps instead.
+  warnings.warn(("pick_lap is deprecated and will be removed in a "
+req            INFO 	Using cached data for driver_info
+Traceback (most recent call last):
+  File "/Users/aijian/Downloads/Fast-F1/suzuka_2026_russell_vs_antonelli.py", line 44, in <module>
+    ant_time = fmt_time(ant_lap['LapTime'])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/aijian/Downloads/Fast-F1/suzuka_2026_russell_vs_antonelli.py", line 38, in fmt_time
+    total = int(td.total_seconds())
+                ^^^^^^^^^^^^^^^^
+  File "/Users/aijian/anaconda3/envs/llm_eval_new/lib/python3.11/site-packages/pandas/core/generic.py", line 6321, in __getattr__
+    return object.__getattribute__(self, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Series' object has no attribute 'total_seconds'
+
+Process finished with exit code 1

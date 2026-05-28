@@ -1,0 +1,99 @@
+<!-- pages/news-detail/news-detail.wxml -->
+<wxs module="fmt" src="./news-detail.wxs"></wxs>
+
+<view class="container">
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="state-center">
+    <text class="text-muted">加载中...</text>
+  </view>
+
+  <!-- 错误 -->
+  <view wx:elif="{{error}}" class="state-center">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <scroll-view wx:else scroll-y class="detail-scroll">
+
+    <!-- 标题区 -->
+    <view class="title-section">
+      <view class="meta-row">
+        <text class="source-tag">{{item.source}}</text>
+        <text class="time-text">{{fmt.time(item.published_at)}}</text>
+      </view>
+      <text class="news-title">{{item.title}}</text>
+      <view class="origin-btn" bindtap="onOpenUrl">
+        <text>查看原文 →</text>
+      </view>
+    </view>
+
+    <!-- 摘要原文 -->
+    <view class="section-card" wx:if="{{item.summary}}">
+      <text class="section-label">原文摘要</text>
+      <text class="summary-text">{{item.summary}}</text>
+    </view>
+
+    <!-- AI 解读区 -->
+    <view class="ai-section">
+      <view class="ai-header">
+        <text class="ai-title">✨ AI 专业解读</text>
+        <text class="ai-sub" wx:if="{{polling}}">分析中，请稍候...</text>
+      </view>
+
+      <!-- 已分析：显示三段内容 -->
+      <block wx:if="{{item.analyzed}}">
+
+        <view class="ai-card" wx:if="{{item.tech_points}}">
+          <view class="ai-card-header">
+            <text class="ai-emoji">🔬</text>
+            <text class="ai-card-title">技术要点</text>
+          </view>
+          <text class="ai-card-body">{{item.tech_points}}</text>
+        </view>
+
+        <view class="ai-card" wx:if="{{item.plain_explain}}">
+          <view class="ai-card-header">
+            <text class="ai-emoji">🏎️</text>
+            <text class="ai-card-title">通俗解释</text>
+          </view>
+          <text class="ai-card-body">{{item.plain_explain}}</text>
+        </view>
+
+        <view class="ai-card" wx:if="{{item.race_impact}}">
+          <view class="ai-card-header">
+            <text class="ai-emoji">📊</text>
+            <text class="ai-card-title">赛况影响</text>
+          </view>
+          <text class="ai-card-body">{{item.race_impact}}</text>
+        </view>
+
+      </block>
+
+      <!-- 轮询等待中：骨架屏 -->
+      <block wx:elif="{{polling}}">
+        <view class="ai-card skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view class="sk-line sk-short"></view>
+          <view class="sk-line sk-long"></view>
+          <view class="sk-line sk-mid"></view>
+          <view class="sk-line sk-long"></view>
+        </view>
+      </block>
+
+      <!-- 超时未返回 -->
+      <view wx:else class="ai-pending">
+        <text class="text-muted">AI 解读生成中，请稍后刷新页面查看</text>
+      </view>
+
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="bottom-btn" bindtap="onGoForum">
+      <text>💬 去论坛讨论这条新闻</text>
+    </view>
+
+    <view style="height: 60rpx;"></view>
+
+  </scroll-view>
+
+</view>
