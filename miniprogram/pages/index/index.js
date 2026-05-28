@@ -68,9 +68,40 @@ const QUICK_ACTIONS = [
   { key: 'forum', label: '进论坛', hint: '车迷讨论区', type: 'switchTab', url: '/pages/forum/forum' },
 ]
 
+function extractPathBounds(pathD) {
+  const nums = (pathD.match(/-?\d*\.?\d+/g) || []).map(Number)
+  if (nums.length < 4) {
+    return { minX: 0, minY: 0, width: 120, height: 70 }
+  }
+  let minX = Infinity
+  let minY = Infinity
+  let maxX = -Infinity
+  let maxY = -Infinity
+  for (let i = 0; i < nums.length - 1; i += 2) {
+    const x = nums[i]
+    const y = nums[i + 1]
+    if (Number.isNaN(x) || Number.isNaN(y)) continue
+    if (x < minX) minX = x
+    if (x > maxX) maxX = x
+    if (y < minY) minY = y
+    if (y > maxY) maxY = y
+  }
+  if (!Number.isFinite(minX) || !Number.isFinite(minY) || !Number.isFinite(maxX) || !Number.isFinite(maxY)) {
+    return { minX: 0, minY: 0, width: 120, height: 70 }
+  }
+  const pad = 6
+  return {
+    minX: minX - pad,
+    minY: minY - pad,
+    width: Math.max(1, maxX - minX + pad * 2),
+    height: Math.max(1, maxY - minY + pad * 2),
+  }
+}
+
 function buildCircuitSvgDataUri(pathD, stroke = '#e10600') {
   if (!pathD) return ''
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" fill="none"><path d="${pathD}" stroke="${stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  const box = extractPathBounds(pathD)
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${box.minX} ${box.minY} ${box.width} ${box.height}" fill="none" preserveAspectRatio="xMidYMid meet"><path d="${pathD}" stroke="${stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
 }
 

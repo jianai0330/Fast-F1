@@ -250,7 +250,7 @@
 }
 
 .event-name {
-  font-size: 24rpx;
+  font-size: 29rpx;
   font-weight: 600;
   color: #ffffff;
   display: block;
@@ -258,7 +258,7 @@
 }
 
 .event-meta {
-  font-size: 20rpx;
+  font-size: 24rpx;
   color: #888888;
   display: block;
   flex: 1;
@@ -266,9 +266,9 @@
 }
 
 .circuit-track-image {
-  width: 92rpx;
-  min-width: 92rpx;
-  height: 44rpx;
+  width: 112rpx;
+  min-width: 112rpx;
+  height: 54rpx;
   flex-shrink: 0;
   opacity: 0.92;
 }
