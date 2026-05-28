@@ -1,0 +1,142 @@
+.tab-bar {
+  display: flex;
+  flex-direction: row;
+  background-color: #1a1a1a;
+  border-bottom: 1rpx solid #2a2a2a;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 26rpx;
+  color: #888888;
+  transition: opacity 0.12s ease;
+}
+
+.tab:active {
+  opacity: 0.6;
+}
+
+.tab-active {
+  color: #e10600;
+  border-bottom: 4rpx solid #e10600;
+  font-weight: bold;
+}
+
+/* 趋势图 */
+.trend-wrap {
+  width: 100%;
+  height: 400rpx;
+  background-color: #1a1a1a;
+  border-bottom: 1rpx solid #2a2a2a;
+}
+
+ec-canvas {
+  width: 100%;
+  height: 400rpx;
+}
+
+/* 积分表格 */
+.standings-header, .standings-row {
+  padding: 16rpx 24rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.standings-row {
+  border-bottom: 1rpx solid #1e1e1e;
+  transition: opacity 0.12s ease;
+}
+.standings-row:active { opacity: 0.7; }
+
+.col-pos  { width: 48rpx; font-size: 26rpx; }
+.col-name { flex: 1; display: flex; flex-direction: row; align-items: center; gap: 12rpx; }
+.col-pts  { width: 80rpx; text-align: right; }
+.col-wins { width: 60rpx; text-align: right; font-size: 24rpx; }
+
+.driver-bar-line {
+  width: 6rpx;
+  height: 56rpx;
+  border-radius: 3rpx;
+  flex-shrink: 0;
+}
+
+.driver-code-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+  display: block;
+}
+
+.team-name-text {
+  font-size: 22rpx;
+  display: block;
+  margin-top: 2rpx;
+}
+
+.points-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 骨架屏 ── */
+.skeleton-wrap {
+  padding: 16rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.sk-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #1e1e1e;
+  gap: 16rpx;
+}
+
+.sk-pos {
+  width: 48rpx;
+  height: 22rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 4rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-bar-line {
+  width: 6rpx;
+  height: 40rpx;
+  background: linear-gradient(180deg, #333 25%, #444 50%, #333 75%);
+  background-size: 100% 400%;
+  border-radius: 3rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-driver {
+  flex: 1;
+  height: 22rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 4rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-pts {
+  width: 70rpx;
+  height: 22rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 4rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}

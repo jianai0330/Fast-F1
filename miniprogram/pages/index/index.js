@@ -156,6 +156,8 @@ Page({
           }
         })
       this.setData({ events, loading: false })
+      // 为每站标记状态
+      this._markEventStatus(events)
       this._pickNextRace(events)
       this._buildSeasonSummary(events)
     } catch (e) {
@@ -198,6 +200,23 @@ Page({
         location: latestRace.location,
         race_time_utc: latestRace.race_time_utc,
       } : null,
+    })
+  },
+
+  // 标记每站状态：已完赛 / 下一站 / 未来站
+  _markEventStatus(events) {
+    const now = Date.now()
+    let foundNext = false
+    events.forEach(e => {
+      if (!e.race_time_utc) { e.status = 'upcoming'; return }
+      if (new Date(e.race_time_utc).getTime() <= now) {
+        e.status = 'completed'
+      } else if (!foundNext) {
+        e.status = 'next'
+        foundNext = true
+      } else {
+        e.status = 'upcoming'
+      }
     })
   },
 

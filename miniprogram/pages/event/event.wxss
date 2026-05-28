@@ -68,6 +68,11 @@
   font-size: 22rpx;
   color: #7f7f7f;
   letter-spacing: 1rpx;
+  transition: opacity 0.12s ease;
+}
+
+.tab:active {
+  opacity: 0.6;
 }
 
 .tab-active {
@@ -121,6 +126,12 @@
   align-items: center;
   gap: 6rpx;
   position: relative;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.driver-picker:active {
+  transform: scale(0.97);
+  opacity: 0.85;
 }
 
 .picker-label {
@@ -211,6 +222,11 @@ ec-canvas {
   border: 1.5rpx solid transparent;
   overflow: hidden;
   background-color: #1e1e1e;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.driver-chip:active {
+  transform: scale(0.95);
 }
 
 .driver-chip-on {
@@ -365,6 +381,12 @@ ec-canvas {
   border-radius: 16rpx;
   padding: 24rpx 24rpx 20rpx;
   border: 1rpx solid #222;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.ci-card:active {
+  transform: scale(0.985);
+  border-color: rgba(255,255,255,0.12);
 }
 
 .ci-header {
@@ -535,6 +557,11 @@ ec-canvas {
   justify-content: center;
   box-shadow: 0 4rpx 16rpx rgba(74, 158, 255, 0.4);
   pointer-events: auto;
+  transition: transform 0.12s ease;
+}
+
+.term-fab:active {
+  transform: scale(0.88);
 }
 .fab-icon {
   font-size: 40rpx;
@@ -613,4 +640,72 @@ ec-canvas {
   text-align: center;
   font-size: 28rpx;
   margin-top: 20rpx;
+}
+
+/* ── 骨架屏 ── */
+.skeleton-wrap {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.sk-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 28rpx;
+}
+
+.sk-table-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 18rpx 24rpx;
+  gap: 16rpx;
+  border-bottom: 1rpx solid #1e1e1e;
+}
+
+.sk-pos {
+  width: 50rpx;
+  height: 24rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 4rpx;
+  animation: 
+  shimmer 1.4s ease infinite;
+}
+
+.sk-driver-name {
+  flex: 1;
+  height: 24rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 4rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-time {
+  width: 130rpx;
+  height: 24rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 4rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-line {
+  height: 24rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 6rpx;
+  margin-bottom: 16rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-short  { width: 40%; }
+.sk-long   { width: 90%; }
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }

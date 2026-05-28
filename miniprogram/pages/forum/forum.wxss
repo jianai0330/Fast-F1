@@ -5,8 +5,26 @@
 .page-title  { font-size: 40rpx; font-weight: bold; color: #fff; display: block; }
 .page-subtitle { font-size: 24rpx; color: #666; display: block; margin-top: 6rpx; }
 
+.chatroom-entry {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+  background: #1a1a1a;
+  border-bottom: 1rpx solid #2a2a2a;
+  transition: opacity 0.12s ease;
+}
+
+.chatroom-entry:active {
+  opacity: 0.7;
+}
+.chatroom-icon { font-size: 32rpx; margin-right: 12rpx; }
+.chatroom-text { flex: 1; font-size: 28rpx; color: #e0e0e0; font-weight: 500; }
+.chatroom-arrow { font-size: 32rpx; color: #444; }
+
 .tab-bar { display: flex; background: #1a1a1a; border-bottom: 1rpx solid #2a2a2a; flex-shrink: 0; }
-.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 26rpx; color: #888; }
+.tab { flex: 1; text-align: center; padding: 24rpx 0; font-size: 26rpx; color: #888; transition: opacity 0.12s ease; }
+
+.tab:active { opacity: 0.6; }
 .tab-active { color: #e10600; border-bottom: 4rpx solid #e10600; font-weight: bold; }
 
 .section-scroll { flex: 1; }
@@ -21,10 +39,55 @@
   align-items: center;
   justify-content: space-between;
   border: 1rpx solid #242424;
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
-
+.section-card:active { transform: scale(0.97); opacity: 0.88; }
 .section-name { font-size: 28rpx; color: #e0e0e0; font-weight: 500; }
 .section-arrow { font-size: 32rpx; color: #444; }
+
+/* ── 综合讨论 ── */
+.post-list { padding: 20rpx 24rpx; }
+.post-card {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #242424;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.post-card:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
+.post-seeded { border-color: #2a2a3a; }
+
+.post-top { display: flex; align-items: flex-start; gap: 12rpx; margin-bottom: 14rpx; }
+.seed-badge {
+  background: #1e2a3a; color: #5b9bd5;
+  font-size: 20rpx; border-radius: 8rpx;
+  padding: 4rpx 10rpx; flex-shrink: 0; margin-top: 4rpx;
+}
+.post-title { font-size: 28rpx; color: #e0e0e0; font-weight: 500; line-height: 1.5; flex: 1; }
+
+.post-meta { display: flex; align-items: center; gap: 10rpx; flex-wrap: wrap; }
+.meta-author { font-size: 22rpx; color: #e10600; }
+.meta-dot    { font-size: 22rpx; color: #333; }
+.meta-time   { font-size: 22rpx; color: #555; }
+.meta-stat   { font-size: 22rpx; color: #555; }
+
+.load-more-tip { text-align: center; padding: 24rpx 0 40rpx; }
+
+/* FAB */
+.fab {
+  position: fixed; right: 48rpx; bottom: 120rpx;
+  width: 96rpx; height: 96rpx; border-radius: 48rpx;
+  background: #e10600;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(225,6,0,0.4);
+  z-index: 100;
+}
+.fab-icon { font-size: 40rpx; }
 
 /* 骨架 */
 .state-wrap  { padding: 24rpx; }

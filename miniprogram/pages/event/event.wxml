@@ -22,7 +22,13 @@
 
   <!-- 赛道信息 -->
   <view wx:if="{{activeTab === 'circuit'}}">
-    <view wx:if="{{circuitLoading}}" class="loading-wrap"><text>加载中...</text></view>
+    <view wx:if="{{circuitLoading}}" class="skeleton-wrap">
+      <view class="sk-card" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+        <view class="sk-line sk-long"></view>
+        <view class="sk-line sk-mid"></view>
+        <view class="sk-line sk-short"></view>
+      </view>
+    </view>
     <view wx:elif="{{circuit}}" class="circuit-wrap">
 
       <!-- 基础参数卡片 -->
@@ -107,7 +113,13 @@
   <!-- 排位赛结果 -->
   <view wx:if="{{activeTab === 'qualifying'}}">
     <view wx:if="{{!raceHappened}}" class="loading-wrap"><text class="text-muted">排位赛尚未发生</text></view>
-    <view wx:elif="{{qualiLoading}}" class="loading-wrap"><text>加载中...</text></view>
+    <view wx:elif="{{qualiLoading}}" class="skeleton-wrap">
+      <view class="sk-table-row" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+        <view class="sk-pos"></view>
+        <view class="sk-driver-name"></view>
+        <view class="sk-time"></view>
+      </view>
+    </view>
     <view wx:elif="{{qualifying}}">
       <!-- 表头 -->
       <view class="quali-header row">
@@ -135,7 +147,12 @@
   <!-- 正赛圈时图表 -->
   <view wx:if="{{activeTab === 'race'}}">
     <view wx:if="{{!raceHappened}}" class="loading-wrap"><text class="text-muted">正赛尚未发生</text></view>
-    <view wx:elif="{{raceLoading}}" class="loading-wrap"><text>加载正赛数据...</text></view>
+    <view wx:elif="{{raceLoading}}" class="skeleton-wrap">
+      <view class="sk-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="sk-line sk-long"></view>
+        <view class="sk-line sk-mid"></view>
+      </view>
+    </view>
     <view wx:elif="{{raceError}}" class="loading-wrap"><text class="text-muted">{{raceError}}</text></view>
     <view wx:elif="{{raceReady}}">
 

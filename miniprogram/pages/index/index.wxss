@@ -179,6 +179,12 @@
     linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%),
     #121212;
   border: 1rpx solid #232323;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.quick-action-card:active {
+  transform: scale(0.96);
+  opacity: 0.85;
 }
 
 .quick-action-label {
@@ -199,6 +205,42 @@
 /* ── 赛历列表 ── */
 .event-list {
   padding: 8rpx 12rpx 20rpx;
+}
+
+.event-completed {
+  opacity: 0.55;
+}
+
+.event-completed .event-name {
+  color: #888;
+}
+
+.event-next .round-badge {
+  background: linear-gradient(135deg, #ff3b30, #e10600);
+  position: relative;
+  overflow: visible;
+}
+
+.next-badge {
+  position: absolute;
+  top: -16rpx;
+  right: -16rpx;
+  font-size: 14rpx;
+  font-weight: bold;
+  color: #fff;
+  background: #e10600;
+  padding: 2rpx 8rpx;
+  border-radius: 6rpx;
+  letter-spacing: 1rpx;
+  box-shadow: 0 2rpx 8rpx rgba(225, 6, 0, 0.5);
+}
+
+.event-next .event-name {
+  color: #ffffff;
+}
+
+.event-next .event-meta {
+  color: #e10600;
 }
 
 .event-item {
@@ -285,4 +327,55 @@
   width: 118rpx;
   height: 56rpx;
   opacity: 1;
+}
+
+/* ── 骨架屏 ── */
+.skeleton-wrap {
+  padding: 16rpx 12rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.sk-event-item {
+  display: flex;
+  flex-direction: row;
+  gap: 16rpx;
+  padding: 20rpx 18rpx;
+  background: #1a1a1a;
+  border-radius: 12rpx;
+  align-items: flex-start;
+}
+
+.sk-round {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 8rpx;
+  animation: shimmer 1.4s ease infinite;
+  flex-shrink: 0;
+}
+
+.sk-event-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.sk-line {
+  height: 24rpx;
+  background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+  background-size: 400% 100%;
+  border-radius: 6rpx;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.sk-long  { width: 70%; }
+.sk-mid   { width: 50%; }
+
+@keyframes shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
