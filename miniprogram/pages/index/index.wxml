@@ -78,15 +78,19 @@
       >
         <view class="round-badge">R{{item.round}}</view>
         <view class="event-info flex-1">
-          <text class="event-name">{{item.name}}</text>
-          <text class="event-meta">{{item.location}} · {{item.date}}</text>
+          <view class="event-top-row">
+            <text class="event-name">{{item.name}}</text>
+          </view>
+          <view class="event-bottom-row">
+            <text class="event-meta">{{item.location}} · {{item.date}}</text>
+            <image
+              wx:if="{{item.circuitSvg}}"
+              class="circuit-track-image"
+              src="{{item.circuitSvg}}"
+              mode="aspectFit"
+            ></image>
+          </view>
         </view>
-        <!-- 赛道简笔图 -->
-        <canvas
-          type="2d"
-          id="circuit-{{index}}"
-          class="circuit-canvas"
-        ></canvas>
       </view>
     </view>
   </scroll-view>

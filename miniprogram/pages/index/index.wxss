@@ -198,10 +198,10 @@
 .event-item {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
   background-color: #1a1a1a;
   border-radius: 12rpx;
-  padding: 18rpx 16rpx;
+  padding: 18rpx 16rpx 16rpx;
   margin-bottom: 8rpx;
   transition: transform 0.12s ease, opacity 0.12s ease;
   gap: 14rpx;
@@ -235,8 +235,22 @@
   min-width: 0;
 }
 
+.event-top-row {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.event-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+
 .event-name {
-  font-size: 21rpx;
+  font-size: 24rpx;
   font-weight: 600;
   color: #ffffff;
   display: block;
@@ -244,15 +258,17 @@
 }
 
 .event-meta {
-  font-size: 18rpx;
+  font-size: 20rpx;
   color: #888888;
-  margin-top: 4rpx;
   display: block;
+  flex: 1;
+  min-width: 0;
 }
 
-.circuit-canvas {
-  width: 72rpx;
-  min-width: 72rpx;
-  height: 48rpx;
+.circuit-track-image {
+  width: 92rpx;
+  min-width: 92rpx;
+  height: 44rpx;
   flex-shrink: 0;
+  opacity: 0.92;
 }

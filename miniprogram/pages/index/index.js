@@ -29,40 +29,6 @@ const LOCATION_TO_CIRCUIT = {
   'Yas Marina':      'Yas Marina',
 }
 
-// 把 SVG path d 字符串解析成 [[x,y], ...] 点数组（只处理 M/L/Z）
-function parsePath(d) {
-  const points = []
-  const cmds = d.trim().split(/(?=[MLZmlz])/)
-  for (const cmd of cmds) {
-    const type = cmd[0]
-    if (type === 'Z' || type === 'z') continue
-    const nums = cmd.slice(1).trim().split(/[\s,]+/).map(Number)
-    for (let i = 0; i < nums.length - 1; i += 2) {
-      points.push([nums[i], nums[i + 1]])
-    }
-  }
-  return points
-}
-
-// 把点数组缩放+平移到 canvas 的 w×h 范围内（含padding）
-function fitPoints(points, w, h, pad) {
-  if (!points.length) return []
-  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
-  for (const [x, y] of points) {
-    if (x < minX) minX = x; if (x > maxX) maxX = x
-    if (y < minY) minY = y; if (y > maxY) maxY = y
-  }
-  const scaleX = (w - pad * 2) / (maxX - minX || 1)
-  const scaleY = (h - pad * 2) / (maxY - minY || 1)
-  const scale = Math.min(scaleX, scaleY)
-  const offX = pad + ((w - pad * 2) - (maxX - minX) * scale) / 2
-  const offY = pad + ((h - pad * 2) - (maxY - minY) * scale) / 2
-  return points.map(([x, y]) => [
-    offX + (x - minX) * scale,
-    offY + (y - minY) * scale,
-  ])
-}
-
 // UTC ISO 字符串 → 北京时间显示字符串（M月D日 HH:MM）
 function toBeijingStr(utcIso) {
   const d = new Date(utcIso)
@@ -102,6 +68,12 @@ const QUICK_ACTIONS = [
   { key: 'forum', label: '进论坛', hint: '车迷讨论区', type: 'switchTab', url: '/pages/forum/forum' },
 ]
 
+function buildCircuitSvgDataUri(pathD, stroke = '#e10600') {
+  if (!pathD) return ''
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 70" fill="none"><path d="${pathD}" stroke="${stroke}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
+}
+
 Page({
   data: {
     year: 2026,
@@ -117,7 +89,6 @@ Page({
   },
 
   _timer: null,
-  _drawnCircuitSignature: '',
 
   onLoad() {
     this.loadEvents()
@@ -140,11 +111,19 @@ Page({
     this.setData({ loading: true, error: '' })
     try {
       const res = await api.getEvents(this.data.year)
-      const events = res.data.filter(e => e.round > 0)
+      const events = res.data
+        .filter(e => e.round > 0)
+        .map(event => {
+          const key = LOCATION_TO_CIRCUIT[event.location]
+          const circuit = key ? CIRCUIT_PATHS[key] : null
+          return {
+            ...event,
+            circuitSvg: circuit ? buildCircuitSvgDataUri(circuit.d) : '',
+          }
+        })
       this.setData({ events, loading: false })
       this._pickNextRace(events)
       this._buildSeasonSummary(events)
-      wx.nextTick(() => this._drawAllCircuits(events))
     } catch (e) {
       this.setData({ loading: false, error: e })
     }
@@ -206,49 +185,6 @@ Page({
 
   _stopCountdown() {
     if (this._timer) { clearInterval(this._timer); this._timer = null }
-  },
-
-  _drawAllCircuits(events) {
-    const signature = events.map(event => `${event.round}:${event.location}`).join('|')
-    if (signature && signature === this._drawnCircuitSignature) return
-    this._drawnCircuitSignature = signature
-
-    events.forEach((event, idx) => {
-      const key = LOCATION_TO_CIRCUIT[event.location]
-      const circuit = key ? CIRCUIT_PATHS[key] : null
-      if (!circuit) return
-      const canvasId = `circuit-${idx}`
-      const query = wx.createSelectorQuery().in(this)
-      query.select(`#${canvasId}`)
-        .fields({ node: true, size: true })
-        .exec(res => {
-          if (!res[0]?.node) return
-          const canvas = res[0].node
-          const w = res[0].width
-          const h = res[0].height
-          const dpr = wx.getWindowInfo().pixelRatio
-          canvas.width = w * dpr
-          canvas.height = h * dpr
-          const ctx = canvas.getContext('2d')
-          ctx.scale(dpr, dpr)
-          ctx.clearRect(0, 0, w, h)
-
-          const points = fitPoints(parsePath(circuit.d), w, h, 3)
-          if (!points.length) return
-
-          ctx.beginPath()
-          ctx.moveTo(points[0][0], points[0][1])
-          for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i][0], points[i][1])
-          }
-          ctx.closePath()
-          ctx.strokeStyle = '#e10600'
-          ctx.lineWidth = 1.5
-          ctx.lineJoin = 'round'
-          ctx.lineCap = 'round'
-          ctx.stroke()
-        })
-    })
   },
 
   onEventTap(e) {
