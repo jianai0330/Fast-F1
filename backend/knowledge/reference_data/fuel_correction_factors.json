@@ -1,0 +1,45 @@
+{
+  "description": "燃油修正因子：每公斤燃油对圈时的影响。燃油负载是正赛中圈时变化的重要变量，分析时必须分离燃油效应与轮胎退化效应。",
+  "average_factor_s_per_kg": 0.035,
+  "track_specific": {
+    "Monaco": 0.030,
+    "Hungaroring": 0.031,
+    "Interlagos": 0.031,
+    "Mexico City": 0.030,
+    "Singapore": 0.031,
+    "Zandvoort": 0.032,
+    "Imola": 0.033,
+    "Bahrain": 0.033,
+    "Montreal": 0.033,
+    "Shanghai": 0.034,
+    "Melbourne": 0.034,
+    "Miami": 0.034,
+    "Yas Marina": 0.034,
+    "Lusail": 0.034,
+    "Suzuka": 0.035,
+    "Barcelona": 0.035,
+    "Austin": 0.035,
+    "Spielberg": 0.032,
+    "Saudi Arabia": 0.037,
+    "Baku": 0.037,
+    "Spa": 0.038,
+    "Las Vegas": 0.038,
+    "Silverstone": 0.036,
+    "Monza": 0.040
+  },
+  "race_fuel_load_kg": 100,
+  "qualifying_fuel_load_kg": 5,
+  "fuel_burnoff_per_lap_kg": 1.5,
+  "total_race_fuel_burnoff_s": "~3.5s improvement over race distance from fuel burnoff alone",
+  "analysis_guidance": {
+    "fuel_effect_vs_tire_degradation": "前8-10圈燃油烧耗效应(~0.3s提升)可能超过轮胎退化(~0.15s损失)，分析时需分离两个变量",
+    "stint_comparison_rule": "比较不同stint的圈时需修正燃油负载差异，同圈号不同stint的圈时差异不等于纯粹轮胎性能差异",
+    "qualifying_vs_race_delta": "排位赛与正赛最快圈差约1.0-1.8s，其中约0.5-0.8s来自燃油负载，剩余来自轮胎新鲜度和引擎模式",
+    "fuel_correction_formula": "corrected_lap_time = actual_lap_time - (current_fuel_kg - reference_fuel_kg) * factor_s_per_kg",
+    "stint_analysis_tip": "stint初期的圈时下降(faster laps)主要是燃油烧耗，stint中后期的圈时上升(slower laps)才是轮胎退化的真实体现"
+  },
+  "track_type_explanation": {
+    "low_factor_tracks": "低速赛道(Monaco/Hungaroring)：直线短，加速能力的影响小，燃油对圈时影响较低",
+    "high_factor_tracks": "高速赛道(Monza/Spa/Las Vegas)：直线长，额外重量对加速和极速影响大，燃油对圈时影响较高"
+  }
+}

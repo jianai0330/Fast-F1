@@ -1,0 +1,166 @@
+<view class="container">
+  <!-- 加载态 -->
+  <view wx:if="{{loading}}" class="loading-wrap">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误态 -->
+  <view wx:if="{{error}}" class="error-wrap">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <block wx:if="{{detail}}">
+    <!-- 封面 -->
+    <image wx:if="{{detail.cover_image}}" class="detail-cover" src="{{baseUrl}}{{detail.cover_image}}" mode="widthFix"></image>
+
+    <!-- 信息区 -->
+    <view class="detail-body">
+      <view class="detail-platform-row">
+        <text class="platform-tag platform-{{detail.platform}}">{{detail.platformLabel}}</text>
+        <text wx:if="{{detail.timeStr}}" class="detail-time">{{detail.timeStr}}</text>
+      </view>
+      <text class="detail-title">{{detail.title}}</text>
+      <text wx:if="{{detail.note}}" class="detail-note">"{{detail.note}}" —— {{detail.submitted_by || '匿名'}}</text>
+
+      <!-- 标签 -->
+      <view wx:if="{{detail.parsedTags.length}}" class="detail-tags">
+        <text wx:for="{{detail.parsedTags}}" wx:key="*this" class="detail-tag-item">{{item}}</text>
+      </view>
+
+      <!-- 摘要 -->
+      <text wx:if="{{detail.summary}}" class="detail-summary">{{detail.summary}}</text>
+
+      <!-- AI 解读区 -->
+      <view class="ai-section">
+        <view class="ai-header">
+          <text class="ai-title">✨ AI 专业解读</text>
+          <text class="ai-sub" wx:if="{{polling}}">分析中，请稍候...</text>
+        </view>
+
+        <!-- 已分析：显示内容 + 重新分析按钮 -->
+        <block wx:if="{{detail.analyzed}}">
+
+          <view class="ai-card" wx:if="{{detail.tech_points}}">
+            <view class="ai-card-header">
+              <text class="ai-emoji">📋</text>
+              <text class="ai-card-title">事实摘要</text>
+            </view>
+            <text class="ai-card-body">{{detail.tech_points}}</text>
+          </view>
+
+          <view class="ai-card" wx:if="{{detail.plain_explain}}">
+            <view class="ai-card-header">
+              <text class="ai-emoji">🔍</text>
+              <text class="ai-card-title">深度解读</text>
+            </view>
+            <text class="ai-card-body">{{detail.plain_explain}}</text>
+          </view>
+
+          <view class="ai-card" wx:if="{{detail.race_impact}}">
+            <view class="ai-card-header">
+              <text class="ai-emoji">💡</text>
+              <text class="ai-card-title">我们的判断</text>
+            </view>
+            <text class="ai-card-body">{{detail.race_impact}}</text>
+          </view>
+
+          <!-- 重新分析按钮 -->
+          <view class="reanalyze-btn {{reanalyzeLoading ? 'reanalyze-btn-disabled' : ''}}"
+                bindtap="onReanalyze">
+            <text>{{reanalyzeLoading ? '重新生成中...' : '🔄 重新分析'}}</text>
+          </view>
+
+        </block>
+
+        <!-- 轮询等待中：骨架屏 -->
+        <block wx:elif="{{polling}}">
+          <view class="ai-card skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+            <view class="sk-line sk-short"></view>
+            <view class="sk-line sk-long"></view>
+            <view class="sk-line sk-mid"></view>
+            <view class="sk-line sk-long"></view>
+          </view>
+        </block>
+
+        <!-- 未分析且未在轮询：显示触发按钮 -->
+        <view wx:else class="ai-pending">
+          <text class="text-muted">还没有 AI 解读</text>
+          <view class="ai-trigger-btn {{triggerLoading ? 'ai-trigger-disabled' : ''}}"
+                bindtap="onTriggerAnalyze">
+            <text>{{triggerLoading ? '正在生成...' : '✨ 生成 AI 解读'}}</text>
+          </view>
+          <text class="ai-trigger-tip">首次生成需 10-20 秒，生成后所有人可见</text>
+        </view>
+
+      </view>
+
+      <!-- 快照切换开关 -->
+      <view wx:if="{{detail.snapshot_image && detail.archived_html}}" class="view-toggle">
+        <view class="toggle-btn {{viewMode === 'screenshot' ? 'toggle-active' : ''}}" bindtap="onToggleView" data-mode="screenshot">
+          <text>🖼 截图</text>
+        </view>
+        <view class="toggle-btn {{viewMode === 'html' ? 'toggle-active' : ''}}" bindtap="onToggleView" data-mode="html">
+          <text>📝 图文</text>
+        </view>
+      </view>
+
+      <!-- 截图快照 -->
+      <image wx:if="{{detail.snapshot_image && viewMode === 'screenshot'}}" class="snapshot-image" src="{{baseUrl}}{{detail.snapshot_image}}" mode="widthFix" show-menu-by-longpress></image>
+
+      <!-- 文字快照 -->
+      <view wx:if="{{detail.archived_html && viewMode === 'html'}}" class="detail-archive">
+        <rich-text nodes="{{detail.archived_html}}" class="archive-content"></rich-text>
+      </view>
+
+      <!-- 只有截图没有HTML时 -->
+      <image wx:if="{{detail.snapshot_image && !detail.archived_html}}" class="snapshot-image" src="{{baseUrl}}{{detail.snapshot_image}}" mode="widthFix" show-menu-by-longpress></image>
+
+      <!-- 只有HTML没有截图时 -->
+      <view wx:if="{{!detail.snapshot_image && detail.archived_html}}" class="detail-archive">
+        <rich-text nodes="{{detail.archived_html}}" class="archive-content"></rich-text>
+      </view>
+
+      <!-- 讨论区卡片 -->
+      <view class="discuss-section">
+        <view class="discuss-header">
+          <text class="discuss-title">💬 讨论区</text>
+          <view wx:if="{{relatedTotal > 0}}" class="discuss-count-tag">
+            <text>{{relatedTotal}} 条</text>
+          </view>
+        </view>
+
+        <!-- 有关联帖子 -->
+        <block wx:if="{{relatedPosts.length > 0}}">
+          <view wx:for="{{relatedPosts}}" wx:key="id"
+                class="related-post-card" bindtap="onGoPost" data-id="{{item.id}}">
+            <text class="related-post-title">{{item.title}}</text>
+            <view class="related-post-meta">
+              <text class="rp-author">{{item.author_nickname}}</text>
+              <text class="rp-dot">·</text>
+              <text class="rp-stat">{{item.comment_count}} 评论</text>
+            </view>
+          </view>
+          <view wx:if="{{relatedTotal > 3}}" class="view-all-btn" bindtap="onViewAllPosts">
+            <text>查看全部 {{relatedTotal}} 条讨论 →</text>
+          </view>
+        </block>
+
+        <!-- 无关联帖子 -->
+        <view wx:else class="no-discuss">
+          <text class="text-muted">还没有讨论，来发第一条 →</text>
+        </view>
+
+        <!-- 去发帖按钮 -->
+        <view class="bottom-btn" bindtap="onGoForum">
+          <text>✏️ 去论坛讨论这条内容</text>
+        </view>
+      </view>
+
+    </view>
+  </block>
+
+  <!-- 底部按钮 -->
+  <view wx:if="{{detail}}" class="detail-footer">
+    <button class="copy-btn" bindtap="onCopyUrl">复制原文链接</button>
+  </view>
+</view>

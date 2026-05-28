@@ -1,0 +1,80 @@
+{
+  "season": 2026,
+  "supplier": "Pirelli",
+  "compounds": {
+    "soft": {
+      "compound_code": "C3-C5",
+      "color": "red",
+      "optimal_temp_range_c": [95, 110],
+      "warmup_laps": 1,
+      "peak_performance_laps": "3-8",
+      "degradation_rate_s_per_lap": "0.08-0.15 (track dependent)",
+      "thermal_sensitivity": "high",
+      "operating_window": "narrow",
+      "notes": "最快单圈但退化快，排位赛首选；高温赛道退化可能翻倍；graining风险在低温赛道高"
+    },
+    "medium": {
+      "compound_code": "C2-C3",
+      "color": "yellow",
+      "optimal_temp_range_c": [100, 115],
+      "warmup_laps": 2,
+      "peak_performance_laps": "5-15",
+      "degradation_rate_s_per_lap": "0.04-0.08",
+      "thermal_sensitivity": "medium",
+      "operating_window": "moderate",
+      "notes": "平衡性能与耐久，正赛主力；适合stint长度8-20圈；高温下可能过早退场"
+    },
+    "hard": {
+      "compound_code": "C0-C2",
+      "color": "white",
+      "optimal_temp_range_c": [105, 120],
+      "warmup_laps": 3,
+      "peak_performance_laps": "8-25",
+      "degradation_rate_s_per_lap": "0.02-0.05",
+      "thermal_sensitivity": "low",
+      "operating_window": "wide",
+      "notes": "最持久但单圈慢0.8-1.2s，长stint或高退化赛道；低温赛道暖胎困难可能无性能窗口"
+    }
+  },
+  "wet_weather": {
+    "intermediate": {
+      "optimal_temp_range_c": [50, 80],
+      "warmup_laps": 1,
+      "notes": "半雨胎，适用微湿到中度积水；干地线越少越快；干地行驶会过热graining"
+    },
+    "wet": {
+      "optimal_temp_range_c": [30, 50],
+      "warmup_laps": 1,
+      "notes": "全雨胎，排水量极大；干地行驶会迅速过热损坏；暖胎仅需半圈"
+    }
+  },
+  "general_rules": {
+    "soft_to_medium_delta_s": "0.5-0.8",
+    "medium_to_hard_delta_s": "0.4-0.6",
+    "soft_to_hard_delta_s": "0.9-1.4",
+    "dirty_air_temp_increase_c": "6-8",
+    "fuel_burnoff_masks_degradation_laps": "前8-10圈",
+    "crossover_lap_definition": "更换胶质后新胎追平旧胎剩余性能的圈数，通常1-3圈",
+    "minimum_stint_length_safety": "硬胎5圈，中性3圈，软胎2圈（低于此视为异常策略）"
+  },
+  "track_specific_degradation": {
+    "high_degradation_tracks": {
+      "tracks": ["Bahrain", "Shanghai", "Barcelona", "Austin", "Lusail", "Silverstone"],
+      "notes": "平均退化速率+50%，soft可能仅5-8圈就cliff，两停甚至三停常见"
+    },
+    "medium_degradation_tracks": {
+      "tracks": ["Saudi Arabia", "Australia", "Miami", "Montreal", "Hungaroring", "Spa", "Zandvoort", "Singapore", "Interlagos", "Las Vegas"],
+      "notes": "标准退化速率，一停或两停取决于策略选择"
+    },
+    "low_degradation_tracks": {
+      "tracks": ["Imola", "Monaco", "Spielberg", "Monza", "Baku", "Mexico City", "Yas Marina"],
+      "notes": "退化速率-30%，一停可行，overcut常有效，赛道位置优先"
+    }
+  },
+  "2026_regulation_notes": {
+    "active_aero_impact": "2026规则引入主动空气动力学，弯中下压力可调，可能降低轮胎侧向载荷5-10%",
+    "pu_deployment_changes": "2026 PU部署比例调整，电能占比提高，出弯加速特性改变可能影响轮胎应力",
+    "car_weight": "2026赛车重量798kg（含车手），比2025增2kg，额外负载略微增加轮胎退化",
+    "compound_selection": "Pirelli每年根据赛道选择3种胶质分配，每站实际使用其中3种（干地）"
+  }
+}

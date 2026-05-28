@@ -1,0 +1,122 @@
+/* pages/chatroom/chatroom.wxss */
+.chatroom-container {
+  min-height: 100vh;
+  background: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 头部 */
+.chat-header {
+  padding: 24rpx 32rpx;
+  background: #1a1a1a;
+  border-bottom: 1rpx solid #2a2a2a;
+  flex-shrink: 0;
+}
+.chat-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+  display: block;
+}
+.nickname-area {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+.nickname-label {
+  font-size: 24rpx;
+  color: #888;
+}
+.nickname-value {
+  font-size: 24rpx;
+  color: #4a9eff;
+  margin-left: 8rpx;
+}
+.nickname-edit {
+  font-size: 24rpx;
+  margin-left: 8rpx;
+}
+.online-hint {
+  font-size: 22rpx;
+  color: #555;
+  display: block;
+  margin-top: 8rpx;
+}
+
+/* 消息列表 */
+.message-list {
+  flex: 1;
+  padding: 20rpx 24rpx;
+  box-sizing: border-box;
+}
+.msg-empty {
+  text-align: center;
+  padding: 120rpx 0;
+  color: #555;
+  font-size: 28rpx;
+}
+.msg-bubble {
+  background: #1a1a1a;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #242424;
+}
+.msg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+.msg-nickname {
+  font-size: 26rpx;
+  color: #4a9eff;
+  font-weight: 500;
+}
+.msg-time {
+  font-size: 20rpx;
+  color: #555;
+}
+.msg-content {
+  font-size: 28rpx;
+  color: #e0e0e0;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+/* 输入区 */
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx 32rpx;
+  background: #111;
+  border-top: 1rpx solid #2a2a2a;
+  flex-shrink: 0;
+}
+.msg-input {
+  flex: 1;
+  height: 72rpx;
+  background: #1a1a1a;
+  border-radius: 36rpx;
+  padding: 0 28rpx;
+  font-size: 28rpx;
+  color: #e0e0e0;
+  border: 1rpx solid #2a2a2a;
+}
+.msg-input::placeholder {
+  color: #555;
+}
+.send-btn {
+  margin-left: 16rpx;
+  padding: 16rpx 32rpx;
+  background: #333;
+  border-radius: 36rpx;
+  font-size: 28rpx;
+  color: #888;
+  transition: all 0.2s ease;
+}
+.send-btn.active {
+  background: #4a9eff;
+  color: #fff;
+}

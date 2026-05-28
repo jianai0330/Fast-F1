@@ -1,0 +1,794 @@
+[
+  {
+    "name": "Bahrain",
+    "official_name": "Bahrain International Circuit",
+    "country": "Bahrain",
+    "length_km": 5.412,
+    "corners": 15,
+    "drs_zones": 3,
+    "track_type": "mixed",
+    "avg_speed_kmh": 210,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T4 (long straights + heavy braking)",
+        "notes": "长直道+重刹区，DRS和PU部署效率是关键，T1超车主要区域"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T5-T10 (winding section)",
+        "notes": "中低速连续弯角，机械抓地力和轮胎管理重要"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T11-T15 (final sector)",
+        "notes": "低速弯+出弯加速，牵引力控制和轮胎磨损影响大"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["轮胎退化管理", "能量部署策略", "出弯牵引力"],
+    "typical_pit_loss_s": 23,
+    "fuel_correction_s_per_kg": 0.033,
+    "notes": "沙漠赛道，表面砂砾多导致轮胎退化极高，夜间比赛温度下降影响退化曲线"
+  },
+  {
+    "name": "Saudi Arabia",
+    "official_name": "Jeddah Corniche Circuit",
+    "country": "Saudi Arabia",
+    "length_km": 6.174,
+    "corners": 27,
+    "drs_zones": 3,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 250,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T9 (flat-out sequence)",
+        "notes": "连续高速弯，需极高下压力和车手信心，墙壁极近容错率低"
+      },
+      "S2": {
+        "type": "high_speed",
+        "key_corners": "T10-T22 (fast chicane section)",
+        "notes": "极高速连续变向，测试空气动力学稳定性和车手体能"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T23-T27 (final corners)",
+        "notes": "最后几个弯需精准刹车点，T27出弯加速决定圈尾速度"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["下压力与阻力平衡", "高速弯信心与稳定性", "刹车点精确度"],
+    "typical_pit_loss_s": 20,
+    "fuel_correction_s_per_kg": 0.037,
+    "notes": "F1最快街道赛道，墙壁极近，路肩使用受限，安全车概率高"
+  },
+  {
+    "name": "Australia",
+    "official_name": "Albert Park Circuit",
+    "country": "Australia",
+    "length_km": 5.278,
+    "corners": 14,
+    "drs_zones": 4,
+    "track_type": "mixed",
+    "avg_speed_kmh": 225,
+    "sectors": {
+      "S1": {
+        "type": "mixed",
+        "key_corners": "T1-T6 (stop-go section)",
+        "notes": "重刹+加速的stop-go结构，牵引力与刹车稳定性并重"
+      },
+      "S2": {
+        "type": "high_speed",
+        "key_corners": "T7-T10 (fast chicane)",
+        "notes": "高速变向弯角，空气动力学效率决定速度"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T11-T14 (final sector)",
+        "notes": "低速弯+长直道，出弯速度决定直道尾速"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["牵引力控制", "刹车稳定性", "DRS直道超车效率"],
+    "typical_pit_loss_s": 21,
+    "fuel_correction_s_per_kg": 0.034,
+    "notes": "赛季揭幕战，赛道演进(evolution)明显，周五到周日圈时提升1.5-2.5s"
+  },
+  {
+    "name": "Suzuka",
+    "official_name": "Suzuka International Racing Course",
+    "country": "Japan",
+    "length_km": 5.807,
+    "corners": 18,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 225,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T6 (esses)",
+        "notes": "连续高速弯测试下压力和空气动力学稳定性，节奏感至关重要"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T7-T13 (hairpin to spoon)",
+        "notes": "混合速度弯角测试机械抓地力，Spoon弯是关键计时点"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "130R + chicane",
+        "notes": "130R全油门高速弯+chicane重刹，PU部署和刹车效率是关键"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["下压力设定", "能量部署效率", "S1高速弯连贯性"],
+    "typical_pit_loss_s": 22,
+    "fuel_correction_s_per_kg": 0.035,
+    "notes": "经典8字形赛道，S1弯角连贯性决定整圈节奏，DRS区短超车极难"
+  },
+  {
+    "name": "Shanghai",
+    "official_name": "Shanghai International Circuit",
+    "country": "China",
+    "length_km": 5.451,
+    "corners": 16,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 215,
+    "sectors": {
+      "S1": {
+        "type": "technical",
+        "key_corners": "T1-T4 (snail corner)",
+        "notes": "T1-3连续收紧的螺旋弯，半径递减测试轮胎与下压力配合"
+      },
+      "S2": {
+        "type": "high_speed",
+        "key_corners": "T7-T9 (long back straight entry)",
+        "notes": "长直道前的高速弯角组合，出弯速度决定直道尾速"
+      },
+      "S3": {
+        "type": "technical",
+        "key_corners": "T11-T16 (tight section)",
+        "notes": "低速弯+短直道，牵引力与轮胎管理重要"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["轮胎退化管理", "T1螺旋弯节奏", "长直道DRS效率"],
+    "typical_pit_loss_s": 24,
+    "fuel_correction_s_per_kg": 0.034,
+    "notes": "赛道表面较新(2024重铺)，轮胎退化高，T1入弯刹车是主要超车点"
+  },
+  {
+    "name": "Miami",
+    "official_name": "Miami International Autodrome",
+    "country": "USA",
+    "length_km": 5.412,
+    "corners": 19,
+    "drs_zones": 3,
+    "track_type": "mixed",
+    "avg_speed_kmh": 220,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T8 (fast section)",
+        "notes": "高速弯+重刹组合，T1超车机会，赛道演进剧烈"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T9-T16 (stadium section)",
+        "notes": "低速紧凑弯角，机械抓地力和牵引力是关键"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T17-T19 (final hairpin + straight)",
+        "notes": "发夹弯+长直道，出弯加速和DRS效率决定超车"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["赛道演进速度", "出弯牵引力", "DRS直道超车"],
+    "typical_pit_loss_s": 21,
+    "fuel_correction_s_per_kg": 0.034,
+    "notes": "临时赛道，表面演进极快，高温高湿影响轮胎和PU冷却"
+  },
+  {
+    "name": "Imola",
+    "official_name": "Autodromo Internazionale Enzo e Dino Ferrari",
+    "country": "Italy",
+    "length_km": 4.909,
+    "corners": 20,
+    "drs_zones": 1,
+    "track_type": "mixed",
+    "avg_speed_kmh": 230,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T2-T7 (Villeneuve-Tamburello)",
+        "notes": "极高速弯角组合，空气动力学效率与下压力并重"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T8-T15 (Piratella-Acque Minerali)",
+        "notes": "Piratella高速入弯+Acque Minerali下坡重刹，节奏转换关键"
+      },
+      "S3": {
+        "type": "technical",
+        "key_corners": "T16-T20 (Rivazza + Variante Alta)",
+        "notes": "Rivazza双 apex弯+Variante Alta重刹，车手信心和刹车稳定性"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["下压力与阻力平衡", "高速弯信心", "排位赛重要性"],
+    "typical_pit_loss_s": 24,
+    "fuel_correction_s_per_kg": 0.033,
+    "notes": "窄赛道超车极难，排位赛决定成绩，DRS区仅1个，策略以overcut为主"
+  },
+  {
+    "name": "Monaco",
+    "official_name": "Circuit de Monaco",
+    "country": "Monaco",
+    "length_km": 3.337,
+    "corners": 19,
+    "drs_zones": 0,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 160,
+    "sectors": {
+      "S1": {
+        "type": "technical",
+        "key_corners": "T1-T6 (Sainte Devote to Casino)",
+        "notes": "低速弯+上坡加速，牵引力和机械抓地力是核心，Sainte Devote是唯一超车点"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T7-T13 (Mirabeau to Tunnel)",
+        "notes": "极低速连续弯+隧道高速段，下压力与底盘刚性并重"
+      },
+      "S3": {
+        "type": "technical",
+        "key_corners": "T14-T19 (Nouvelle Chicane to Rascasse)",
+        "notes": "泳池弯+Rascasse低速弯，出弯加速和轮胎温度管理"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["排位赛绝对优先", "轮胎保温能力", "交通状况管理"],
+    "typical_pit_loss_s": 18,
+    "fuel_correction_s_per_kg": 0.030,
+    "notes": "全年最低速赛道，无DRS，超车几乎不可能，排位赛=比赛成绩，overcut常有效"
+  },
+  {
+    "name": "Barcelona",
+    "official_name": "Circuit de Barcelona-Catalunya",
+    "country": "Spain",
+    "length_km": 4.657,
+    "corners": 16,
+    "drs_zones": 2,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 215,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T3 (Repsol + long right)",
+        "notes": "高速弯组合，下压力决定中高速弯速度，T3是关键计时弯"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T4-T10 (mid-sector)",
+        "notes": "混合速度弯角，Campsa弯(T9)高速右弯测试空气动力学稳定性"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T11-T16 (final chicane + straight)",
+        "notes": "低速chicane+长直道，阻力水平决定直道速度和超车可能性"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["下压力水平", "轮胎退化控制", "S3阻力优化"],
+    "typical_pit_loss_s": 22,
+    "fuel_correction_s_per_kg": 0.035,
+    "notes": "传统测试赛道，赛道特性广为人知，轮胎退化高，undercut常有效"
+  },
+  {
+    "name": "Montreal",
+    "official_name": "Circuit Gilles Villeneuve",
+    "country": "Canada",
+    "length_km": 4.361,
+    "corners": 14,
+    "drs_zones": 2,
+    "track_type": "power",
+    "avg_speed_kmh": 220,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T3 (first chicane)",
+        "notes": "长直道+重刹chicane，刹车效率和PU部署决定直道速度"
+      },
+      "S2": {
+        "type": "mixed",
+        "key_corners": "T4-T9 (mid-section)",
+        "notes": "中速弯+短直道，牵引力和刹车稳定性并重"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T10-T14 (Wall of Champions)",
+        "notes": "冠军墙chicane+起跑直道，刹车精度和出弯加速决定圈尾速度"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["刹车散热能力", "PU部署效率", "牵引力控制"],
+    "typical_pit_loss_s": 19,
+    "fuel_correction_s_per_kg": 0.033,
+    "notes": "重刹赛道，刹车磨损和散热是头号关注，安全车概率高，雨战常见"
+  },
+  {
+    "name": "Spielberg",
+    "official_name": "Red Bull Ring",
+    "country": "Austria",
+    "length_km": 4.318,
+    "corners": 10,
+    "drs_zones": 3,
+    "track_type": "power",
+    "avg_speed_kmh": 235,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T3 (Castrol Edge + Remus)",
+        "notes": "上坡重刹+高速弯，T2/T3需全油门信心，PU部署是关键"
+      },
+      "S2": {
+        "type": "mixed",
+        "key_corners": "T4-T7 (Schlossgold + Rauch)",
+        "notes": "中速弯角，下压力与阻力的平衡点"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T8-T10 (Red Bull Mobil + straight)",
+        "notes": "长下坡直道+T9重刹，DRS效果最显著的区域"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "easy",
+    "key_analysis_factors": ["PU部署效率", "DRS直道超车", "下压力与阻力权衡"],
+    "typical_pit_loss_s": 18,
+    "fuel_correction_s_per_kg": 0.032,
+    "notes": "最短赛道之一，圈时间短导致进站损失小，3个DRS区超车容易，undercut有效"
+  },
+  {
+    "name": "Silverstone",
+    "official_name": "Silverstone Circuit",
+    "country": "United Kingdom",
+    "length_km": 5.891,
+    "corners": 18,
+    "drs_zones": 2,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 235,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T6 (Copse to Maggots-Becketts)",
+        "notes": "极高速弯角序列，Maggots-Becketts-Chapel是F1最具挑战的高速弯组合"
+      },
+      "S2": {
+        "type": "mixed",
+        "key_corners": "T7-T12 (Stowe to Vale)",
+        "notes": "Stove重刹+Club中速弯，速度结构转换区域"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T13-T18 (Village to Pit Straight)",
+        "notes": "低速弯+长直道，阻力水平决定直道速度"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["极高速弯下压力", "轮胎侧向载荷", "能量回收与部署"],
+    "typical_pit_loss_s": 21,
+    "fuel_correction_s_per_kg": 0.036,
+    "notes": "高速弯对轮胎侧向载荷极高，左前轮最受折磨，天气变化常见"
+  },
+  {
+    "name": "Hungaroring",
+    "official_name": "Hungaroring",
+    "country": "Hungary",
+    "length_km": 4.381,
+    "corners": 14,
+    "drs_zones": 1,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 195,
+    "sectors": {
+      "S1": {
+        "type": "technical",
+        "key_corners": "T1-T4 (Turn 1 complex)",
+        "notes": "重刹入弯+连续中低速弯，牵引力和机械抓地力是核心"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T5-T9 (mid-section)",
+        "notes": "紧凑弯角序列，节奏感决定速度，弯中微调比直线加速更重要"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T10-T14 (final sector)",
+        "notes": "低速弯+短直道，出弯速度对整圈影响大"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["下压力最大化", "机械抓地力", "交通状况管理"],
+    "typical_pit_loss_s": 19,
+    "fuel_correction_s_per_kg": 0.031,
+    "notes": "类似摩纳哥的技术赛道，超车极难，排位赛和策略至关重要，overcut常有效"
+  },
+  {
+    "name": "Spa",
+    "official_name": "Circuit de Spa-Francorchamps",
+    "country": "Belgium",
+    "length_km": 7.004,
+    "corners": 20,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 235,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T9 (La Source to Les Combes)",
+        "notes": "Eau Rouge/Raidillon极高速上坡弯+Kemmel直道，全油门信心和PU部署是关键"
+      },
+      "S2": {
+        "type": "mixed",
+        "key_corners": "T10-T15 (Les Combes to Pouhon)",
+        "notes": "中高速弯角，Pouhon是全赛道最快弯，下压力决定速度"
+      },
+      "S3": {
+        "type": "technical",
+        "key_corners": "T16-T20 (Stavelot to Bus Stop)",
+        "notes": "高速段+Bus Stop重刹chicane，刹车效率和出弯加速"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["Eau Rouge全油门信心", "天气窗口策略", "PU部署与能量管理"],
+    "typical_pit_loss_s": 24,
+    "fuel_correction_s_per_kg": 0.038,
+    "notes": "最长赛道，天气变化是最大变量，不同区段可能干湿不同，策略需灵活应变"
+  },
+  {
+    "name": "Zandvoort",
+    "official_name": "Circuit Zandvoort",
+    "country": "Netherlands",
+    "length_km": 4.259,
+    "corners": 14,
+    "drs_zones": 2,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 210,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T3 (Tarzan to Gerlach)",
+        "notes": "Tarzan重刹+高速弯，银行弯倾斜角影响下压力需求"
+      },
+      "S2": {
+        "type": "high_speed",
+        "key_corners": "T4-T8 (Hugenholtz + Hunaudieres)",
+        "notes": "银行弯(T3)高倾斜角全油门，下压力和空力稳定性是核心"
+      },
+      "S3": {
+        "type": "technical",
+        "key_corners": "T9-T14 (final sector)",
+        "notes": "低速紧凑弯角，牵引力和机械抓地力"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["银行弯下压力", "赛道演进", "排位赛重要性"],
+    "typical_pit_loss_s": 18,
+    "fuel_correction_s_per_kg": 0.032,
+    "notes": "窄赛道+倾斜弯角，超车极难，排位赛关键，赛道演进显著"
+  },
+  {
+    "name": "Monza",
+    "official_name": "Autodromo Nazionale Monza",
+    "country": "Italy",
+    "length_km": 5.793,
+    "corners": 11,
+    "drs_zones": 2,
+    "track_type": "power",
+    "avg_speed_kmh": 260,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T3 (Prima Variante)",
+        "notes": "长直道+重刹chicane，最低下压力设定，PU马力和刹车效率决定一切"
+      },
+      "S2": {
+        "type": "mixed",
+        "key_corners": "T4-T8 (Curva Grande to Lesmo)",
+        "notes": "Curva Grande全油门+Lesmo中速弯，下压力最低限度的平衡"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T9-T11 (Ascari + Parabolica)",
+        "notes": "Ascari chican+Parabolica长右弯，出弯速度决定直道尾速"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "easy",
+    "key_analysis_factors": ["极低下压力设定", "PU马力", "直道尾速与DRS效率"],
+    "typical_pit_loss_s": 23,
+    "fuel_correction_s_per_kg": 0.040,
+    "notes": "全年最快赛道，极低下压力设定，直线速度为王，slipstream效应最大"
+  },
+  {
+    "name": "Baku",
+    "official_name": "Baku City Circuit",
+    "country": "Azerbaijan",
+    "length_km": 6.003,
+    "corners": 20,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 230,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T7 (start section)",
+        "notes": "中高速弯角，重刹T1超车机会，DRS效果显著"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T8-T15 (old town section)",
+        "notes": "极窄低速弯角，城墙赛道，精准度>速度，交通是最大变量"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T16-T20 (long straight)",
+        "notes": "2.2km超长直道，slipstream和DRS效果全年最强，PU部署策略关键"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["超长直道PU部署", "安全车概率", "交通管理"],
+    "typical_pit_loss_s": 21,
+    "fuel_correction_s_per_kg": 0.037,
+    "notes": "安全车/VSC概率极高，2.2km直道slipstream+DRS超车窗口大，策略需灵活"
+  },
+  {
+    "name": "Singapore",
+    "official_name": "Marina Bay Street Circuit",
+    "country": "Singapore",
+    "length_km": 4.940,
+    "corners": 23,
+    "drs_zones": 2,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 175,
+    "sectors": {
+      "S1": {
+        "type": "technical",
+        "key_corners": "T1-T8 (Turn 1 to Anderson Bridge)",
+        "notes": "低速stop-go弯角，牵引力和机械抓地力是核心，刹车区短需精准"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T9-T16 (Esplanade to Bay)",
+        "notes": "紧凑弯角+短直道，节奏感决定速度，弯中不可犯错"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T17-T23 (final sector)",
+        "notes": "技术弯角+DRS直道，出弯速度有限但直道仍有超车可能"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["最大下压力", "高温高湿体能消耗", "安全车概率"],
+    "typical_pit_loss_s": 22,
+    "fuel_correction_s_per_kg": 0.031,
+    "notes": "全年最慢街道赛，高温高湿，安全车几乎100%出现，比赛时间常逼近2小时限制"
+  },
+  {
+    "name": "Austin",
+    "official_name": "Circuit of the Americas",
+    "country": "USA",
+    "length_km": 5.513,
+    "corners": 20,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 225,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T9 (hill section)",
+        "notes": "T1上坡重刹+高速弯角序列，下压力与节奏感并重"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T10-T16 (Esses + Bumps)",
+        "notes": "S弯组合+路面颠簸，底盘刚性与机械抓地力关键"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T17-T20 (stadium section + straight)",
+        "notes": "低速弯+长直道，DRS效率决定超车"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["轮胎侧向载荷", "路面颠簸处理", "下压力与阻力权衡"],
+    "typical_pit_loss_s": 22,
+    "fuel_correction_s_per_kg": 0.035,
+    "notes": "Sprint赛事常见，赛道表面颠簸严重影响底盘设定，左前轮载荷极高"
+  },
+  {
+    "name": "Mexico City",
+    "official_name": "Autodromo Hermanos Rodriguez",
+    "country": "Mexico",
+    "length_km": 4.304,
+    "corners": 17,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 220,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T3 (start section)",
+        "notes": "长直道+重刹T1，海拔导致空气稀薄，下压力损失约25%"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T4-T11 (Foro Sol stadium)",
+        "notes": "低速弯角穿过体育场，牵引力和轮胎管理关键"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T12-T17 (Peraltada + straight)",
+        "notes": "Peraltada高速弯+直道，下压力低但弯角仍需信心"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["海拔对空力的影响", "冷却效率下降", "PU部署策略"],
+    "typical_pit_loss_s": 18,
+    "fuel_correction_s_per_kg": 0.030,
+    "notes": "海拔2240m导致空气密度低约25%，下压力和冷却效率严重下降，轮胎退化低"
+  },
+  {
+    "name": "Interlagos",
+    "official_name": "Autodromo Jose Carlos Pace",
+    "country": "Brazil",
+    "length_km": 4.309,
+    "corners": 15,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 215,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T6 (Senna S to Curva do Lago)",
+        "notes": "Senna S下坡重刹+高速弯，海拔变化大，节奏感关键"
+      },
+      "S2": {
+        "type": "mixed",
+        "key_corners": "T7-T11 (mid-section)",
+        "notes": "中速弯+短直道，下压力与阻力平衡点"
+      },
+      "S3": {
+        "type": "power",
+        "key_corners": "T12-T15 (Juncao + Reta Oposta)",
+        "notes": "Juncao低速弯+上坡直道，出弯速度和PU部署决定直道速度"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["天气变化", "海拔变化影响刹车", "雨战策略灵活性"],
+    "typical_pit_loss_s": 18,
+    "fuel_correction_s_per_kg": 0.031,
+    "notes": "逆时针赛道+海拔变化，雨战概率极高，策略需极度灵活，安全车常见"
+  },
+  {
+    "name": "Las Vegas",
+    "official_name": "Las Vegas Strip Circuit",
+    "country": "USA",
+    "length_km": 6.201,
+    "corners": 17,
+    "drs_zones": 2,
+    "track_type": "power",
+    "avg_speed_kmh": 245,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T7 (start to Strip)",
+        "notes": "长直道+重刹chicane，极低下压力设定，slipstream效应大"
+      },
+      "S2": {
+        "type": "high_speed",
+        "key_corners": "T8-T12 (Las Vegas Blvd section)",
+        "notes": "高速弯角沿Las Vegas大道，路面冷导致轮胎温度难维持"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T13-T17 (Sphere section)",
+        "notes": "低速弯+短直道，机械抓地力和牵引力关键"
+      }
+    },
+    "tire_severity": "medium",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["极低温下轮胎管理", "PU部署策略", "DRS与slipstream效率"],
+    "typical_pit_loss_s": 22,
+    "fuel_correction_s_per_kg": 0.038,
+    "notes": "夜间比赛+低温(~10°C)，轮胎温度维持是核心难题，路面冰滑，graining风险高"
+  },
+  {
+    "name": "Lusail",
+    "official_name": "Lusail International Circuit",
+    "country": "Qatar",
+    "length_km": 5.380,
+    "corners": 16,
+    "drs_zones": 1,
+    "track_type": "high_downforce",
+    "avg_speed_kmh": 230,
+    "sectors": {
+      "S1": {
+        "type": "high_speed",
+        "key_corners": "T1-T6 (opening sequence)",
+        "notes": "高速弯角组合，下压力和空力稳定性决定速度，T1重刹超车点"
+      },
+      "S2": {
+        "type": "high_speed",
+        "key_corners": "T7-T12 (mid-sector)",
+        "notes": "连续中高速弯，节奏感和下压力是核心"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T13-T16 (final sector)",
+        "notes": "低速弯+长直道，出弯速度和DRS效率"
+      }
+    },
+    "tire_severity": "high",
+    "overtaking_difficulty": "hard",
+    "key_analysis_factors": ["高温轮胎退化", "物理极限载荷", "下压力最大化"],
+    "typical_pit_loss_s": 22,
+    "fuel_correction_s_per_kg": 0.034,
+    "notes": "2023年因轮胎安全限制强制3停，高温+高速弯使轮胎载荷极高，Sprint赛事"
+  },
+  {
+    "name": "Yas Marina",
+    "official_name": "Yas Marina Circuit",
+    "country": "Abu Dhabi",
+    "length_km": 5.284,
+    "corners": 16,
+    "drs_zones": 2,
+    "track_type": "mixed",
+    "avg_speed_kmh": 225,
+    "sectors": {
+      "S1": {
+        "type": "power",
+        "key_corners": "T1-T7 (start to back straight)",
+        "notes": "长直道+重刹弯角，PU部署和DRS效率是关键"
+      },
+      "S2": {
+        "type": "technical",
+        "key_corners": "T8-T12 (hotel section)",
+        "notes": "低速弯角穿过酒店区域，机械抓地力和牵引力核心"
+      },
+      "S3": {
+        "type": "mixed",
+        "key_corners": "T13-T16 (marina section)",
+        "notes": "中速弯+长直道，下压力与阻力的平衡决定速度"
+      }
+    },
+    "tire_severity": "low",
+    "overtaking_difficulty": "medium",
+    "key_analysis_factors": ["DRS直道超车", "温度递降策略", "日落光线变化"],
+    "typical_pit_loss_s": 21,
+    "fuel_correction_s_per_kg": 0.034,
+    "notes": "日落比赛，赛道温度快速下降影响轮胎和策略，2021改版后超车改善但仍需DRS辅助"
+  }
+]

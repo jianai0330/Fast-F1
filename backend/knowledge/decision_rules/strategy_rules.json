@@ -1,0 +1,185 @@
+{
+  "description": "F1策略决策规则库，用于辅助分析策略选择的合理性与预期结果。规则基于F1策略分析的专业经验总结。",
+  "undercut": {
+    "definition": "提前于对手进站，利用新胎性能窗口在出站后的crossover圈追回赛道位置",
+    "conditions": {
+      "tire_delta_required_s_per_lap": 0.15,
+      "minimum_gap_to_attempt_s": 2.5,
+      "maximum_gap_to_benefit_s": 4.0,
+      "pit_loss_delta": "undercut需弥补pit_loss - 新胎速度优势，净收益通常为0.5-2.0s",
+      "fresh_tire_advantage_first_3_laps_s": "0.3-0.8 per lap (compound dependent)",
+      "crossover_laps": "1-3 (新胎追平旧胎剩余性能的圈数)"
+    },
+    "confidence_factors": {
+      "high_confidence": [
+        "高退化赛道(Bahrain/Barcelona/Lusail)",
+        "对手轮胎已过peak (>10圈soft, >15圈medium)",
+        "与对手间距2.5-3.5s",
+        "交通清空(pit exit无慢车)"
+      ],
+      "medium_confidence": [
+        "中退化赛道",
+        "对手轮胎接近但未过peak",
+        "间距3.5-4.0s"
+      ],
+      "low_confidence": [
+        "低退化赛道(Monaco/Monza)",
+        "对手轮胎仍在peak窗口",
+        "间距<2.5s (pit exit风险)",
+        "pit exit有交通"
+      ]
+    },
+    "failure_modes": [
+      "pit exit陷入交通(pit loss + 被慢车阻挡)",
+      "新胎warm-up期超预期(低温赛道)",
+      "对手也提前进站(counter-undercut)",
+      "out-lap遇到蓝旗让车损失时间"
+    ]
+  },
+  "overcut": {
+    "definition": "延迟于对手进站，利用旧胎最后几圈对手新胎warm-up期的速度差保持赛道位置",
+    "conditions": {
+      "minimum_gap_to_defend_s": 1.5,
+      "optimal_track_types": ["low_degradation", "high_downforce"],
+      "fresh_tire_warmup_penalty_laps": "2-3 laps (hard compound may take longer)",
+      "opponent_out_lap_time_loss_s": "1.0-2.5 (pit loss + warmup)"
+    },
+    "best_tracks": ["Monaco", "Imola", "Hungaroring", "Zandvoort"],
+    "confidence_factors": {
+      "high_confidence": [
+        "低退化赛道",
+        "对手换硬胎(warm-up慢)",
+        "间距>2.5s",
+        "自身轮胎仍在peak窗口"
+      ],
+      "low_confidence": [
+        "高退化赛道",
+        "对手换软胎(warm-up快)",
+        "自身轮胎已明显衰退",
+        "间距<1.5s"
+      ]
+    }
+  },
+  "safety_car_pit_decision": {
+    "description": "安全车出现时的进站决策树",
+    "decision_tree": [
+      {
+        "condition": "安全车窗口已打开(已过pit window最小圈数)",
+        "action": "立即进站，免费进站收益最大",
+        "net_gain_s": "15-25 (vs正常进站损失)"
+      },
+      {
+        "condition": "安全车窗口未开但接近",
+        "action": "进站，但需评估新胎stint长度是否可接受",
+        "risk": "stint过长可能后期退化cliff"
+      },
+      {
+        "condition": "刚进站不久(新胎<5圈)",
+        "action": "不进站，保持赛道位置，利用安全车节省轮胎",
+        "advantage": "对手进站后你获得赛道位置"
+      },
+      {
+        "condition": "安全车末期vs立即",
+        "action": "评估VSC转SC概率，VSC下进站收益更大(pit lane限速比例差)",
+        "nuance": "VSC进站净收益约+5s vs SC进站净收益约+20s"
+      }
+    ],
+    "critical_timing": {
+      "pit_entry_before_sc_line": "安全车线前进入pit lane才算安全车窗口进站",
+      "sc_bunch_up_time": "约2-3圈收集所有赛车",
+      "restart_preparation": "领头车控制节奏，重启前1圈需保持恒定间距"
+    }
+  },
+  "tire_strategy_switch": {
+    "description": "比赛中轮胎策略切换的触发条件",
+    "planned_switches": {
+      "one_stop_to_two_stop": {
+        "triggers": [
+          "轮胎退化斜率超过预期的1.5倍",
+          "比赛节奏比模拟慢>0.3s/lap",
+          "温度高于预期导致退化加速",
+          "安全车提供免费进站窗口"
+        ],
+        "optimal_switch_lap": "原计划进站窗口前3-5圈"
+      },
+      "two_stop_to_three_stop": {
+        "triggers": [
+          "soft tire cliff before planned pit window",
+          "graining导致性能骤降",
+          "安全车窗口允许额外进站"
+        ],
+        "risk": "额外进站损失~22s，需通过新胎速度追回"
+      }
+    },
+    "compound_selection_within_stint": {
+      "soft_to_medium": {
+        "when": "需要早期速度建立gap或undercut，中期用medium维持",
+        "typical_stint_split": "soft 10-15 laps + medium 20-30 laps"
+      },
+      "medium_to_medium": {
+        "when": "保守稳定策略，双中性胎一站",
+        "typical_stint_split": "medium 20-25 laps + medium 20-25 laps"
+      },
+      "medium_to_hard": {
+        "when": "低退化赛道或需要长第二stint",
+        "typical_stint_split": "medium 18-25 laps + hard 25-35 laps"
+      },
+      "soft_to_hard": {
+        "when": "极端策略，软胎冲刺+硬胎长跑，需要轮胎管理能力",
+        "typical_stint_split": "soft 8-12 laps + hard 30-40 laps"
+      },
+      "hard_to_medium": {
+        "when": "起步用硬胎保守，后期换中性胎冲刺",
+        "typical_stint_split": "hard 25-35 laps + medium 20-25 laps",
+        "risk": "第一stint落后太多可能无法追回"
+      }
+    }
+  },
+  "energy_management_strategy": {
+    "description": "2026 PU能量管理策略选择规则",
+    "deployment_modes": {
+      "qualifying_mode": {
+        "description": "单圈最大能量部署，每圈可用电能约4.0MJ",
+        "trade_off": "正赛不可持续，仅排位赛使用"
+      },
+      "aggressive_race_mode": {
+        "description": "高电能部署率，直道额外加速",
+        "deployment_per_lap_MJ": "3.5-4.0",
+        "trade_off": "电池充不满，连续3-5圈后需cooldown lap",
+        "use_when": "需要undercut出站圈/防守/超车"
+      },
+      "standard_race_mode": {
+        "description": "平衡部署，每圈充放电基本平衡",
+        "deployment_per_lap_MJ": "2.5-3.0",
+        "trade_off": "可持续整场比赛",
+        "use_when": "正常节奏，轮胎管理为主"
+      },
+      "conservation_mode": {
+        "description": "低部署，优先充电",
+        "deployment_per_lap_MJ": "1.5-2.0",
+        "trade_off": "直道速度慢但积累电能用于关键时刻",
+        "use_when": "为后期超车储备能量/安全车后充电"
+      }
+    },
+    "harvest_zones": {
+      "description": "能量回收的关键区域",
+      "braking_zones": "重刹区回收最大，T1和chicane入口是高收益区",
+      "lift_and_coast": "直线末端提前松油门，节省燃油+回收电能，每10m lift约省0.05s燃油和0.02MJ电能",
+      "strategic_timing": "cooldown lap后紧跟attack lap是标准节奏"
+    }
+  },
+  "track_position_vs_pace_tradeoff": {
+    "description": "赛道位置与速度的权衡决策规则",
+    "principle": "在难以超车的赛道，赛道位置优先于最优策略；在容易超车的赛道，最优策略优先",
+    "position_priority_tracks": {
+      "tracks": ["Monaco", "Imola", "Hungaroring", "Zandvoort", "Singapore"],
+      "rule": "即使undercut可追回1-2s，也可能不如保持赛道位置安全",
+      "exception": "安全车消除了pit loss时例外"
+    },
+    "pace_priority_tracks": {
+      "tracks": ["Monza", "Spielberg", "Baku", "Spa", "Montreal"],
+      "rule": "优化策略节奏优先，DRS辅助可追回赛道位置",
+      "risk": "被安全车打乱策略时可能双重损失"
+    }
+  }
+}

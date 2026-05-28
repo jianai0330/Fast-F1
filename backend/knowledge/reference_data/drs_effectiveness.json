@@ -1,0 +1,84 @@
+{
+  "description": "DRS（可调尾翼减阻系统）效果参数，用于分析DRS对超车和圈时的影响。2026规则下主动空气动力学引入了额外复杂度。",
+  "drs_system_parameters": {
+    "drag_reduction_pct": 26,
+    "downforce_loss_pct": 25,
+    "activation_gap_s": 1.0,
+    "deactivation_gap_s": 1.0,
+    "activation_zones_per_lap": "varies by circuit (1-4)",
+    "available_from_lap": 3,
+    "available_conditions": "dry_weather_only, after_2_laps_race_start, not_under_safety_car"
+  },
+  "typical_speed_gain_by_zone": {
+    "description": "DRS打开后的典型速度增益，取决于直道长度和基础下压力水平",
+    "short_straight_200m": {
+      "speed_gain_kmh": "5-8",
+      "lap_time_gain_s": "0.1-0.15",
+      "overtake_probability": "low (~20%)"
+    },
+    "medium_straight_500m": {
+      "speed_gain_kmh": "10-15",
+      "lap_time_gain_s": "0.2-0.3",
+      "overtake_probability": "medium (~45%)"
+    },
+    "long_straight_800m": {
+      "speed_gain_kmh": "15-20",
+      "lap_time_gain_s": "0.3-0.5",
+      "overtake_probability": "high (~70%)"
+    },
+    "very_long_straight_1200m_plus": {
+      "speed_gain_kmh": "20-28",
+      "lap_time_gain_s": "0.5-0.8",
+      "overtake_probability": "very_high (~85%)",
+      "examples": ["Baku T16-T1", "Monza main straight", "Spa Kemmel straight"]
+    }
+  },
+  "track_drs_zones": {
+    "Bahrain": {"zones": 3, "effectiveness": "high", "primary_overtake": "T1 heavy braking after DRS"},
+    "Saudi Arabia": {"zones": 3, "effectiveness": "low", "primary_overtake": "T1 but narrow entry, wall proximity limits moves"},
+    "Melbourne": {"zones": 4, "effectiveness": "medium", "primary_overtake": "T3 and T11 after DRS straights"},
+    "Suzuka": {"zones": 2, "effectiveness": "low", "primary_overtake": "T1 after main straight, but DRS zones short"},
+    "Shanghai": {"zones": 2, "effectiveness": "medium", "primary_overtake": "T14/T6 after back straight DRS"},
+    "Miami": {"zones": 3, "effectiveness": "medium", "primary_overtake": "T1 and T17 after DRS zones"},
+    "Imola": {"zones": 1, "effectiveness": "very_low", "primary_overtake": "Tamburello but rarely successful"},
+    "Monaco": {"zones": 0, "effectiveness": "none", "primary_overtake": "Sainte Devote only under special circumstances"},
+    "Barcelona": {"zones": 2, "effectiveness": "medium", "primary_overtake": "T1 after main straight DRS"},
+    "Montreal": {"zones": 2, "effectiveness": "high", "primary_overtake": "T1 hairpin after DRS, T13 wall of champions"},
+    "Spielberg": {"zones": 3, "effectiveness": "high", "primary_overtake": "T3 and T4 after DRS zones, multiple lines possible"},
+    "Silverstone": {"zones": 2, "effectiveness": "medium", "primary_overtake": "Village (T3) and Stowe (T7) after DRS"},
+    "Hungaroring": {"zones": 1, "effectiveness": "very_low", "primary_overtake": "T1 but very difficult, relies on strategy"},
+    "Spa": {"zones": 2, "effectiveness": "high", "primary_overtake": "T1 after Kemmel DRS, T5 Les Combes"},
+    "Zandvoort": {"zones": 2, "effectiveness": "low", "primary_overtake": "T1 but narrow, banked corners limit DRS benefit"},
+    "Monza": {"zones": 2, "effectiveness": "very_high", "primary_overtake": "T1 Variante del Rettifilo, slipstream + DRS combined"},
+    "Baku": {"zones": 2, "effectiveness": "very_high", "primary_overtake": "T1 after 2.2km straight, largest DRS effect on calendar"},
+    "Singapore": {"zones": 2, "effectiveness": "low", "primary_overtake": "T7 and T1 but very tight, mostly strategy-based"},
+    "Austin": {"zones": 2, "effectiveness": "medium", "primary_overtake": "T1 and T12 after DRS zones"},
+    "Mexico City": {"zones": 2, "effectiveness": "medium", "primary_overtake": "T1 after main straight DRS, altitude reduces DRS effect"},
+    "Interlagos": {"zones": 2, "effectiveness": "medium", "primary_overtake": "T1 Senna S after DRS, Subida dos Boxes hill"},
+    "Las Vegas": {"zones": 2, "effectiveness": "high", "primary_overtake": "T1 and T14 after long DRS straights"},
+    "Lusail": {"zones": 1, "effectiveness": "low", "primary_overtake": "T1 after DRS but high downforce limits speed delta"},
+    "Yas Marina": {"zones": 2, "effectiveness": "medium", "primary_overtake": "T8 after back straight DRS, T1 after main straight"}
+  },
+  "slipstream_interaction": {
+    "description": "DRS与slipstream的叠加效应，两者可同时生效",
+    "slipstream_alone_speed_gain_kmh": "3-8 (per 0.5s gap)",
+    "drs_alone_speed_gain_kmh": "10-20 (track dependent)",
+    "drs_plus_slipstream_speed_gain_kmh": "15-30",
+    "optimal_gap_for_slipstream": "0.3-1.0s behind",
+    "too_close_penalty": "<0.3s前车脏空气影响转弯，直线slipstream强但弯角失速"
+  },
+  "2026_active_aero_drs_interaction": {
+    "description": "2026规则下主动空气动力学与DRS的交互影响",
+    "z_mode_default": "弯中高下压力模式(Z-mode)，直线上可切换低阻力模式",
+    "drs_enhanced_effect": "DRS开启时与主动低阻力模式叠加，直道速度增益可能比2025更显著(约+10-15%额外增益)",
+    "corner_exit_transition": "关闭DRS+切回高下压力模式需1-2秒过渡，此期间刹车距离需额外5-10m",
+    "analysis_implication": "2026数据中DRS效果不能直接与2025对比，需考虑主动空力的额外影响",
+    "dirty_air_changes": "2026尾流效应减弱(设计目标减少50%)，跟车距离可缩短0.5-1.0s，DRS辅助超车更可行"
+  },
+  "analysis_warnings": {
+    "drs_in_vsc": "VSC期间DRS不可用，圈时数据中DRS直道的速度会骤降，不可用于正常对比",
+    "drs_gap_threshold": "只有与前车间距<1.0s时DRS才可用，领先车手无DRS，直接对比圈时需注意DRS状态差异",
+    "practice_drs": "练习赛中DRS使用限制更少，圈时数据可能包含DRS辅助但不反映比赛条件",
+    "drs_detection_line": "DRS激活取决于检测线位置而非直觉上的'最近前车'，有时会导致意外激活/未激活"
+  }
+}

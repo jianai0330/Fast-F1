@@ -1,0 +1,88 @@
+<view class="container">
+  <view class="header">
+    <text class="title">分享好内容</text>
+    <text class="subtitle">粘贴任意链接，自动解析并收藏</text>
+  </view>
+
+  <!-- 投稿模式切换 -->
+  <view class="mode-switch">
+    <view class="mode-tab {{mode === 'link' ? 'active' : ''}}" bindtap="switchMode" data-mode="link">链接投稿</view>
+    <view class="mode-tab {{mode === 'manual' ? 'active' : ''}}" bindtap="switchMode" data-mode="manual">手动输入</view>
+  </view>
+
+  <!-- 链接投稿模式 -->
+  <view wx:if="{{mode === 'link'}}">
+    <!-- URL 输入 -->
+    <view class="input-section">
+      <textarea class="url-input" placeholder="粘贴链接（微博/公众号/B站/抖音/网页）" value="{{url}}" bindinput="onUrlInput" auto-height maxlength="500"></textarea>
+    </view>
+  </view>
+
+  <!-- 手动输入模式 -->
+  <view wx:if="{{mode === 'manual'}}" class="manual-form">
+    <!-- 标题 -->
+    <view class="form-group">
+      <text class="form-label">标题 *</text>
+      <input class="form-input" placeholder="输入内容标题" value="{{manualTitle}}" bindinput="onManualTitleInput" />
+    </view>
+
+    <!-- 内容摘要 -->
+    <view class="form-group">
+      <text class="form-label">内容摘要 *</text>
+      <textarea class="form-textarea" placeholder="简要描述内容要点（将用于AI分析生成解读）" value="{{manualSummary}}" bindinput="onManualSummaryInput" maxlength="500" />
+      <text class="char-count">{{manualSummary.length}}/500</text>
+    </view>
+
+    <!-- 来源平台 -->
+    <view class="form-group">
+      <text class="form-label">来源平台</text>
+      <view class="platform-options">
+        <view class="platform-chip {{manualPlatform === 'douyin' ? 'active' : ''}}" bindtap="selectPlatform" data-platform="douyin">抖音</view>
+        <view class="platform-chip {{manualPlatform === 'bilibili' ? 'active' : ''}}" bindtap="selectPlatform" data-platform="bilibili">B站</view>
+        <view class="platform-chip {{manualPlatform === 'weibo' ? 'active' : ''}}" bindtap="selectPlatform" data-platform="weibo">微博</view>
+        <view class="platform-chip {{manualPlatform === 'other' ? 'active' : ''}}" bindtap="selectPlatform" data-platform="other">其他</view>
+      </view>
+    </view>
+
+    <!-- 原始链接（可选） -->
+    <view class="form-group">
+      <text class="form-label">原始链接（可选）</text>
+      <input class="form-input" placeholder="如有原始链接可粘贴" value="{{manualUrl}}" bindinput="onManualUrlInput" />
+    </view>
+  </view>
+
+  <!-- 标签选择（两种模式共用） -->
+  <view class="section">
+    <text class="section-title">标签（可选）</text>
+    <view class="tags-wrap">
+      <view wx:for="{{presetTags}}" wx:key="*this"
+            class="tag-chip {{selectedTagMap[item] ? 'tag-active' : ''}}"
+            bindtap="onToggleTag" data-tag="{{item}}">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 推荐语 -->
+  <view class="section">
+    <text class="section-title">推荐语（可选）</text>
+    <input class="text-input" placeholder="说说为什么推荐这个内容" value="{{note}}" bindinput="onNoteInput" />
+  </view>
+
+  <!-- 昵称 -->
+  <view class="section">
+    <text class="section-title">你的昵称</text>
+    <input class="text-input" placeholder="让朋友知道是谁推荐的" value="{{nickname}}" bindinput="onNicknameInput" />
+  </view>
+
+  <!-- 提交按钮 -->
+  <button class="submit-btn" bindtap="onSubmit" loading="{{submitting}}" disabled="{{submitting || (mode === 'link' && !url) || (mode === 'manual' && (!manualTitle || !manualSummary))}}">
+    {{submitting ? '提交中...' : '投稿'}}
+  </button>
+
+  <!-- 结果预览 -->
+  <view wx:if="{{result}}" class="result-card">
+    <image wx:if="{{result.cover_image}}" class="result-cover" src="{{baseUrl}}{{result.cover_image}}" mode="aspectFill"></image>
+    <text class="result-title">{{result.title}}</text>
+    <text class="result-platform">来源：{{result.platformLabel}}</text>
+    <text class="result-success">✓ 已收录到精选</text>
+  </view>
+</view>

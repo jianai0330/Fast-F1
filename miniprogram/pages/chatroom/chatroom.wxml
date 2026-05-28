@@ -1,0 +1,51 @@
+<!-- pages/chatroom/chatroom.wxml -->
+<view class="chatroom-container">
+  <!-- 头部 -->
+  <view class="chat-header">
+    <text class="chat-title">实时聊天室</text>
+    <view class="nickname-area" bindtap="changeNickname">
+      <text class="nickname-label">当前昵称：</text>
+      <text class="nickname-value">{{nickname}}</text>
+      <text class="nickname-edit">✏️</text>
+    </view>
+    <text class="online-hint">匿名畅聊，文明发言</text>
+  </view>
+
+  <!-- 消息列表 -->
+  <scroll-view
+    class="message-list"
+    scroll-y
+    scroll-into-view="{{scrollToId}}"
+    scroll-with-animation
+  >
+    <view class="msg-empty" wx:if="{{messages.length === 0}}">
+      <text>暂无消息，来说第一句吧 🏎️</text>
+    </view>
+    <view
+      wx:for="{{messages}}"
+      wx:key="id"
+      id="msg-{{item.id}}"
+      class="msg-bubble"
+    >
+      <view class="msg-header">
+        <text class="msg-nickname">{{item.nickname}}</text>
+        <text class="msg-time">{{item.timeStr}}</text>
+      </view>
+      <text class="msg-content">{{item.content}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区 -->
+  <view class="input-area">
+    <input
+      class="msg-input"
+      placeholder="说点什么..."
+      value="{{inputValue}}"
+      bindinput="onInput"
+      bindconfirm="sendMessage"
+      confirm-type="send"
+      maxlength="200"
+    />
+    <view class="send-btn {{inputValue ? 'active' : ''}}" bindtap="sendMessage">发送</view>
+  </view>
+</view>
