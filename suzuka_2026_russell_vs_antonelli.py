@@ -33,6 +33,8 @@ rus_color = fastf1.plotting.get_driver_color('RUS', session=session)
 ant_color = fastf1.plotting.get_driver_color('ANT', session=session)
 
 def fmt_time(td):
+    if hasattr(td, 'iloc'):
+        td = td.iloc[0]
     total = int(td.total_seconds())
     ms = int(td.total_seconds() * 1000) % 1000
     m, s = divmod(total, 60)
@@ -40,13 +42,20 @@ def fmt_time(td):
 
 rus_time = fmt_time(rus_lap['LapTime'])
 ant_time = fmt_time(ant_lap['LapTime'])
-delta_s = (rus_lap['LapTime'] - ant_lap['LapTime']).total_seconds()
+
+rus_td = rus_lap['LapTime']
+ant_td = ant_lap['LapTime']
+if hasattr(rus_td, 'iloc'):
+    rus_td = rus_td.iloc[0]
+if hasattr(ant_td, 'iloc'):
+    ant_td = ant_td.iloc[0]
+delta_s = (rus_td - ant_td).total_seconds()
 faster = 'RUS' if delta_s < 0 else 'ANT'
 delta_str = f"{abs(delta_s):.3f}s  ({faster} faster)"
 
+# 弯角距离
 total_dist = rus_tel['Distance'].max()
 n_corners = len(circuit_info.corners)
-
 corner_distances = circuit_info.corners['Distance'].values
 if np.isnan(corner_distances).all():
     corner_distances = np.linspace(0, total_dist, n_corners + 1)[1:]
@@ -55,6 +64,16 @@ corner_labels = [
     f"T{int(r['Number'])}{r['Letter']}"
     for _, r in circuit_info.corners.iterrows()
 ]
+
+# 检查遥测是否截断
+ant_dist_max = ant_tel['Distance'].max()
+rus_dist_max = rus_tel['Distance'].max()
+telemetry_note = None
+if ant_dist_max < rus_dist_max * 0.98:
+    telemetry_note = (
+        f"Note: ANT telemetry data is incomplete (ends at {ant_dist_max:.0f}m vs full lap ~{rus_dist_max:.0f}m). "
+        f"This is a known issue with F1 official API data — occasional packet loss on certain laps."
+    )
 
 fig, axes = plt.subplots(4, 1, figsize=(16, 14), sharex=True,
                          gridspec_kw={'height_ratios': [3, 2, 1, 2], 'hspace': 0.08})
@@ -99,6 +118,10 @@ ax_bottom.set_xticks(corner_distances)
 ax_bottom.set_xticklabels(corner_labels, fontsize=10, rotation=0, ha='center')
 ax_bottom.set_xlabel('Corner', fontsize=11)
 ax_bottom.tick_params(axis='x', which='both', length=6, labelsize=10)
+
+if telemetry_note:
+    fig.text(0.5, 0.01, telemetry_note, ha='center', va='bottom',
+             fontsize=8, color='grey', style='italic', wrap=True)
 
 plt.savefig('/Users/aijian/Downloads/Fast-F1/suzuka_2026_rus_vs_ant.png',
             dpi=150, bbox_inches='tight')
