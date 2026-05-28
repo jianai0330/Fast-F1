@@ -1,5 +1,5 @@
 <!-- pages/glossary/glossary.wxml -->
-<view class="container">
+<view class="container {{fadeIn ? 'fade-in' : ''}}">
 
   <!-- 搜索栏 -->
   <view class="search-bar">

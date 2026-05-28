@@ -1,4 +1,4 @@
-<view class="container">
+<view class="container {{fadeIn ? 'fade-in' : ''}}">
   <!-- 顶部标题 -->
   <view class="header">
     <text class="title">F1 {{year}}</text>

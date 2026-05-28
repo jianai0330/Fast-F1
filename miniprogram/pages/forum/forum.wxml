@@ -1,6 +1,6 @@
 <!-- pages/forum/forum.wxml -->
 <wxs module="fmt" src="./forum.wxs"></wxs>
-<view class="container">
+<view class="container {{fadeIn ? 'fade-in' : ''}}">
 
   <!-- 顶部 -->
   <view class="page-header">

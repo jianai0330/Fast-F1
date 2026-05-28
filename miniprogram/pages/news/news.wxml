@@ -1,7 +1,7 @@
 <!-- pages/news/news.wxml -->
 <wxs module="fmt" src="./news.wxs"></wxs>
 
-<view class="container">
+<view class="container {{fadeIn ? 'fade-in' : ''}}">
 
 
   <view class="page-header">

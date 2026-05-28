@@ -57,6 +57,7 @@ Page({
     loading: false,
     error: '',
     activeTab: 'driver',  // driver | constructor
+    fadeIn: true,
     drivers: [],
     constructors: [],
     driverTrend: [],
@@ -73,6 +74,11 @@ Page({
 
   onShow() {
     wx.showTabBar({ animation: false })
+    if (this._hasShown) {
+      this.setData({ fadeIn: false })
+      wx.nextTick(() => this.setData({ fadeIn: true }))
+    }
+    this._hasShown = true
     if (this.data.activeTab === 'driver' && this.data.driverTrend.length > 0) {
       wx.nextTick(() => this._ensureTrendChart())
     }

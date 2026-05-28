@@ -5,6 +5,12 @@
   background: #0f0f0f;
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.container.fade-in {
+  opacity: 1;
 }
 
 /* 搜索栏 */

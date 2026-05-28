@@ -114,6 +114,7 @@ Page({
     events: [],
     loading: true,
     error: '',
+    fadeIn: true,
     // 倒计时
     nextRace: null,
     countdown: '',
@@ -130,6 +131,11 @@ Page({
 
   onShow() {
     wx.showTabBar({ animation: false })
+    if (this._hasShown) {
+      this.setData({ fadeIn: false })
+      wx.nextTick(() => this.setData({ fadeIn: true }))
+    }
+    this._hasShown = true
     this._startCountdown()
   },
 

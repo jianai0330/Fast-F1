@@ -3,6 +3,12 @@
   flex-direction: column;
   height: 100vh;
   box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.container.fade-in {
+  opacity: 1;
 }
 
 .content-scroll {

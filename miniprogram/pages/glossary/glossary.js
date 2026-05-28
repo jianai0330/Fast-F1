@@ -45,6 +45,7 @@ Page({
     searchVal: '',
     categories: TECH_CATEGORIES,
     catViewMode: 'tech',
+    fadeIn: true,
     hotMap: {},
     maxHot: 0,
     popularSlugs: [],
@@ -64,6 +65,11 @@ Page({
 
   onShow() {
     wx.showTabBar({ animation: false })
+    if (this._hasShown) {
+      this.setData({ fadeIn: false })
+      wx.nextTick(() => this.setData({ fadeIn: true }))
+    }
+    this._hasShown = true
     this._loadRecentTerms()
   },
 

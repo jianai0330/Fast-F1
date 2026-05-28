@@ -6,6 +6,7 @@ Page({
     loading: false,
     loadingMore: false,
     error: '',
+    fadeIn: true,
     items: [],
     page: 1,
     hasMore: true,
@@ -48,6 +49,11 @@ Page({
 
   onShow() {
     wx.showTabBar({ animation: false })
+    if (this._hasShown) {
+      this.setData({ fadeIn: false })
+      wx.nextTick(() => this.setData({ fadeIn: true }))
+    }
+    this._hasShown = true
     const now = Date.now()
     const newsDirty = wx.getStorageSync(this._newsDirtyKey)
     const curatedDirty = wx.getStorageSync(this._curatedDirtyKey)

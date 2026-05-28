@@ -6,6 +6,7 @@ Page({
     loading: true,
     error: '',
     activeTab: 'general',   // general | race | team
+    fadeIn: true,
     raceSections: [],
     teamSections: [],
     // 综合讨论分区
@@ -27,6 +28,11 @@ Page({
   onShow() {
     // 防御性确保 tabBar 可见（修复部分机型从子页面返回后 tabBar 消失的问题）
     wx.showTabBar({ animation: false })
+    if (this._hasShown) {
+      this.setData({ fadeIn: false })
+      wx.nextTick(() => this.setData({ fadeIn: true }))
+    }
+    this._hasShown = true
     const dirty = wx.getStorageSync(this._forumDirtyKey)
     if (dirty) wx.removeStorageSync(this._forumDirtyKey)
     // 只在明确有新帖子或首次未加载时刷新，避免每次返回都抖一下
