@@ -35,19 +35,21 @@ def save_cache(key: str, data: dict):
 @router.get("")
 def get_analysis(
     year: int = 2026,
-    round: int = None,
+    round_num: int = None,
     event: str = None,
     d1: str = "ALB",
     d2: str = "ALO",
-    session: str = "Q"
+    session: str = "Q",
+    force: bool = False,
 ):
     try:
-        identifier = round if round else event
+        identifier = round_num if round_num else event
         ck = cache_key(year, identifier, d1, d2, session)
-        cached = load_cache(ck)
-        if cached:
-            cached["cached"] = True
-            return ok(cached)
+        if not force:
+            cached = load_cache(ck)
+            if cached:
+                cached["cached"] = True
+                return ok(cached)
 
         s = get_session(year, identifier, session)
 
@@ -78,6 +80,19 @@ def get_analysis(
         team_a = str(lap_a['Team'].iloc[0]) if hasattr(lap_a['Team'], 'iloc') else str(lap_a['Team'])
         team_b = str(lap_b['Team'].iloc[0]) if hasattr(lap_b['Team'], 'iloc') else str(lap_b['Team'])
 
+        # 从 session.results 取车手全名，防止 LLM 用三字码猜错人
+        def get_full_name(results_df, code: str) -> str:
+            row = results_df[results_df['Abbreviation'] == code]
+            if not row.empty:
+                return str(row.iloc[0]['FullName'])
+            return code
+        try:
+            results_df = s.results
+            full_name_a = get_full_name(results_df, d1)
+            full_name_b = get_full_name(results_df, d2)
+        except Exception:
+            full_name_a, full_name_b = d1, d2
+
         # 规则引擎计算指标
         metrics = build_metrics(
             tel_a, tel_b, lap_a, lap_b, laps_a, laps_b,
@@ -92,10 +107,17 @@ def get_analysis(
             driver_a=d1, team_a=team_a, lap_time_a=fmt_time(lap_time_a),
             driver_b=d2, team_b=team_b, lap_time_b=fmt_time(lap_time_b),
             gap=gap,
-            metrics=metrics
+            metrics=metrics,
+            full_name_a=full_name_a,
+            full_name_b=full_name_b,
         )
 
-        result = {"metrics": metrics, "report": report, "cached": False}
+        result = {
+            "metrics": metrics,
+            "report": report,
+            "cached": False,
+            "track_name": s.event["EventName"],
+        }
         save_cache(ck, result)
         return ok(result)
 
