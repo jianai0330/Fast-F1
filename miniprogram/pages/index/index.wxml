@@ -32,13 +32,13 @@
     </view>
   </view>
 
-  <view wx:if="{{latestRace}}" class="latest-race-card">
-    <view class="latest-race-head">
-      <text class="latest-race-kicker">最近一站</text>
-      <text class="latest-race-status">{{latestRace.status}}</text>
+  <view wx:if="{{latestRaceEntry}}" class="latest-data-card" bindtap="onLatestRaceTap">
+    <view class="latest-data-head">
+      <text class="latest-data-kicker">🏁 最新赛站数据</text>
+      <text class="latest-data-arrow">查看详情 ›</text>
     </view>
-    <text class="latest-race-name">R{{latestRace.round}} · {{latestRace.name}}</text>
-    <text class="latest-race-meta">{{latestRace.location}}</text>
+    <text class="latest-data-name">R{{latestRaceEntry.round}} · {{latestRaceEntry.name}}</text>
+    <text class="latest-data-meta">{{latestRaceEntry.location}}</text>
   </view>
 
   <view class="quick-actions quick-actions-compact">

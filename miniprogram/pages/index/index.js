@@ -55,12 +55,6 @@ function calcCountdown(utcIso) {
   return `${hh}:${mm}:${ss}`
 }
 
-function formatRaceStatus(event) {
-  if (!event || !event.race_time_utc) return '赛程待定'
-  const raceTime = new Date(event.race_time_utc).getTime()
-  return raceTime > Date.now() ? '即将开跑' : '已完赛'
-}
-
 const QUICK_ACTIONS = [
   { key: 'standings', label: '看积分榜', hint: '车手与车队走势', type: 'switchTab', url: '/pages/standings/standings' },
   { key: 'news', label: '刷资讯', hint: '赛后热点与精选', type: 'switchTab', url: '/pages/news/news' },
@@ -124,7 +118,7 @@ Page({
     nextRace: null,
     countdown: '',
     seasonSummary: null,
-    latestRace: null,
+    latestRaceEntry: null,
     quickActions: QUICK_ACTIONS,
   },
 
@@ -198,11 +192,11 @@ Page({
         completed: completedEvents.length,
         upcoming: upcomingEvents.length,
       },
-      latestRace: latestRace ? {
+      latestRaceEntry: latestRace ? {
         round: latestRace.round,
         name: latestRace.name,
         location: latestRace.location,
-        status: formatRaceStatus(latestRace),
+        race_time_utc: latestRace.race_time_utc,
       } : null,
     })
   },
@@ -232,6 +226,15 @@ Page({
     const raceTime = event.race_time_utc ? encodeURIComponent(event.race_time_utc) : ''
     wx.navigateTo({
       url: `/pages/event/event?round=${event.round}&name=${encodeURIComponent(event.name)}&year=${this.data.year}&race_time_utc=${raceTime}`
+    })
+  },
+
+  onLatestRaceTap() {
+    const entry = this.data.latestRaceEntry
+    if (!entry) return
+    const raceTime = entry.race_time_utc ? encodeURIComponent(entry.race_time_utc) : ''
+    wx.navigateTo({
+      url: `/pages/event/event?round=${entry.round}&name=${encodeURIComponent(entry.name)}&year=${this.data.year}&race_time_utc=${raceTime}`
     })
   },
 

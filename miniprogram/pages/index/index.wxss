@@ -115,7 +115,7 @@
   color: #ffffff;
 }
 
-.latest-race-card {
+.latest-data-card {
   margin: 8rpx 12rpx 4rpx;
   padding: 16rpx 18rpx;
   border-radius: 14rpx;
@@ -123,27 +123,33 @@
     radial-gradient(circle at top right, rgba(225, 6, 0, 0.18), transparent 35%),
     linear-gradient(145deg, #171717 0%, #111111 100%);
   border: 1rpx solid #262626;
+  transition: transform 0.12s ease, opacity 0.12s ease;
 }
 
-.latest-race-head {
+.latest-data-card:active {
+  transform: scale(0.97);
+  opacity: 0.88;
+}
+
+.latest-data-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.latest-race-kicker {
+.latest-data-kicker {
   font-size: 17rpx;
   letter-spacing: 2rpx;
   color: #8a8a8a;
 }
 
-.latest-race-status {
+.latest-data-arrow {
   font-size: 17rpx;
   color: #e10600;
   flex-shrink: 0;
 }
 
-.latest-race-name {
+.latest-data-name {
   display: block;
   margin-top: 8rpx;
   font-size: 23rpx;
@@ -152,7 +158,7 @@
   line-height: 1.25;
 }
 
-.latest-race-meta {
+.latest-data-meta {
   display: block;
   margin-top: 4rpx;
   font-size: 18rpx;
