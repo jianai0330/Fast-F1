@@ -5,6 +5,7 @@
 ---
 
 ### 优化审查记录（2026-05-28）
+- [ ] Git 提交事故补救：第二次本地 commit `Update project progress log` 因仓库已有大量 staged 文件，被意外带入 `.env`、缓存、数据库和运行态文件；当前尚未 push，需立即用后续提交将敏感/运行态文件从版本库索引移除，同时保留本地文件。
 - [x] `jianai0330/Fast-F1` 已由用户创建：本地已按该仓库完成首次 commit 与 push。
 - [x] 首次提交准备中：已仅 stage 本轮真实改动文件（流畅度优化、仓库治理、路线图），明确排除 `.env`、cache、数据库与其他运行态文件。
 - [x] 已完成首次定向 commit：提交信息 `Improve app responsiveness and repo hygiene`，仅包含本轮明确处理的流畅度优化、仓库治理与路线图文件；其他已暂存运行态/历史文件保持未随本次 commit 提交。
