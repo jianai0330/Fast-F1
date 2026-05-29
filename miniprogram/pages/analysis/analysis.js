@@ -21,6 +21,9 @@ Page({
     knowledgeSize: '1884',
     reportSummary: null,
     // 各维度折叠状态
+    userTriggerNeeded: false,
+    feedbackData: null,
+    feedbackLoading: false,
     expanded: {
       conclusion: true,
       sectors: false,
@@ -47,8 +50,39 @@ Page({
       d2: options.d2 || 'ALO',
       session: options.session || 'Q',
     })
-    this.loadAnalysis()
+    this.tryLoadCached()
     this.loadTermsData()
+  },
+
+  // 只从本地缓存加载，不触发 API 调用（省 token）
+  tryLoadCached() {
+    const { year, round, d1, d2, session } = this.data
+    try {
+      const key = `f1cache:/analysis:${year}:${round}:${d1}:${d2}:${session}`
+      const raw = wx.getStorageSync(key)
+      if (raw && raw.data && raw.data.data) {
+        const data = raw.data.data
+        const sections = this.parseReport(data.report || '')
+        const reportSummary = this.buildReportSummary(data.metrics, sections, true)
+        this.setData({
+          report: data.report || '',
+          sections,
+          metrics: data.metrics,
+          cached: true,
+          trackName: data.track_name || '',
+          reportSummary,
+          userTriggerNeeded: false,
+        })
+        return
+      }
+    } catch (e) {}
+    // 无缓存，显示用户触发按钮
+    this.setData({ userTriggerNeeded: true, loading: false })
+  },
+
+  // 用户点击「开始分析」按钮时触发
+  onStartAnalysis() {
+    this.loadAnalysis()
   },
 
   async loadAnalysis(force = false) {
@@ -73,6 +107,7 @@ Page({
         reportSummary,
         showPipeline: false,
       })
+      this.loadFeedback()
     } catch (e) {
       this.setData({ loading: false, error: typeof e === 'string' ? e : 'AI 分析加载失败', showPipeline: false })
     }
@@ -165,6 +200,48 @@ Page({
 
   onRefresh() {
     this.loadAnalysis(true)
+  },
+
+  // ── 分析反馈 ──────────────────────────────────────
+  async loadFeedback() {
+    try {
+      const { year, round, d1, d2, session } = this.data
+      const raw = `${year}-${round}-${d1}-${d2}-${session}`
+      const ck = this.md5(raw)
+      const openid = wx.getStorageSync('f1_openid') || ''
+      const res = await api.getAnalysisFeedback(ck, openid)
+      if (res && res.data) {
+        this.setData({ feedbackData: res.data })
+      }
+    } catch (e) {}
+  },
+
+  onFeedback(e) {
+    const rating = parseInt(e.currentTarget.dataset.rating)
+    if (this.data.feedbackLoading) return
+    this.setData({ feedbackLoading: true })
+    const { year, round, d1, d2, session } = this.data
+    const raw = `${year}-${round}-${d1}-${d2}-${session}`
+    const ck = this.md5(raw)
+    const openid = wx.getStorageSync('f1_openid') || ''
+    api.submitAnalysisFeedback(ck, 'driver', openid, rating).then(res => {
+      if (res && res.data) {
+        this.setData({ feedbackData: res.data, feedbackLoading: false })
+      }
+    }).catch(() => {
+      this.setData({ feedbackLoading: false })
+    })
+  },
+
+  md5(str) {
+    // 简单的 JS MD5 实现，用于生成缓存 key
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+      const chr = str.charCodeAt(i)
+      hash = ((hash << 5) - hash) + chr
+      hash |= 0
+    }
+    return 'hash_' + Math.abs(hash).toString(16)
   },
 
   // ── 悬浮查词 ──────────────────────────────────────

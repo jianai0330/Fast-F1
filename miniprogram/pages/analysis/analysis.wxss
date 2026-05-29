@@ -1,5 +1,47 @@
 .container { padding-bottom: 60rpx; }
 
+/* 用户触发生成 */
+.trigger-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 48rpx 60rpx;
+}
+.trigger-icon { font-size: 80rpx; margin-bottom: 24rpx; }
+.trigger-title { font-size: 36rpx; color: #fff; font-weight: bold; margin-bottom: 20rpx; }
+.trigger-desc { font-size: 26rpx; color: #999; text-align: center; line-height: 1.6; margin-bottom: 40rpx; }
+.trigger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 64rpx;
+  background: linear-gradient(135deg, #e10600 0%, #b00500 100%);
+  border-radius: 50rpx;
+  box-shadow: 0 8rpx 32rpx rgba(225,6,0,0.4);
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.trigger-btn:active { opacity: 0.85; transform: scale(0.97); }
+.trigger-btn-icon { font-size: 32rpx; margin-right: 12rpx; }
+.trigger-btn-text { font-size: 32rpx; color: #fff; font-weight: bold; letter-spacing: 2rpx; }
+.trigger-params {
+  display: flex;
+  align-items: center;
+  margin-top: 40rpx;
+  gap: 12rpx;
+}
+.param-chip {
+  padding: 10rpx 24rpx;
+  background: rgba(255,255,255,0.08);
+  border-radius: 20rpx;
+  font-size: 28rpx;
+  color: #e10600;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+}
+.param-vs { font-size: 22rpx; color: #666; font-weight: bold; }
+.param-sep { font-size: 22rpx; color: #444; }
+.trigger-hint { font-size: 22rpx; color: #666; margin-top: 32rpx; }
+
 .error-wrap {
   display: flex;
   flex-direction: column;
@@ -236,6 +278,47 @@
 .source-value {
   color: #888;
 }
+
+/* 分析反馈 */
+.feedback-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 16rpx 40rpx;
+}
+.feedback-divider {
+  width: 100%;
+  height: 1rpx;
+  background: #333;
+  margin-bottom: 24rpx;
+}
+.feedback-label {
+  font-size: 24rpx;
+  color: #777;
+  margin-bottom: 16rpx;
+}
+.feedback-buttons {
+  display: flex;
+  gap: 32rpx;
+}
+.feedback-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 28rpx;
+  background: rgba(255,255,255,0.05);
+  border: 1rpx solid rgba(255,255,255,0.1);
+  border-radius: 30rpx;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+}
+.feedback-btn:active { opacity: 0.7; transform: scale(0.95); }
+.feedback-btn.active {
+  background: rgba(225,6,0,0.15);
+  border-color: #e10600;
+}
+.fb-icon { font-size: 28rpx; }
+.fb-count { font-size: 22rpx; color: #999; }
+.feedback-btn.active .fb-count { color: #e10600; }
 
 /* 悬浮查词按钮 */
 .term-fab-area {

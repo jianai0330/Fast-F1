@@ -33,6 +33,25 @@
     <view class="btn-secondary" style="margin-top:24rpx;width:200rpx;" bindtap="onRefresh">重试</view>
   </view>
 
+  <!-- 无缓存，用户点击触发 -->
+  <view wx:elif="{{userTriggerNeeded}}" class="trigger-wrap">
+    <view class="trigger-icon">📊</view>
+    <text class="trigger-title">AI 车手对比分析</text>
+    <text class="trigger-desc">点击下方按钮，AI 将基于 FastF1 遥测数据生成专业对标分析报告（消耗 token）。已有缓存时将直接展示历史结果。</text>
+    <view class="trigger-btn" bindtap="onStartAnalysis">
+      <text class="trigger-btn-icon">⚡</text>
+      <text class="trigger-btn-text">开始分析</text>
+    </view>
+    <view class="trigger-params">
+      <view class="param-chip">{{d1}}</view>
+      <text class="param-vs">VS</text>
+      <view class="param-chip">{{d2}}</view>
+      <text class="param-sep">·</text>
+      <view class="param-chip">{{session}}</view>
+    </view>
+    <text class="trigger-hint">约需 15-30 秒，请耐心等待</text>
+  </view>
+
   <!-- 分析报告 -->
   <view wx:else>
 
@@ -214,6 +233,22 @@
     <!-- 刷新按钮 -->
     <view class="btn-secondary" style="margin: 24rpx 16rpx;" bindtap="onRefresh">
       重新生成分析
+    </view>
+
+    <!-- 分析反馈 -->
+    <view class="feedback-section" wx:if="{{!userTriggerNeeded && feedbackData}}">
+      <view class="feedback-divider"></view>
+      <text class="feedback-label">这个分析对你有帮助吗？</text>
+      <view class="feedback-buttons">
+        <view class="feedback-btn {{feedbackData.rating === 1 ? 'active' : ''}}" bindtap="onFeedback" data-rating="1">
+          <text class="fb-icon">👍</text>
+          <text class="fb-count">{{feedbackData.liked || 0}}</text>
+        </view>
+        <view class="feedback-btn {{feedbackData.rating === -1 ? 'active' : ''}}" bindtap="onFeedback" data-rating="-1">
+          <text class="fb-icon">👎</text>
+          <text class="fb-count">{{feedbackData.disliked || 0}}</text>
+        </view>
+      </view>
     </view>
 
   </view>
