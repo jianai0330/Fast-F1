@@ -333,20 +333,16 @@ Page({
 
   // ── 评分逻辑 ──────────────────────────────────────
 
-  // 获取或生成一个持久匿名 ID，用于评分去重（不依赖论坛注册）
-  _getAnonymousId() {
-    let aid = wx.getStorageSync('f1_anon_id')
-    if (!aid) {
-      aid = 'anon_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8)
-      wx.setStorageSync('f1_anon_id', aid)
-    }
-    return aid
+  // 获取持久设备 ID（由 app.js 在 onLaunch 中生成），确保评分/评论不因重编译丢失
+  _getPersistentUid() {
+    const app = getApp()
+    return app.globalData.deviceId || wx.getStorageSync('f1_device_id') || ''
   },
 
   _ratingKey(code) { return `f1_rating_${code}` },
 
   async _loadRating(code) {
-    const uid = wx.getStorageSync('f1_openid') || this._getAnonymousId()
+    const uid = wx.getStorageSync('f1_openid') || this._getPersistentUid()
     try {
       const res = await api.getDriverRating(code, uid)
       const { aggregate, mine } = res.data
@@ -380,7 +376,7 @@ Page({
   async onRatingSubmit() {
     if (!this.data.ratingReady) return
     const { code } = this.data
-    const uid = wx.getStorageSync('f1_openid') || this._getAnonymousId()
+    const uid = wx.getStorageSync('f1_openid') || this._getPersistentUid()
     const scores = {}
     this.data.ratingDims.forEach(d => { scores[d.key] = d.val })
     try {

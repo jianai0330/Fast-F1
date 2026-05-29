@@ -1,5 +1,5 @@
 /* pages/forum/forum.wxss */
-.container { min-height: 100vh; background: #0f0f0f; display: flex; flex-direction: column; opacity: 0; transition: opacity 0.25s ease; }
+.container { height: 100vh; background: #0f0f0f; display: flex; flex-direction: column; opacity: 0; transition: opacity 0.25s ease; }
 
 .container.fade-in { opacity: 1; }
 
@@ -29,7 +29,7 @@
 .tab:active { opacity: 0.6; }
 .tab-active { color: #e10600; border-bottom: 4rpx solid #e10600; font-weight: bold; }
 
-.section-scroll { flex: 1; }
+.section-scroll { flex: 1; height: 0; }
 .section-grid { padding: 24rpx; display: flex; flex-direction: column; gap: 16rpx; }
 
 .section-card {

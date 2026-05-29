@@ -92,6 +92,20 @@ class RegisterBody(BaseModel):
     avatar_url: str = ""
 
 
+class UpdateNicknameBody(BaseModel):
+    openid:   str
+    nickname: str
+
+
+@router.post("/users/update-nickname")
+def update_nickname(body: UpdateNicknameBody):
+    """更新昵称（openid 不变）"""
+    if not _valid_nickname(body.nickname):
+        return err("昵称需 2-12 字，不含特殊符号")
+    user = user_upsert(body.openid, body.nickname.strip(), "")
+    return ok(user)
+
+
 @router.post("/users/register")
 def register_user(body: RegisterBody):
     """
@@ -322,7 +336,7 @@ def create_comment(post_id: int, body: CommentBody):
         )
         return ok({
             "comment_id": comment_id,
-            "msg": "评论已提交，审核通过后将显示"
+            "msg": "评论成功！"
         })
     except Exception as e:
         return err(str(e))

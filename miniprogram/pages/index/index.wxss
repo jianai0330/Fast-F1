@@ -13,7 +13,7 @@
 
 .content-scroll {
   flex: 1;
-  overflow: hidden;
+  height: 0;
 }
 
 .header {
@@ -47,6 +47,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 16rpx;
+}
+
+.countdown-sticky {
+  flex-shrink: 0;
+  margin: 8rpx 12rpx 0;
 }
 
 .countdown-left {

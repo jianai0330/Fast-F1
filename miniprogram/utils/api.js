@@ -205,6 +205,9 @@ const api = {
   registerUser: (code, nickname) =>
     post('/forum/users/register', { code, nickname }),
 
+  updateNickname: (openid, nickname) =>
+    post('/forum/users/update-nickname', { openid, nickname }),
+
   getMe: (openid) =>
     request('/forum/users/me', { openid }),
 

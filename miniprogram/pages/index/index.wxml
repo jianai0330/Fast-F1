@@ -1,12 +1,6 @@
 <view class="container {{fadeIn ? 'fade-in' : ''}}">
-  <!-- 顶部标题 -->
-  <view class="header">
-    <text class="title">F1 {{year}}</text>
-    <text class="subtitle">chua的赛历</text>
-  </view>
-
-  <!-- 下一站倒计时 -->
-  <view wx:if="{{nextRace}}" class="countdown-card">
+  <!-- 下一站倒计时 - 固定置顶 -->
+  <view wx:if="{{nextRace}}" class="countdown-card countdown-sticky">
     <view class="countdown-left">
       <text class="countdown-name">{{nextRace.shortName}}</text>
       <text class="countdown-bj">北京时间 {{nextRace.race_time_bj}}</text>
@@ -17,46 +11,52 @@
     </view>
   </view>
 
-  <view wx:if="{{seasonSummary}}" class="cockpit-strip">
-    <view class="cockpit-stat">
-      <text class="cockpit-label">已完成</text>
-      <text class="cockpit-value">{{seasonSummary.completed}}</text>
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- 顶部标题 -->
+    <view class="header">
+      <text class="title">F1 {{year}}</text>
+      <text class="subtitle">chua的赛历</text>
     </view>
-    <view class="cockpit-stat">
-      <text class="cockpit-label">待进行</text>
-      <text class="cockpit-value">{{seasonSummary.upcoming}}</text>
-    </view>
-    <view class="cockpit-stat">
-      <text class="cockpit-label">总分站</text>
-      <text class="cockpit-value">{{seasonSummary.total}}</text>
-    </view>
-  </view>
 
-  <view wx:if="{{latestRaceEntry}}" class="latest-data-card" bindtap="onLatestRaceTap">
-    <view class="latest-data-head">
-      <text class="latest-data-kicker">🏁 最新赛站数据</text>
-      <text class="latest-data-arrow">查看详情 ›</text>
+    <view wx:if="{{seasonSummary}}" class="cockpit-strip">
+      <view class="cockpit-stat">
+        <text class="cockpit-label">已完成</text>
+        <text class="cockpit-value">{{seasonSummary.completed}}</text>
+      </view>
+      <view class="cockpit-stat">
+        <text class="cockpit-label">待进行</text>
+        <text class="cockpit-value">{{seasonSummary.upcoming}}</text>
+      </view>
+      <view class="cockpit-stat">
+        <text class="cockpit-label">总分站</text>
+        <text class="cockpit-value">{{seasonSummary.total}}</text>
+      </view>
     </view>
-    <text class="latest-data-name">R{{latestRaceEntry.round}} · {{latestRaceEntry.name}}</text>
-    <text class="latest-data-meta">{{latestRaceEntry.location}}</text>
-  </view>
 
-  <view class="quick-actions quick-actions-compact">
-    <view
-      wx:for="{{quickActions}}"
-      wx:key="key"
-      class="quick-action-card"
-      bindtap="onQuickActionTap"
-      data-url="{{item.url}}"
-      data-type="{{item.type}}"
-    >
-      <text class="quick-action-label">{{item.label}}</text>
-      <text class="quick-action-hint">{{item.hint}}</text>
+    <view wx:if="{{latestRaceEntry}}" class="latest-data-card" bindtap="onLatestRaceTap">
+      <view class="latest-data-head">
+        <text class="latest-data-kicker">🏁 最新赛站数据</text>
+        <text class="latest-data-arrow">查看详情 ›</text>
+      </view>
+      <text class="latest-data-name">R{{latestRaceEntry.round}} · {{latestRaceEntry.name}}</text>
+      <text class="latest-data-meta">{{latestRaceEntry.location}}</text>
     </view>
-  </view>
 
-  <!-- 可滚动内容区 -->
-  <scroll-view class="content-scroll" scroll-y>
+    <view class="quick-actions quick-actions-compact">
+      <view
+        wx:for="{{quickActions}}"
+        wx:key="key"
+        class="quick-action-card"
+        bindtap="onQuickActionTap"
+        data-url="{{item.url}}"
+        data-type="{{item.type}}"
+      >
+        <text class="quick-action-label">{{item.label}}</text>
+        <text class="quick-action-hint">{{item.hint}}</text>
+      </view>
+    </view>
+
+    <!-- 赛历列表 -->
     <!-- 加载中 - 骨架屏 -->
     <view wx:if="{{loading}}" class="skeleton-wrap">
       <view class="sk-event-item" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">

@@ -4,10 +4,19 @@ App({
   globalData: {
     BASE_URL,
     currentYear: 2026,
+    deviceId: '',
   },
 
   onLaunch() {
     console.log('F1 Data App launched')
+    // 生成持久设备 ID，确保评分等数据不因重编译丢失
+    let deviceId = wx.getStorageSync('f1_device_id')
+    if (!deviceId) {
+      deviceId = 'dev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10)
+      wx.setStorageSync('f1_device_id', deviceId)
+    }
+    this.globalData.deviceId = deviceId
+
     const shown = wx.getStorageSync('f1_welcome_shown')
     if (!shown) {
       wx.showModal({

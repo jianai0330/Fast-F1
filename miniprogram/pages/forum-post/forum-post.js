@@ -123,9 +123,11 @@ Page({
     }
     this.setData({ submitting: true })
     try {
-      await api.createComment(this.postId, content, this.data.openid)
+      const res = await api.createComment(this.postId, content, this.data.openid)
+      // 用服务端返回的真实 comment_id
+      const realId = res.data?.comment_id || Date.now()
       const newComment = {
-        id: Date.now(),
+        id: realId,
         content,
         author_nickname: this.data.nickname || wx.getStorageSync('f1_nickname') || '我',
         created_at: Math.floor(Date.now() / 1000),
@@ -136,7 +138,8 @@ Page({
         comments: [...this.data.comments, newComment],
       })
       wx.showToast({ title: '评论成功！', icon: 'success', duration: 800 })
-      setTimeout(() => this.loadComments(), 1000)
+      // 静默刷新，不影响体验
+      this.loadComments()
     } catch (e) {
       this.setData({ submitting: false })
       wx.showToast({ title: typeof e === 'string' ? e : '提交失败', icon: 'none' })
