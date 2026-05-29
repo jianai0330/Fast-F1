@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS posts (
 CREATE TABLE IF NOT EXISTS comments (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     post_id         INTEGER NOT NULL REFERENCES posts(id),
+    parent_id       INTEGER REFERENCES comments(id),       -- 回复哪条评论（NULL=顶级评论）
     content         TEXT NOT NULL,
     author_openid   TEXT NOT NULL,
     author_nickname TEXT NOT NULL,
@@ -103,6 +104,7 @@ CREATE INDEX IF NOT EXISTS idx_news_language    ON news(language);
 CREATE INDEX IF NOT EXISTS idx_posts_section    ON posts(section_id, status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_posts_status     ON posts(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_comments_post    ON comments(post_id, status, created_at);
+CREATE INDEX IF NOT EXISTS idx_comments_parent  ON comments(parent_id);
 
 -- 点赞/点踩表
 CREATE TABLE IF NOT EXISTS post_likes (
@@ -114,6 +116,43 @@ CREATE TABLE IF NOT EXISTS post_likes (
     UNIQUE(post_id, openid)
 );
 CREATE INDEX IF NOT EXISTS idx_likes_post ON post_likes(post_id);
+
+-- 评论点赞表
+CREATE TABLE IF NOT EXISTS comment_likes (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    comment_id  INTEGER NOT NULL REFERENCES comments(id),
+    openid      TEXT    NOT NULL,
+    created_at  INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+    UNIQUE(comment_id, openid)
+);
+CREATE INDEX IF NOT EXISTS idx_comment_likes_comment ON comment_likes(comment_id);
+
+-- 新闻关联表（自动计算的关联关系）
+CREATE TABLE IF NOT EXISTS news_related (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    news_id         INTEGER NOT NULL REFERENCES news(id),
+    related_news_id INTEGER NOT NULL REFERENCES news(id),
+    relation_type   TEXT NOT NULL DEFAULT 'auto', -- 'team'|'track'|'topic'|'manual'
+    score           REAL NOT NULL DEFAULT 0,       -- 关联强度 0-1
+    created_at      INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+    UNIQUE(news_id, related_news_id),
+    CHECK(news_id != related_news_id)
+);
+CREATE INDEX IF NOT EXISTS idx_news_related_from ON news_related(news_id);
+CREATE INDEX IF NOT EXISTS idx_news_related_to   ON news_related(related_news_id);
+
+-- 分析反馈表（车手对比分析/新闻分析的用户反馈）
+CREATE TABLE IF NOT EXISTS analysis_feedback (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    cache_key   TEXT    NOT NULL,
+    analysis_type TEXT  NOT NULL DEFAULT 'driver',
+    openid      TEXT    NOT NULL,
+    rating      INTEGER NOT NULL CHECK(rating IN (1, -1)),
+    comment     TEXT,
+    created_at  INTEGER NOT NULL DEFAULT (strftime('%s','now')),
+    UNIQUE(cache_key, openid)
+);
+CREATE INDEX IF NOT EXISTS idx_analysis_feedback_key ON analysis_feedback(cache_key);
 
 -- 术语表
 CREATE TABLE IF NOT EXISTS terms (
@@ -251,6 +290,12 @@ def init_db():
     """建表 + 插入默认分区（幂等，可重复调用）"""
     logger.info("[init_db] 开始数据库初始化...")
     with get_conn() as conn:
+        # 兼容旧表：comments 表缺少 parent_id 列则自动添加（必须在 DDL 之前，因 DDL 中有引用 parent_id 的索引）
+        try:
+            conn.execute("SELECT parent_id FROM comments LIMIT 1")
+        except sqlite3.OperationalError:
+            conn.execute("ALTER TABLE comments ADD COLUMN parent_id INTEGER REFERENCES comments(id)")
+            logger.info("[init_db] 已为 comments 表添加 parent_id 列")
         # 用 SQLite 原生脚本执行，避免注释 + CREATE 语句被手动 split 误跳过。
         conn.executescript(DDL)
         # 插入默认分区（忽略已存在）
@@ -345,8 +390,10 @@ def news_list_by_team(keywords: list[str], page: int = 1, page_size: int = 20, s
     with get_conn() as conn:
         rows = conn.execute(
             f"""SELECT n.id, n.title, n.summary, n.source, n.language, n.published_at,
-                       (SELECT 1 FROM news_analysis a WHERE a.news_id=n.id) AS analyzed
+                       (SELECT 1 FROM news_analysis a WHERE a.news_id=n.id) AS analyzed,
+                       SUBSTR(a.race_impact, 1, 40) AS summary_preview
                 FROM news n
+                LEFT JOIN news_analysis a ON a.news_id = n.id
                 WHERE {conditions}
                 ORDER BY n.published_at DESC
                 LIMIT ? OFFSET ?""",
@@ -372,8 +419,10 @@ def news_list(page: int = 1, page_size: int = 20, keyword: str | None = None,
         where = " WHERE " + " AND ".join(conditions) if conditions else ""
         rows = conn.execute(
             f"""SELECT n.id, n.title, n.summary, n.source, n.language, n.published_at,
-                      (SELECT 1 FROM news_analysis a WHERE a.news_id=n.id) AS analyzed
-               FROM news n{where}
+                      (SELECT 1 FROM news_analysis a WHERE a.news_id=n.id) AS analyzed,
+                      SUBSTR(a.race_impact, 1, 40) AS summary_preview
+               FROM news n
+               LEFT JOIN news_analysis a ON a.news_id = n.id{where}
                ORDER BY n.published_at DESC
                LIMIT ? OFFSET ?""",
             params + [page_size, offset]
@@ -581,15 +630,15 @@ def posts_pending(page: int = 1, page_size: int = 50) -> list[dict]:
 # ─────────────────────────────────────────────
 
 def comment_create(post_id: int, content: str,
-                   author_openid: str, author_nickname: str) -> int:
-    """创建评论，暂时关闭审核直接 approved（TODO: 用户量大后改回 pending）"""
+                   author_openid: str, author_nickname: str,
+                   parent_id: int | None = None) -> int:
+    """创建评论，支持回复（parent_id）。暂时关闭审核直接 approved。"""
     with get_conn() as conn:
         cur = conn.execute(
-            """INSERT INTO comments(post_id, content, author_openid, author_nickname, status)
-               VALUES (?,?,?,?,?)""",
-            (post_id, content, author_openid, author_nickname, "approved")
+            """INSERT INTO comments(post_id, content, author_openid, author_nickname, status, parent_id)
+               VALUES (?,?,?,?,?,?)""",
+            (post_id, content, author_openid, author_nickname, "approved", parent_id)
         )
-        # 直接发布模式下同步更新帖子评论数
         conn.execute(
             "UPDATE posts SET comment_count = comment_count + 1 WHERE id=?",
             (post_id,)
@@ -638,6 +687,134 @@ def comments_pending(page: int = 1, page_size: int = 50) -> list[dict]:
             (page_size, offset)
         ).fetchall()
         return [dict(r) for r in rows]
+
+
+# ─────────────────────────────────────────────
+# Comment Likes CRUD
+# ─────────────────────────────────────────────
+
+def comment_like(comment_id: int, openid: str) -> dict:
+    """评论点赞/取消点赞，切换操作"""
+    with get_conn() as conn:
+        existing = conn.execute(
+            "SELECT id FROM comment_likes WHERE comment_id=? AND openid=?",
+            (comment_id, openid)
+        ).fetchone()
+        if existing:
+            conn.execute("DELETE FROM comment_likes WHERE id=?", (existing["id"],))
+            conn.commit()
+            liked = False
+        else:
+            conn.execute(
+                "INSERT INTO comment_likes(comment_id, openid) VALUES (?,?)",
+                (comment_id, openid)
+            )
+            conn.commit()
+            liked = True
+        count = conn.execute(
+            "SELECT COUNT(*) AS cnt FROM comment_likes WHERE comment_id=?",
+            (comment_id,)
+        ).fetchone()["cnt"]
+        return {"liked": liked, "count": count}
+
+
+def comment_like_counts(comment_id: int, openid: str | None = None) -> dict:
+    """获取评论点赞数据"""
+    with get_conn() as conn:
+        count = conn.execute(
+            "SELECT COUNT(*) AS cnt FROM comment_likes WHERE comment_id=?",
+            (comment_id,)
+        ).fetchone()["cnt"]
+        my_like = False
+        if openid:
+            row = conn.execute(
+                "SELECT id FROM comment_likes WHERE comment_id=? AND openid=?",
+                (comment_id, openid)
+            ).fetchone()
+            my_like = row is not None
+        return {"count": count, "liked": my_like}
+
+
+# ─────────────────────────────────────────────
+# News Related CRUD（智能关联引擎）
+# ─────────────────────────────────────────────
+
+def news_add_relation(news_id: int, related_news_id: int,
+                      relation_type: str = 'auto', score: float = 0.0):
+    """添加一条新闻关联（幂等）"""
+    with get_conn() as conn:
+        conn.execute(
+            """INSERT OR IGNORE INTO news_related
+               (news_id, related_news_id, relation_type, score)
+               VALUES (?,?,?,?)""",
+            (news_id, related_news_id, relation_type, score)
+        )
+        conn.commit()
+
+
+def news_get_related(news_id: int, limit: int = 5) -> list[dict]:
+    """获取某条新闻的关联新闻列表，按关联强度排序"""
+    with get_conn() as conn:
+        rows = conn.execute(
+            """SELECT n.id, n.title, n.summary, n.source, n.published_at,
+                      r.relation_type, r.score,
+                      (SELECT 1 FROM news_analysis a WHERE a.news_id=n.id) AS analyzed
+               FROM news_related r
+               JOIN news n ON n.id = r.related_news_id
+               WHERE r.news_id = ?
+               ORDER BY r.score DESC
+               LIMIT ?""",
+            (news_id, limit)
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+
+def news_compute_related(news_id: int):
+    """为一条新闻计算关联关系（基于车队标签+赛道关键词+来源相似度）"""
+    from routers.news import TEAMS, _teams_from_text
+    with get_conn() as conn:
+        item = conn.execute("SELECT title, summary, source FROM news WHERE id=?", (news_id,)).fetchone()
+        if not item:
+            return
+        text = " ".join(filter(None, [item["title"], item["summary"]])).lower()
+        teams = [t["slug"] for t in _teams_from_text(text)]
+        
+        # 查询所有其他新闻
+        others = conn.execute(
+            """SELECT id, title, summary, source FROM news WHERE id != ?""",
+            (news_id,)
+        ).fetchall()
+        
+        for other in others:
+            score = 0.0
+            rel_type = 'topic'
+            other_text = " ".join(filter(None, [other["title"], other["summary"]])).lower()
+            other_teams = [t["slug"] for t in _teams_from_text(other_text)]
+            
+            # 1. 车队重叠
+            common_teams = set(teams) & set(other_teams)
+            if common_teams:
+                score += 0.3 * len(common_teams)
+                rel_type = 'team'
+            
+            # 2. 赛道关键词重叠
+            track_keywords = ["巴林","沙特","澳大利亚","日本","中国","迈阿密","伊莫拉",
+                            "摩纳哥","加拿大","西班牙","奥地利","英国","比利时",
+                            "匈牙利","荷兰","意大利","阿塞拜疆","新加坡","美国",
+                            "墨西哥","巴西","拉斯维加斯","卡塔尔","阿布扎比"]
+            for kw in track_keywords:
+                if kw in text and kw in other_text:
+                    score += 0.25
+                    if rel_type == 'topic':
+                        rel_type = 'track'
+                    break
+            
+            # 3. 同源且时间相近（3天内）
+            if other["source"] == item["source"]:
+                score += 0.1
+            
+            if score > 0:
+                news_add_relation(news_id, other["id"], rel_type, min(score, 1.0))
 
 
 def section_get_by_slug(slug: str) -> dict | None:
@@ -2118,3 +2295,58 @@ def chat_send_message(nickname: str, content: str) -> int:
         """)
         conn.commit()
         return msg_id
+
+
+def analysis_feedback_save(cache_key: str, analysis_type: str, openid: str, rating: int, comment: str = "") -> dict:
+    """保存/更新分析反馈（upsert 模式）"""
+    conn = get_conn()
+    try:
+        conn.execute("""
+            INSERT INTO analysis_feedback (cache_key, analysis_type, openid, rating, comment)
+            VALUES (?, ?, ?, ?, ?)
+            ON CONFLICT(cache_key, openid) DO UPDATE SET rating=excluded.rating, comment=excluded.comment
+        """, (cache_key, analysis_type, openid, rating, comment))
+        conn.commit()
+        liked = conn.execute(
+            "SELECT COUNT(*) as cnt FROM analysis_feedback WHERE cache_key=? AND rating=1",
+            (cache_key,)
+        ).fetchone()["cnt"]
+        disliked = conn.execute(
+            "SELECT COUNT(*) as cnt FROM analysis_feedback WHERE cache_key=? AND rating=-1",
+            (cache_key,)
+        ).fetchone()["cnt"]
+        return {"liked": liked, "disliked": disliked}
+    finally:
+        conn.close()
+
+
+def analysis_feedback_counts(cache_key: str) -> dict:
+    """获取分析的反馈统计"""
+    conn = get_conn()
+    try:
+        liked = conn.execute(
+            "SELECT COUNT(*) as cnt FROM analysis_feedback WHERE cache_key=? AND rating=1",
+            (cache_key,)
+        ).fetchone()["cnt"]
+        disliked = conn.execute(
+            "SELECT COUNT(*) as cnt FROM analysis_feedback WHERE cache_key=? AND rating=-1",
+            (cache_key,)
+        ).fetchone()["cnt"]
+        return {"liked": liked, "disliked": disliked}
+    finally:
+        conn.close()
+
+
+def analysis_feedback_user(cache_key: str, openid: str) -> dict:
+    """获取用户对某个分析的反馈"""
+    conn = get_conn()
+    try:
+        row = conn.execute(
+            "SELECT rating, comment FROM analysis_feedback WHERE cache_key=? AND openid=?",
+            (cache_key, openid)
+        ).fetchone()
+        if row:
+            return {"rating": row["rating"], "comment": row["comment"] or ""}
+        return {"rating": 0, "comment": ""}
+    finally:
+        conn.close()
