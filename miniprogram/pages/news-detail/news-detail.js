@@ -1,14 +1,13 @@
 /* pages/news-detail/news-detail.js */
 const { api } = require('../../utils/api')
 
-// category → 颜色映射
 const CATEGORY_COLOR = {
-  power_unit: '#e10600',  // 红
-  aero:       '#4a9eff',  // 蓝
-  tyre:       '#f5a623',  // 橙
-  strategy:   '#7ed321',  // 绿
-  rules:      '#9b59b6',  // 紫
-  flag:       '#f0f0f0',  // 白
+  power_unit: '#e10600',
+  aero:       '#4a9eff',
+  tyre:       '#f5a623',
+  strategy:   '#7ed321',
+  rules:      '#9b59b6',
+  flag:       '#f0f0f0',
 }
 
 const CATEGORY_LABEL = {
@@ -27,28 +26,20 @@ Page({
     loading: true,
     error: '',
     item: null,
-    // AI 轮询
     polling: false,
     pollCount: 0,
     MAX_POLL: 12,
-    // 分析步骤流程
     analyzeStep: 0,
-    // 触发分析按钮
     triggerLoading: false,
     reanalyzeLoading: false,
-    // 置信度解析
     raceImpactConfidence: { level: '', text: '', cleanText: '' },
-    // 讨论区
     relatedPosts: [],
     relatedTotal: 0,
-    // 术语标签
+    relatedNews: [],
     termTags: [],
-    // 车队标签
     teamTags: [],
-    // 术语弹出卡片
     termCard: null,
     termCardVisible: false,
-    // 方法论面板
     showMethodology: false,
   },
 
@@ -57,14 +48,11 @@ Page({
   onLoad(options) {
     this.newsId = options.id
     wx.setNavigationBarTitle({ title: '资讯详情' })
-
-    // 有本地预览数据时先渲染，不等网络
     const preview = wx.getStorageSync(`news_preview_${this.newsId}`)
     if (preview) {
       this.setData({ loading: false, item: preview })
       wx.removeStorageSync(`news_preview_${this.newsId}`)
     }
-
     this.loadDetail()
   },
 
@@ -85,14 +73,14 @@ Page({
   },
 
   async loadDetail() {
-    // 没有预览数据才显示 loading
     if (!this.data.item) this.setData({ loading: true, error: '' })
     try {
-      const [detailRes, postsRes, termsRes, teamsRes] = await Promise.all([
+      const [detailRes, postsRes, termsRes, teamsRes, relatedRes] = await Promise.all([
         api.getNewsDetail(this.newsId),
         api.getNewsPosts(this.newsId).catch(() => ({ data: { items: [], total: 0 } })),
         api.getTermsByNews(this.newsId).catch(() => ({ data: [] })),
         api.getTeamsByNews(this.newsId).catch(() => ({ data: [] })),
+        api.getRelatedNews(this.newsId).catch(() => ({ data: { items: [] } })),
       ])
       const item = detailRes.data
       const termTags = (termsRes.data || []).map(t => ({
@@ -108,8 +96,8 @@ Page({
         relatedTotal: postsRes.data.total || 0,
         termTags,
         teamTags: teamsRes.data || [],
+        relatedNews: relatedRes.data.items || [],
       })
-      // 如果已有分析结果，解析置信度
       if (item.analyzed && item.race_impact) {
         this._parseConfidence(item.race_impact)
       }
@@ -122,7 +110,6 @@ Page({
     }
   },
 
-  // ── 车队标签点击 → 跳转车队新闻列表 ─────────────
   onTeamTap(e) {
     const { slug, name, color } = e.currentTarget.dataset
     wx.navigateTo({
@@ -130,20 +117,15 @@ Page({
     })
   },
 
-  // ── 术语标签点击 → 弹出卡片 ──────────────────────
   onTermTap(e) {
     const slug = e.currentTarget.dataset.slug
     const tag = this.data.termTags.find(t => t.slug === slug)
     if (!tag) return
-    // 先用已有数据展示，再后台拉 full_def
     this.setData({ termCard: tag, termCardVisible: true })
     api.getTerm(slug).then(res => {
       if (this.data.termCardVisible && this.data.termCard?.slug === slug) {
         this.setData({
-          termCard: {
-            ...this.data.termCard,
-            full_def: res.data.full_def,
-          }
+          termCard: { ...this.data.termCard, full_def: res.data.full_def }
         })
       }
     }).catch(() => {})
@@ -171,7 +153,6 @@ Page({
     })
   },
 
-  // ── 轮询 AI 分析结果 ─────────────────────────
   _startPoll() {
     this.setData({ polling: true, pollCount: 0, analyzeStep: 0 })
     this._startAnalyzeStepAnimation()
@@ -183,7 +164,6 @@ Page({
     this._analyzeStepTimers.push(setTimeout(() => this.setData({ analyzeStep: 1 }), 300))
     this._analyzeStepTimers.push(setTimeout(() => this.setData({ analyzeStep: 2 }), 1500))
     this._analyzeStepTimers.push(setTimeout(() => this.setData({ analyzeStep: 3 }), 3000))
-    // 循环推进动画
     this._analyzeStepLoop = setInterval(() => {
       if (!this.data.polling) {
         clearInterval(this._analyzeStepLoop)
@@ -219,9 +199,7 @@ Page({
           this.setData({ polling: false })
           this._stopAnalyzeStepAnimation()
           wx.setStorageSync('news_list_dirty', 1)
-          // 解析置信度
           this._parseConfidence(item.race_impact)
-          // 分析完成后重新拉术语标签
           api.getTermsByNews(this.newsId).then(r => {
             const termTags = (r.data || []).map(t => ({
               ...t,
@@ -230,6 +208,10 @@ Page({
               level_label: LEVEL_LABEL[t.level] || '基础',
             }))
             this.setData({ termTags })
+          }).catch(() => {})
+          // 分析完成后刷新关联资讯
+          api.getRelatedNews(this.newsId).then(r => {
+            this.setData({ relatedNews: r.data.items || [] })
           }).catch(() => {})
         } else {
           this._doPoll()
@@ -249,13 +231,11 @@ Page({
     this._stopAnalyzeStepAnimation()
   },
 
-  // ── 解析置信度标记 ─────────────────────────
   _parseConfidence(text) {
     if (!text) {
       this.setData({ raceImpactConfidence: { level: '', text: '', cleanText: '' } })
       return
     }
-    // 匹配 [高置信度]/[中置信度]/[低置信度] 标记
     const highMatch = text.match(/\[高置信度\]/)
     const medMatch  = text.match(/\[中置信度\]/)
     const lowMatch  = text.match(/\[低置信度\]/)
@@ -270,7 +250,6 @@ Page({
     })
   },
 
-  // ── 用户触发 AI 分析 ─────────────────────────
   async onTriggerAnalyze() {
     if (this.data.triggerLoading || this.data.polling) return
     this.setData({ triggerLoading: true })
@@ -279,14 +258,12 @@ Page({
       this.setData({ triggerLoading: false })
       this._startPoll()
     } catch (e) {
-      // already_done 或其他错误：直接刷新详情
       this.setData({ triggerLoading: false })
       wx.setStorageSync('news_list_dirty', 1)
       this.loadDetail()
     }
   },
 
-  // ── 重新分析（强制刷新）──────────────────────
   async onReanalyze() {
     if (this.data.reanalyzeLoading || this.data.polling) return
     wx.showModal({
@@ -312,7 +289,6 @@ Page({
     })
   },
 
-  // ── 引用某段 AI 内容去发帖 ───────────────────
   onQuote(e) {
     const { label, content } = e.currentTarget.dataset
     const item = this.data.item
@@ -326,7 +302,6 @@ Page({
     })
   },
 
-  // ── 去论坛发帖（无引用）──────────────────────
   onGoForum() {
     const item = this.data.item
     if (!item) return
@@ -337,17 +312,20 @@ Page({
     })
   },
 
-  // ── 查看全部关联帖子 ─────────────────────────
   onViewAllPosts() {
     wx.navigateTo({
       url: `/pages/forum-section/forum-section?id=35&name=${encodeURIComponent('综合讨论')}`
     })
   },
 
-  // ── 跳转帖子详情 ─────────────────────────────
   onGoPost(e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: `/pages/forum-post/forum-post?id=${id}` })
+  },
+
+  onGoRelatedNews(e) {
+    const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: `/pages/news-detail/news-detail?id=${id}` })
   },
 
   noop() {},
