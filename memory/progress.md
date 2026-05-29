@@ -4,6 +4,16 @@
 
 ---
 
+### Phase 4 第四批优化（2026-05-29）
+- [x] AI赛后分析页改为用户点击触发（C1）：无缓存时显示「开始分析」按钮，用户点击后才调用 API 消耗 token
+- [x] 新闻分析注入比赛实况数据（D1）：新增 `_get_race_results_context()` 获取最近5站领奖台结果，注入所有新闻分析类型
+- [x] 车手对比分析注入赛季上下文（D2）：新增 `_get_season_context()` 获取积分榜位置、H2H交锋记录、赛季最佳完赛
+- [x] 分析质量反馈闭环（D3）：新建 `analysis_feedback` 表 + POST/GET 反馈 API + 前端 👍/👎 按钮
+- [x] 修复 news_analyzer.py 末尾冗余代码（debris from previous session）
+- [x] 部署到云服务器：rsync 同步全部后端代码 + 重启 f1api 服务
+- [x] 修复生产环境 502：`comments` 表缺少 `parent_id` 列导致 DDL 索引创建失败，加兼容迁移 + 清理 database.py 末尾 debris
+- [x] 修复 news-detail.js 末尾残留代码导致编译报 `Unexpected token`
+
 ### 首页优化（2026-05-28）
 - [x] 「最近一站」静态卡片已移除，替换为可点击的「最新赛站数据」入口
   - 点击直接跳转到该站赛事详情页（排位赛/正赛/遥测对比）
