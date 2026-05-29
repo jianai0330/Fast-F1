@@ -317,6 +317,23 @@
       </view>
     </view>
 
+    <!-- 相关资讯 -->
+    <view class="related-news-section" wx:if="{{relatedNews && relatedNews.length > 0}}">
+      <view class="related-news-header">
+        <text class="related-news-title">📰 相关资讯</text>
+      </view>
+      <view wx:for="{{relatedNews}}" wx:key="id"
+            class="related-news-card" bindtap="onGoRelatedNews" data-id="{{item.id}}">
+        <text class="rn-title">{{item.title}}</text>
+        <view class="rn-meta">
+          <text class="rn-source">{{item.source}}</text>
+          <text class="rn-dot">·</text>
+          <text class="rn-analyzed" wx:if="{{item.analyzed}}">✨ 已解读</text>
+          <text class="rn-analyzed" wx:else>待解读</text>
+        </view>
+      </view>
+    </view>
+
     <view style="height: 60rpx;"></view>
 
   </scroll-view>

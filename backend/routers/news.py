@@ -4,6 +4,7 @@ GET  /news                      列表（分页，支持 ?team=xxx 过滤）
 GET  /news/{id}                 详情（含 AI 三段式）
 GET  /news/{id}/teams           该条新闻匹配的车队标签
 GET  /news/{id}/posts           关联帖子
+GET  /news/{id}/related         关联资讯
 POST /news/{id}/analyze-public  任意用户触发 AI 分析（后台异步，结果全局共享）
 POST /news/crawl                手动触发爬虫（管理员）
 POST /news/{id}/analyze         手动触发单条 AI 分析（管理员）
@@ -11,7 +12,7 @@ POST /news/{id}/analyze         手动触发单条 AI 分析（管理员）
 
 from fastapi import APIRouter, Header, HTTPException
 from models.response import ok, err
-from db.database import news_list, news_list_by_team, news_get, posts_by_news, news_delete
+from db.database import news_list, news_list_by_team, news_get, posts_by_news, news_delete, news_get_related, news_compute_related
 import os
 import re
 import time
@@ -81,6 +82,8 @@ def get_news_list(page: int = 1, page_size: int = 20,
                               language=language if language != 'all' else None)
         for item in items:
             item["analyzed"] = bool(item.get("analyzed"))
+            text = " ".join(filter(None, [item.get("title", ""), item.get("summary", "")]))
+            item["teams"] = _teams_from_text(text)
         return ok({"items": items, "page": page, "page_size": page_size})
     except Exception as e:
         return err(str(e))
@@ -128,6 +131,18 @@ def get_news_posts(news_id: int):
         return err(str(e))
 
 
+# ── 关联资讯列表 ────────────────────────────────
+@router.get("/{news_id}/related")
+def get_related_news(news_id: int, limit: int = 5):
+    try:
+        items = news_get_related(news_id, limit)
+        for item in items:
+            item["analyzed"] = bool(item.get("analyzed"))
+        return ok({"items": items})
+    except Exception as e:
+        return err(str(e))
+
+
 # ── 用户触发 AI 分析（无需登录，结果全局共享）──
 @router.post("/{news_id}/analyze-public")
 def trigger_analyze_public(news_id: int, force: bool = False):
@@ -155,6 +170,12 @@ def trigger_analyze_public(news_id: int, force: bool = False):
             daemon=True,
         )
         t.start()
+        # 后台触发关联计算
+        threading.Thread(
+            target=news_compute_related,
+            args=(news_id,),
+            daemon=True,
+        ).start()
         return ok({"status": "started"})
     except Exception as e:
         return err(str(e))

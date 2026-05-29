@@ -23,7 +23,6 @@
 
       <!-- 帖子主体 -->
       <view class="post-body" wx:if="{{post}}">
-        <!-- AI 种子标签 -->
         <view wx:if="{{post.is_seeded}}" class="seeded-badge">
           <text>✨ AI资讯</text>
         </view>
@@ -62,15 +61,14 @@
       <view class="comment-section">
         <text class="comment-header">💬 共 {{comments.length}} 条评论</text>
 
-        <!-- 空评论 -->
         <view wx:if="{{comments.length === 0}}" class="empty-comment">
           <text class="text-muted">暂无评论，来说第一句话吧</text>
         </view>
 
-        <!-- 评论列表 -->
-        <view wx:for="{{comments}}" wx:key="id" class="comment-card">
+        <!-- 评论列表（线程化） -->
+        <view wx:for="{{comments}}" wx:key="id" class="comment-card {{item.parent_id ? 'comment-reply' : ''}}">
           <view class="comment-header-row">
-            <view class="avatar-circle">
+            <view class="avatar-circle" style="background: {{item.parent_id ? '#555' : '#e10600'}};">
               <text class="avatar-text">{{item.author_nickname.substring(0,1)}}</text>
             </view>
             <view class="comment-info">
@@ -79,6 +77,18 @@
             </view>
           </view>
           <text class="comment-content">{{item.content}}</text>
+
+          <!-- 评论操作栏：点赞 + 回复 -->
+          <view class="comment-actions">
+            <view class="comment-like-btn {{item.liked ? 'comment-liked' : ''}}"
+                  bindtap="onCommentLike" data-id="{{item.id}}">
+              <text class="cl-icon">{{item.liked ? '❤️' : '🤍'}}</text>
+              <text class="cl-count">{{item.like_count || 0}}</text>
+            </view>
+            <view class="comment-reply-btn" bindtap="onReply" data-id="{{item.id}}" data-nickname="{{item.author_nickname}}">
+              <text>💬 回复</text>
+            </view>
+          </view>
         </view>
 
       </view>
@@ -90,23 +100,28 @@
 
     <!-- 底部评论输入框 -->
     <view class="input-bar">
-      <input
-        class="comment-input"
-        placeholder="说点什么..."
-        placeholder-class="input-placeholder"
-        value="{{inputVal}}"
-        bindinput="onInputChange"
-        bindfocus="onInputFocus"
-        confirm-type="send"
-        bindconfirm="onSubmitComment"
-        adjust-position
-      />
-      <view class="send-btn {{submitting ? 'send-btn-disabled' : ''}}"
-            bindtap="onSubmitComment">
-        <text>发送</text>
+      <view wx:if="{{replyTo}}" class="reply-indicator" bindtap="onCancelReply">
+        <text class="reply-hint">回复 @{{replyTo.nickname}}</text>
+        <text class="reply-cancel">取消</text>
+      </view>
+      <view class="input-row">
+        <input
+          class="comment-input"
+          placeholder="{{replyTo ? '输入回复内容...' : '说点什么...'}}"
+          placeholder-class="input-placeholder"
+          value="{{inputVal}}"
+          bindinput="onInputChange"
+          bindfocus="onInputFocus"
+          confirm-type="send"
+          bindconfirm="onSubmitComment"
+          adjust-position
+        />
+        <view class="send-btn {{submitting ? 'send-btn-disabled' : ''}}"
+              bindtap="onSubmitComment">
+          <text>发送</text>
+        </view>
       </view>
     </view>
   </block>
 
 </view>
-

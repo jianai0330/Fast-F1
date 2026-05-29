@@ -12,7 +12,8 @@ Page({
     nickname: '',
     likes: 0,
     dislikes: 0,
-    myVote: null,   // 'like' | 'dislike' | null
+    myVote: null,
+    replyTo: null,       // 正在回复哪条评论 { id, nickname }
   },
 
   onLoad(options) {
@@ -34,7 +35,6 @@ Page({
 
   async loadPost() {
     try {
-      // 每次 loadPost 都重新读 Storage，防止开发者工具重编译后 openid 丢失
       const openid = wx.getStorageSync('f1_openid') || ''
       const nickname = wx.getStorageSync('f1_nickname') || ''
       const [postRes, likeRes] = await Promise.all([
@@ -59,12 +59,13 @@ Page({
 
   async loadComments() {
     try {
-      const res = await api.getForumComments(this.postId)
+      const openid = this.data.openid
+      const res = await api.getForumComments(this.postId, openid)
       this.setData({ comments: res.data.items || [] })
     } catch (e) {}
   },
 
-  // ── 点赞 / 点踩 ──────────────────────────────
+  // ── 帖子点赞 / 点踩 ──────────────────────────
   async onLike(e) {
     const type = e.currentTarget.dataset.type
     if (!this.data.openid) {
@@ -83,7 +84,45 @@ Page({
     }
   },
 
-  // ── 删帖 ─────────────────────────────────────
+  // ── 评论点赞 ─────────────────────────────────
+  async onCommentLike(e) {
+    if (!this.data.openid) {
+      wx.navigateTo({ url: '/pages/forum-register/forum-register' })
+      return
+    }
+    const commentId = e.currentTarget.dataset.id
+    try {
+      const res = await api.commentLike(commentId, this.data.openid)
+      // 更新本地评论数据
+      const comments = this.data.comments.map(c => {
+        if (c.id === commentId) {
+          return { ...c, liked: res.data.liked, like_count: res.data.count }
+        }
+        return c
+      })
+      this.setData({ comments })
+    } catch (e) {
+      wx.showToast({ title: '操作失败', icon: 'none' })
+    }
+  },
+
+  // ── 回复某条评论 ─────────────────────────────
+  onReply(e) {
+    if (!this.data.openid) {
+      wx.navigateTo({ url: '/pages/forum-register/forum-register' })
+      return
+    }
+    const { id, nickname } = e.currentTarget.dataset
+    this.setData({
+      replyTo: { id, nickname },
+      inputVal: `回复 @${nickname} `,
+    })
+  },
+
+  onCancelReply() {
+    this.setData({ replyTo: null, inputVal: '' })
+  },
+
   onDeletePost() {
     const { post, openid } = this.data
     if (!post || post.author_openid !== openid) return
@@ -123,22 +162,25 @@ Page({
     }
     this.setData({ submitting: true })
     try {
-      const res = await api.createComment(this.postId, content, this.data.openid)
-      // 用服务端返回的真实 comment_id
+      const parentId = this.data.replyTo?.id || null
+      const res = await api.createComment(this.postId, content, this.data.openid, parentId)
       const realId = res.data?.comment_id || Date.now()
       const newComment = {
         id: realId,
         content,
+        parent_id: parentId,
         author_nickname: this.data.nickname || wx.getStorageSync('f1_nickname') || '我',
         created_at: Math.floor(Date.now() / 1000),
+        like_count: 0,
+        liked: false,
       }
       this.setData({
         inputVal: '',
         submitting: false,
+        replyTo: null,
         comments: [...this.data.comments, newComment],
       })
       wx.showToast({ title: '评论成功！', icon: 'success', duration: 800 })
-      // 静默刷新，不影响体验
       this.loadComments()
     } catch (e) {
       this.setData({ submitting: false })

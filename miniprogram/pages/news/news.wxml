@@ -159,9 +159,10 @@
     bindscrolltolower="onReachBottom"
   >
     <view wx:for="{{items}}" wx:key="id"
-          class="news-card"
+          class="news-card {{item.analyzed ? 'analyzed' : ''}}"
           bindtap="onTapNews"
-          data-item="{{item}}">
+          data-item="{{item}}"
+          data-id="{{item.id}}">
 
       <!-- 来源 + 时间 -->
       <view class="card-meta">
@@ -174,8 +175,21 @@
       <!-- 标题 -->
       <text class="news-title">{{item.title}}</text>
 
+      <!-- AI摘要预览 -->
+      <view wx:if="{{item.summary_preview}}" class="ai-summary-preview">
+        <text class="ai-preview-label">AI摘要</text>
+        <text class="ai-preview-text">{{item.summary_preview}}</text>
+      </view>
+
       <!-- 摘要 -->
       <text class="news-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
+
+      <!-- 车队标签 -->
+      <view wx:if="{{item.teams && item.teams.length}}" class="card-team-tags">
+        <view wx:for="{{item.teams}}" wx:key="slug" class="card-team-tag">
+          <text>{{item.name}}</text>
+        </view>
+      </view>
 
       <!-- AI解读标签 -->
       <view class="card-footer">
