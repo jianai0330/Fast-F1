@@ -101,6 +101,75 @@ def _get_f1_context(title: str, content: str) -> str:
         return ""
 
 
+def _get_race_results_context() -> str:
+    """
+    获取2026赛季最近3-5站已完赛的赛果，30分钟缓存。
+    返回格式化字符串如：
+        【2026赛季已完赛赛果】
+        R1 巴林大奖赛: 冠军=VER, 亚军=LEC, 季军=PER
+    """
+    now = time.time()
+    if "race_results_ctx" in _rag_cache and now - _rag_cache.get("race_results_ts", 0) < _RAG_TTL:
+        return _rag_cache["race_results_ctx"]
+
+    try:
+        e = ergast.Ergast()
+        result = e.get_race_results(season=2026)
+
+        if result is None or len(result.content) == 0:
+            return ""
+
+        completed_races = []
+        for i, df_round in enumerate(result.content):
+            if df_round is not None and len(df_round) > 0:
+                if hasattr(result, 'description') and result.description is not None:
+                    desc = result.description.iloc[i]
+                    round_num = int(desc['round'])
+                    race_name = desc.get('raceName', f'Round {round_num}')
+                else:
+                    round_num = i + 1
+                    race_name = f'Round {round_num}'
+
+                podium = df_round[df_round['position'].isin([1, 2, 3])].sort_values('position')
+                codes = {}
+                for _, row in podium.iterrows():
+                    pos = int(row['position'])
+                    code = row.get('driverCode', '') or row.get('code', '')
+                    codes[pos] = code
+
+                completed_races.append({
+                    'round': round_num,
+                    'race_name': race_name,
+                    'winner': codes.get(1, ''),
+                    'second': codes.get(2, ''),
+                    'third': codes.get(3, ''),
+                })
+
+        if len(completed_races) < 3:
+            recent = completed_races
+        else:
+            recent = completed_races[-5:]
+
+        if not recent:
+            return ""
+
+        lines = ["【2026赛季已完赛赛果】"]
+        for r in recent:
+            lines.append(
+                f"R{r['round']} {r['race_name']}: "
+                f"冠军={r['winner']}, 亚军={r['second']}, 季军={r['third']}"
+            )
+
+        ctx = "\n".join(lines)
+        _rag_cache["race_results_ctx"] = ctx
+        _rag_cache["race_results_ts"] = now
+        return ctx
+
+    except Exception as ex:
+        logger.warning(f"[news_analyzer] 比赛结果上下文获取失败: {ex}")
+        return ""
+
+
 # ── 2026赛季强制上下文（不受RAG选择逻辑控制，始终注入）──
 SEASON_2026_CONTEXT = """
 ## 2026赛季关键事实（强制参考）
@@ -218,7 +287,7 @@ NEWS_SYSTEM = f"""你是 F1 2026赛季专属数据分析师。当前时间是202
 
 
 # ── Prompt 模板 ─────────────────────────────────
-NEWS_PROMPT = """{standings_block}{track_block}新闻标题：{title}
+NEWS_PROMPT = """{standings_block}{track_block}{race_results_block}新闻标题：{title}
 新闻正文：{content}
 
 请按以下递进结构分析：
@@ -244,6 +313,88 @@ NEWS_PROMPT = """{standings_block}{track_block}新闻标题：{title}
 - 第三段使用"值得关注"、"有待观察"等空泛表述
 - 任何对2025年及之前赛季的错误引用
 """
+
+def _classify_news_type(title: str, content: str) -> str:
+    """
+    基于关键词规则分类新闻类型，零 token 消耗。
+    
+    返回:
+    - 'technical': 技术/性能类新闻
+    - 'paddock': 围场动态/人事/商业/花边类新闻
+    - 'mixed': 两者均衡
+    """
+    text = (title + " " + content).lower()
+
+    TECHNICAL_KEYWORDS = [
+        # 性能与技术
+        "升级", "底盘", "空力", "引擎", "mgu", "动力单元",
+        "底板", "扩散器", "悬挂", "刹车", "轮胎", "设定",
+        "下压力", "配速", "圈时", "数据", "遥测", "模拟器",
+        # 工程与开发
+        "研发", "升级套件", "新部件", "性能提升", "速度提升",
+        "风洞", "cfa", "有限元", "悬挂系统", "散热",
+        # 赛道表现
+        "退化", "undercut", "overcut", "策略", "进站",
+        "排位赛", "正赛", "冲刺赛", "练习赛",
+        # 英文技术词
+        "upgrade", "package", "development", "performance",
+        "lap time", "downforce", "setup", "aero", "chassis",
+        "power unit", "engine", "gearbox", "suspension",
+        "floor", "diffuser", "brake", "tyre", "tire",
+    ]
+
+    PADDOCK_KEYWORDS = [
+        # 人事变动
+        "签约", "转会", "加盟", "离开", "退役", "续约",
+        "换队", "解约", "买入", "卖出",
+        # 商业与赞助
+        "赞助", "商业", "合作", "营收", "亏损", "投资",
+        "预算帽", "预算", "薪水", "薪资",
+        # 管理与组织
+        "CEO", "领队", "技术总监", "首席", "工程师",
+        "管理层", "重组", "收购", "上市",
+        # 围场花边
+        "采访", "专访", "发言", "回应", "争议",
+        "罚款", "处罚", "违规", "调查",
+        # 车手市场
+        "车手市场", "席位", "2027", "未来", "合同",
+        # 英文
+        "sign", "contract", "sponsor", "deal", "interview",
+        "statement", "controversy", "penalty", "fine",
+        "CEO", "team principal", "manager",
+    ]
+
+    tech_count = sum(1 for kw in TECHNICAL_KEYWORDS if kw in text)
+    paddock_count = sum(1 for kw in PADDOCK_KEYWORDS if kw in text)
+
+    if tech_count >= 3 and tech_count > paddock_count * 1.5:
+        return 'technical'
+    elif paddock_count >= 3 and paddock_count > tech_count * 1.5:
+        return 'paddock'
+    else:
+        return 'mixed'
+
+
+# ── 围场动态版 Prompt（节省 ~40% token）──
+NEWS_PROMPT_PADDOCK = """{track_block}{race_results_block}新闻标题：{title}
+新闻正文：{content}
+
+请按以下结构分析（共两段）：
+
+📋 事实摘要（60-100字）
+客观提炼本条新闻的核心事实，不添加主观判断。回答"发生了什么"。
+
+💡 格局判断（80-150字）
+分析此事件对2026赛季竞争格局的实际影响：
+- 人事变动：对新东家/旧东家的实力影响，预估适应周期
+- 商业合作：资源注入对车队研发能力的传导时间线
+- 争议/处罚：对积分、排位、赛事结果的直接和间接影响
+- 必须有明确立场（"我们认为..."），而非"值得关注"
+- 必须标注[高/中/低置信度]
+
+要求：用简练中文，适合快速阅读。
+"""
+
 
 # ── 分区归类关键词映射 ──────────────────────────
 KEYWORD_MAP: list[tuple[str, list[str]]] = [
@@ -290,7 +441,6 @@ AI_BOT_NICKNAME = "F1小助手 🤖"
 
 def _detect_track_context(title: str, content: str) -> str:
     """检测新闻是否涉及特定赛道，如果是则注入赛道上下文"""
-    # 用于赛道匹配的关键词（仅包含赛道相关关键词，排除车队关键词）
     track_keywords = [
         ("bahrain", ["巴林", "bahrain", "sakhir", "萨基尔"]),
         ("saudi_arabia", ["沙特", "saudi", "jeddah", "吉达"]),
@@ -322,7 +472,6 @@ def _detect_track_context(title: str, content: str) -> str:
     for track_name, keywords in track_keywords:
         for kw in keywords:
             if kw.lower() in text_lower:
-                # 找到匹配的赛道，加载赛道知识
                 context = load_track_context(kw)
                 if context:
                     logger.info(f"[news_analyzer] 检测到赛道关键词'{kw}'，注入赛道知识")
@@ -355,9 +504,9 @@ def _parse_three_parts(raw: str) -> tuple[str, str, str]:
         elif current_key and p:
             buf[current_key].append(p)
 
-    tech   = "\n".join(buf["📋"]).strip()   # 事实摘要 → tech_points
-    plain  = "\n".join(buf["🔍"]).strip()   # 深度解读 → plain_explain
-    impact = "\n".join(buf["💡"]).strip()   # 我们的判断 → race_impact
+    tech   = "\n".join(buf["📋"]).strip()
+    plain  = "\n".join(buf["🔍"]).strip()
+    impact = "\n".join(buf["💡"]).strip()
 
     if not tech and not plain and not impact:
         tech = raw.strip()
@@ -370,9 +519,8 @@ def _smart_truncate(text: str, max_chars: int = 2000) -> str:
     if len(text) <= max_chars:
         return text
 
-    # 分配：前60%给开头，后40%给结尾
     head_chars = int(max_chars * 0.6)
-    tail_chars = max_chars - head_chars - 50  # 预留分隔符
+    tail_chars = max_chars - head_chars - 50
 
     head = text[:head_chars]
     tail = text[-tail_chars:]
@@ -401,28 +549,48 @@ def _fetch_full_text(url: str, fallback: str = "") -> str:
 def analyze_one(news_id: int, title: str, summary: str, url: str = "") -> bool:
     """对单条新闻进行 AI 分析，结果写入 news_analysis 表。
     优先抓取原文全文；若抓取失败则降级用 RSS 摘要。
+    根据新闻类型（技术/围场/综合）选择不同 prompt 和 token 预算。
     """
     try:
-        # 抓全文，失败降级用摘要
         content = _fetch_full_text(url, fallback=summary or title) if url else (summary or title)
 
-        # 选择性注入积分榜数据（RAG）
-        f1_context = _get_f1_context(title, content)
-        standings_block = f"【2026赛季积分参考】\n{f1_context}\n\n" if f1_context else ""
+        # 分类新闻类型（零 token 消耗）
+        news_type = _classify_news_type(title, content)
 
-        # 检测新闻是否涉及特定赛道，如果是则注入赛道上下文
+        # 赛道上下文：所有类型都注入
         track_context = _detect_track_context(title, content)
         track_block = f"【赛道特性参考】\n{track_context}\n\n" if track_context else ""
 
-        prompt = NEWS_PROMPT.format(
-            title=title,
-            content=content,
-            standings_block=standings_block,
-            track_block=track_block,
-        )
+        # 比赛结果上下文：所有类型都注入
+        race_results_context = _get_race_results_context()
+        race_results_block = f"【2026赛季已完赛结果】\n{race_results_context}\n\n" if race_results_context else ""
 
-        # 构建system消息：强制注入赛季上下文（不受RAG选择逻辑控制）
-        system_content = NEWS_SYSTEM
+        if news_type == 'paddock':
+            # 围场动态：简化 prompt，不注入积分榜，节省 token
+            prompt = NEWS_PROMPT_PADDOCK.format(
+                title=title,
+                content=content,
+                track_block=track_block,
+                race_results_block=race_results_block,
+            )
+            system_content = NEWS_SYSTEM
+            max_tokens = 500
+            temperature = 0.4
+        else:
+            # 技术/综合：完整 prompt + 积分榜 RAG + 赛果
+            f1_context = _get_f1_context(title, content)
+            standings_block = f"【2026赛季积分参考】\n{f1_context}\n\n" if f1_context else ""
+
+            prompt = NEWS_PROMPT.format(
+                title=title,
+                content=content,
+                standings_block=standings_block,
+                track_block=track_block,
+                race_results_block=race_results_block,
+            )
+            system_content = NEWS_SYSTEM
+            max_tokens = 900
+            temperature = 0.3
 
         client = get_client()
         resp = client.chat.completions.create(
@@ -431,8 +599,8 @@ def analyze_one(news_id: int, title: str, summary: str, url: str = "") -> bool:
                 {"role": "system", "content": system_content},
                 {"role": "user",   "content": prompt},
             ],
-            temperature=0.3,
-            max_tokens=900,
+            temperature=temperature,
+            max_tokens=max_tokens,
         )
         raw = resp.choices[0].message.content
         tech, plain, impact = _parse_three_parts(raw)
@@ -497,18 +665,13 @@ def _html_to_text(html: str) -> str:
     """将 HTML 转为纯文本：去除标签，保留文本内容"""
     if not html:
         return ""
-    # 去除 script/style 标签及内容
     text = re.sub(r'<script[^>]*>[\s\S]*?</script>', '', html, flags=re.IGNORECASE)
     text = re.sub(r'<style[^>]*>[\s\S]*?</style>', '', text, flags=re.IGNORECASE)
-    # 将 block 级标签转为换行
     for tag in ['br', 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'tr']:
         text = re.sub(rf'<{tag}[^>]*>', '\n', text, flags=re.IGNORECASE)
-    # 去除所有剩余 HTML 标签
     text = re.sub(r'<[^>]+>', '', text)
-    # 处理 HTML 实体
     text = text.replace('&nbsp;', ' ').replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
     text = text.replace('&#39;', "'").replace('&quot;', '"')
-    # 清理多余空白
     text = re.sub(r'\n{3,}', '\n\n', text)
     text = text.strip()
     return text
@@ -528,36 +691,33 @@ def analyze_curated_content(curated_id: int, title: str,
     5. 其他逻辑（RAG注入、知识加载、Prompt）完全复用
     """
     try:
-        # 1. 将 content_html 转为纯文本
         content = _html_to_text(content_html)
 
-        # 2. 如果 content_html 为空，尝试用 url 重新抓取
         if not content or len(content.strip()) < 50:
             if url:
                 content = _fetch_full_text(url, fallback=title)
-            # 如果 summary 有内容，用 title + summary 组合
             if (not content or len(content.strip()) < 50) and summary:
                 content = f"{title}\n\n{summary}" if title != summary else summary
             elif not content:
                 content = title
         else:
-            # 智能截取，避免过长
             content = _smart_truncate(content)
 
-        # 3. 选择性注入积分榜数据（RAG）
         f1_context = _get_f1_context(title, content)
         standings_block = f"【2026赛季积分参考】\n{f1_context}\n\n" if f1_context else ""
 
-        # 4. 检测是否涉及特定赛道，注入赛道上下文
         track_context = _detect_track_context(title, content)
         track_block = f"【赛道特性参考】\n{track_context}\n\n" if track_context else ""
 
-        # 5. 构建并调用 LLM（完全复用 NEWS_SYSTEM + NEWS_PROMPT）
+        race_results_context = _get_race_results_context()
+        race_results_block = f"【2026赛季已完赛结果】\n{race_results_context}\n\n" if race_results_context else ""
+
         prompt = NEWS_PROMPT.format(
             title=title,
             content=content,
             standings_block=standings_block,
             track_block=track_block,
+            race_results_block=race_results_block,
         )
 
         client = get_client()
@@ -573,7 +733,6 @@ def analyze_curated_content(curated_id: int, title: str,
         raw = resp.choices[0].message.content
         tech, plain, impact = _parse_three_parts(raw)
 
-        # 6. 保存到 curated_content 表的分析字段
         from db.database import curated_analysis_save
         curated_analysis_save(curated_id, tech, plain, impact)
 

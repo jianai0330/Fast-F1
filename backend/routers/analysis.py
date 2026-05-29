@@ -5,12 +5,103 @@ from services.fastf1_service import (
 )
 from services.rule_engine import build_metrics
 from services.llm_client import generate_report
-import json, os, hashlib
+from db.database import analysis_feedback_save, analysis_feedback_counts, analysis_feedback_user
+import json, os, hashlib, time
+import fastf1.ergast as ergast
 
 router = APIRouter()
 
 CACHE_DIR = os.path.join(os.path.dirname(__file__), "../cache/analysis")
 os.makedirs(CACHE_DIR, exist_ok=True)
+
+
+# ── 赛季上下文缓存（30分钟 TTL）──
+_season_cache: dict = {}
+_SEASON_TTL = 1800
+
+
+def _get_season_context(year: int, d1: str, d2: str, session: str) -> str:
+    """获取赛季上下文：积分榜位置、交锋记录(H2H)、赛季最佳完赛。"""
+    cache_key = f"{year}_{d1}_{d2}_{session}"
+    now = time.time()
+    if cache_key in _season_cache and now - _season_cache[cache_key]["ts"] < _SEASON_TTL:
+        return _season_cache[cache_key]["data"]
+    try:
+        e = ergast.Ergast()
+        lines = []
+        # 1. 积分榜位置
+        standings_raw = e.get_driver_standings(season=year)
+        pos_d1 = pos_d2 = pts_d1 = pts_d2 = None
+        team_d1 = team_d2 = ""
+        if standings_raw is not None and len(standings_raw.content) > 0:
+            df_standings = standings_raw.content[-1]
+            for _, row in df_standings.iterrows():
+                code = row.get('driverCode', '')
+                if code == d1:
+                    pos_d1, pts_d1 = int(row['position']), float(row['points'])
+                    team_d1 = row['constructorNames'][0] if row.get('constructorNames') else ''
+                elif code == d2:
+                    pos_d2, pts_d2 = int(row['position']), float(row['points'])
+                    team_d2 = row['constructorNames'][0] if row.get('constructorNames') else ''
+        if pos_d1 is not None and pos_d2 is not None:
+            lines.append(f"当前积分榜：{d1}(P{pos_d1}, {int(pts_d1)}分, {team_d1}) vs {d2}(P{pos_d2}, {int(pts_d2)}分, {team_d2})")
+        # 2. 交锋记录
+        is_race = session.upper() == 'R'
+        h2h_d1 = h2h_d2 = 0
+        results_raw = e.get_race_results(season=year)
+        if results_raw is not None and len(results_raw.content) > 0:
+            for df_round in results_raw.content:
+                if df_round is None or len(df_round) == 0:
+                    continue
+                try:
+                    d1_rows = df_round[df_round['driverCode'] == d1]
+                    d2_rows = df_round[df_round['driverCode'] == d2]
+                    if not d1_rows.empty and not d2_rows.empty:
+                        p1 = int(d1_rows.iloc[0]['position'])
+                        p2 = int(d2_rows.iloc[0]['position'])
+                        if p1 > 0 and p2 > 0:
+                            if p1 < p2:
+                                h2h_d1 += 1
+                            else:
+                                h2h_d2 += 1
+                except (ValueError, TypeError, KeyError):
+                    continue
+        total_h2h = h2h_d1 + h2h_d2
+        session_label = "正赛" if is_race else "排位赛"
+        if total_h2h > 0:
+            lines.append(f"{session_label}交锋记录(H2H)：{d1} {h2h_d1}-{h2h_d2} {d2}")
+        # 3. 赛季最佳
+        best_d1 = best_d2 = None
+        if results_raw is not None:
+            for df_round in results_raw.content:
+                if df_round is None or len(df_round) == 0:
+                    continue
+                try:
+                    d1_r = df_round[df_round['driverCode'] == d1]
+                    d2_r = df_round[df_round['driverCode'] == d2]
+                    if not d1_r.empty:
+                        p = int(d1_r.iloc[0]['position'])
+                        if p > 0 and (best_d1 is None or p < best_d1):
+                            best_d1 = p
+                    if not d2_r.empty:
+                        p = int(d2_r.iloc[0]['position'])
+                        if p > 0 and (best_d2 is None or p < best_d2):
+                            best_d2 = p
+                except (ValueError, TypeError, KeyError):
+                    continue
+        if best_d1 is not None and best_d2 is not None:
+            lines.append(f"赛季最佳完赛：{d1}(P{best_d1}), {d2}(P{best_d2})")
+        elif best_d1 is not None:
+            lines.append(f"赛季最佳完赛：{d1}(P{best_d1})")
+        elif best_d2 is not None:
+            lines.append(f"赛季最佳完赛：{d2}(P{best_d2})")
+        if not lines:
+            return ""
+        result = "赛季上下文：\n- " + "\n- ".join(lines)
+        _season_cache[cache_key] = {"data": result, "ts": now}
+        return result
+    except Exception:
+        return ""
 
 
 def cache_key(year, identifier, d1, d2, session) -> str:
@@ -99,6 +190,9 @@ def get_analysis(
             d1, d2, corner_dist, corner_labels
         )
 
+        # 获取赛季上下文
+        season_context = _get_season_context(year, d1, d2, session)
+
         # LLM 生成报告
         session_name_map = {"Q": "排位赛", "R": "正赛", "S": "冲刺赛", "FP1": "练习赛1", "FP2": "练习赛2", "FP3": "练习赛3"}
         report = generate_report(
@@ -110,6 +204,7 @@ def get_analysis(
             metrics=metrics,
             full_name_a=full_name_a,
             full_name_b=full_name_b,
+            season_context=season_context,
         )
 
         result = {
@@ -123,3 +218,36 @@ def get_analysis(
 
     except Exception as e:
         return err(str(e))
+
+
+from pydantic import BaseModel
+
+class FeedbackBody(BaseModel):
+    cache_key: str
+    analysis_type: str = "driver"
+    openid: str
+    rating: int
+    comment: str = ""
+
+
+@router.post("/feedback")
+def submit_feedback(body: FeedbackBody):
+    """提交分析反馈"""
+    if body.rating not in (1, -1):
+        return err("rating must be 1 or -1")
+    result = analysis_feedback_save(
+        cache_key=body.cache_key,
+        analysis_type=body.analysis_type,
+        openid=body.openid,
+        rating=body.rating,
+        comment=body.comment,
+    )
+    return ok(result)
+
+
+@router.get("/feedback/{cache_key}")
+def get_feedback(cache_key: str, openid: str = ""):
+    """获取分析的反馈统计和当前用户反馈"""
+    counts = analysis_feedback_counts(cache_key)
+    user_fb = analysis_feedback_user(cache_key, openid) if openid else {"rating": 0, "comment": ""}
+    return ok({**counts, **user_fb})
